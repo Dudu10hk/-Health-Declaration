@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הצהרת בריאות - עיצוב חדש</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Polin:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="main-container">
+    <!-- Top Navigation Bar -->
+    <div class="top-nav">
+        <img src="https://placehold.co/214x28" alt="Logo" class="nav-logo" />
+    </div>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="header-content">
+            <div class="user-info">
+                <div class="user-section">
+                    <div class="user-icon pink"></div>
+                    <span class="greeting">היי מיכאלה,</span>
+                </div>
+                <div class="user-section">
+                    <div class="user-icon orange"></div>
+                    <span class="greeting">צהריים טובים</span>
+                </div>
+            </div>
+            
+            <h1 class="main-title">הפקה express - סיכונים</h1>
+            
+            <!-- Progress Bar -->
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="progress-steps">
+                    <div class="step completed">
+                        <div class="step-circle">✓</div>
+                        <span>מועמדים לביטוח</span>
+                    </div>
+                    <div class="step completed">
+                        <div class="step-circle">✓</div>
+                        <span>הר הביטוח</span>
+                    </div>
+                    <div class="step completed">
+                        <div class="step-circle">✓</div>
+                        <span>בחירת מוצרים</span>
+                    </div>
+                    <div class="step completed">
+                        <div class="step-circle">✓</div>
+                        <span>הטבות</span>
+                    </div>
+                    <div class="step completed">
+                        <div class="step-circle">✓</div>
+                        <span>סימולציה</span>
+                    </div>
+                    <div class="step active">
+                        <div class="step-circle">6.</div>
+                        <span>הצהרת בריאות</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">7.</div>
+                        <span>השלמת פרטים</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">8.</div>
+                        <span>תשלום</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">9.</div>
+                        <span>סיום</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="title-section">
+                <div class="header-subtitle">
+                    <span>שלב 6: הצהרת בריאות</span>
+                    <div class="divider"></div>
+                    <span>בחר בתשובה המתאימה עבור כל המבוטחים הרלוונטיים</span>
+                </div>
+                <div class="title-divider"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-section">
+        <!-- BMI Section -->
+        <div class="bmi-section">
+            <div class="bmi-header">
+                <div class="bmi-title">יחס גובה משקל</div>
+                <div class="title-divider-small"></div>
+                <div class="bmi-subtitle">נא להזין את הנתונים בשדות הבאים עבור כל המבוטחים</div>
+            </div>
+            <div class="bmi-members-container">
+                <!-- Member 1: יובל אילן - מבוטח ראשי -->
+                <div class="bmi-member">
+                    <div class="member-header">
+                        <div class="member-name">יובל אילן</div>
+                        <div class="member-divider"></div>
+                        <div class="member-role">מבוטח ראשי</div>
+                    </div>
+                    <div class="member-inputs">
+                        <div class="input-container">
+                            <div class="input-label">
+                                <span class="label-main">משקל</span>
+                                <span class="label-unit">(בק״ג)</span>
+                            </div>
+                            <input type="number" class="input-field" value="70" min="1" max="300">
+                        </div>
+                        <div class="input-container">
+                            <div class="input-label">
+                                <span class="label-main">גובה</span>
+                                <span class="label-unit">(בס״מ)</span>
+                            </div>
+                            <input type="number" class="input-field" value="175" min="50" max="250">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vertical-divider"></div>
+
+                <!-- Member 2: אסתי אילן - בת זוג -->
+                <div class="bmi-member">
+                    <div class="member-header">
+                        <div class="member-name">אסתי אילן</div>
+                        <div class="member-divider"></div>
+                        <div class="member-role">בת זוג</div>
+                    </div>
+                    <div class="member-inputs">
+                        <div class="input-container">
+                            <div class="input-label">
+                                <span class="label-main">משקל</span>
+                                <span class="label-unit">(בק״ג)</span>
+                            </div>
+                            <input type="number" class="input-field" value="58" min="1" max="300">
+                        </div>
+                        <div class="input-container">
+                            <div class="input-label">
+                                <span class="label-main">גובה</span>
+                                <span class="label-unit">(בס״מ)</span>
+                            </div>
+                            <input type="number" class="input-field" value="158" min="50" max="250">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vertical-divider"></div>
+
+                <!-- Member 3: רותם אילן - ילדה -->
+                <div class="bmi-member">
+                    <div class="member-header">
+                        <div class="member-name">רותם אילן</div>
+                        <div class="member-divider"></div>
+                        <div class="member-role">ילדה</div>
+                    </div>
+                    <div class="member-inputs">
+                        <div class="input-container">
+                            <div class="input-label">
+                                <span class="label-main">משקל</span>
+                                <span class="label-unit">(בק״ג)</span>
+                            </div>
+                            <input type="number" class="input-field" value="58" min="1" max="300">
+                        </div>
+                        <div class="input-container">
+                            <div class="input-label">
+                                <span class="label-main">גובה</span>
+                                <span class="label-unit">(בס״מ)</span>
+                            </div>
+                            <input type="number" class="input-field" value="165" min="50" max="250">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vertical-divider"></div>
+
+                <!-- Member 4: יעקב אילן - ילד -->
+                <div class="bmi-member">
+                    <div class="member-header">
+                        <div class="member-name">יעקב אילן</div>
+                        <div class="member-divider"></div>
+                        <div class="member-role">ילד</div>
+                    </div>
+                    <div class="member-inputs">
+                        <div class="input-container">
+                            <div class="input-label">
+                                <span class="label-main">משקל</span>
+                                <span class="label-unit">(בק״ג)</span>
+                            </div>
+                            <input type="number" class="input-field" value="71" min="1" max="300">
+                        </div>
+                        <div class="input-container">
+                            <div class="input-label">
+                                <span class="label-main">גובה</span>
+                                <span class="label-unit">(בס״מ)</span>
+                            </div>
+                            <input type="number" class="input-field" value="180" min="50" max="250">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Questions Section -->
+        <div class="questions-section">
+            <!-- Auto Answer Toggle -->
+            <div class="auto-answer">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="autoAnswer">
+                    <span class="slider"></span>
+                </label>
+                <span>סמן "לא, לאף אחד" עבור כל השאלות</span>
+            </div>
+
+            <!-- Question 1 -->
+            <div class="question-item" id="question-1">
+                <div class="question-content">
+                    <div class="question-text">
+                        <span class="question-number">1.</span>
+                        <p>האם ככל הידוע לך, קיימת אצל אחד או יותר מקרובי משפחתך מדרגה ראשונה (הורים, אחים), מחלה ו/או הפרעה הקשורים לסרטן (השד, השחלות, הערמונית, המעי הגס), כליות פוליציסטיות, צליאק, טרשת נפוצה, פרקינסון, אלצהיימר, פוליפוזיס משפחתית, הנטינגטון, מיוטוניק דיסטרופי, או אצל שניים או יותר מקרובי משפחה מדרגה ראשונה מחלה ו/או הפרעה הקשורים ללב וסוכרת?</p>
+                    </div>
+                    <div class="answer-buttons">
+                        <button class="answer-btn yes-btn" onclick="answerQuestion(1, 'yes')">כן, לחלק/לכולם</button>
+                        <button class="answer-btn no-btn selected" onclick="answerQuestion(1, 'no')">לא, לאף אחד</button>
+                    </div>
+                </div>
+                <div class="question-indicator"></div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-item" id="question-2">
+                <div class="question-content">
+                    <div class="question-text">
+                        <span class="question-number">2.</span>
+                        <p>האם ככל הידוע לך, קיימת אצל אחד או יותר מקרובי משפחתך מדרגה ראשונה (הורים, אחים), הפרעת נפש לרבות דיכאון?</p>
+                    </div>
+                    <div class="answer-buttons">
+                        <button class="answer-btn yes-btn selected" onclick="answerQuestion(2, 'yes')">כן, לחלק/לכולם</button>
+                        <button class="answer-btn no-btn" onclick="answerQuestion(2, 'no')">לא, לאף אחד</button>
+                    </div>
+                </div>
+                <div class="question-indicator"></div>
+
+                <!-- Members Selection for Question 2 -->
+                <div class="members-selection" id="members-2">
+                    <div class="members-header">
+                        <span>בחירת מבוטחים</span>
+                        <button class="clear-btn">
+                            <span>נקה</span>
+                        </button>
+                    </div>
+                    <div class="members-divider"></div>
+                    
+                    <div class="members-list">
+                        <div class="member-checkbox-item">
+                            <label>
+                                <span>יובל אילן</span>
+                                <input type="checkbox" class="member-checkbox" checked onchange="selectMember(2, 'yuval', this)">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="member-checkbox-item">
+                            <label>
+                                <span>אסתי אילן</span>
+                                <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'esti', this)">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="member-checkbox-item">
+                            <label>
+                                <span>רותם אילן</span>
+                                <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'rotem', this)">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="member-checkbox-item">
+                            <label>
+                                <span>יעקב אילן</span>
+                                <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'yaakov', this)">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Member Details -->
+                    <div class="member-details" id="member-details-yuval">
+                        <div class="details-content">
+                            <h4>דיכאון - פרטים עבור יובל אילן</h4>
+                            <div class="details-questions">
+                                <div class="detail-question">
+                                    <span class="detail-number">1.</span>
+                                    <label>מתי אובחן דיכאון?</label>
+                                    <div class="detail-options">
+                                        <label>
+                                            <input type="radio" name="yuval-timing" value="שנה">
+                                            <span class="radio-checkmark"></span>
+                                            <span>בשנה האחרונה</span>
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="yuval-timing" value="שנתיים">
+                                            <span class="radio-checkmark"></span>
+                                            <span>בשנתיים האחרונות</span>
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="yuval-timing" value="שלוש" checked>
+                                            <span class="radio-checkmark checked"></span>
+                                            <span>לפני 3 שנים ומעלה</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-question">
+                                    <span class="detail-number">2.</span>
+                                    <label>האם אושפזת בשל הדיכאון?</label>
+                                    <div class="detail-options">
+                                        <label>
+                                            <input type="radio" name="yuval-hospital" value="כן" checked>
+                                            <span class="radio-checkmark checked"></span>
+                                            <span>כן</span>
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="yuval-hospital" value="לא">
+                                            <span class="radio-checkmark"></span>
+                                            <span>לא</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="detail-question">
+                                    <span class="detail-number">3.</span>
+                                    <label>נא לציין את משך האשפוז:</label>
+                                    <input type="text" value="1 חודשים" class="text-input">
+                                </div>
+
+                                <div class="detail-question">
+                                    <span class="detail-number">4.</span>
+                                    <label>האם נקבעה נכות?</label>
+                                    <div class="detail-options">
+                                        <label>
+                                            <input type="radio" name="yuval-disability" value="כן" checked>
+                                            <span class="radio-checkmark checked"></span>
+                                            <span>כן</span>
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="yuval-disability" value="לא">
+                                            <span class="radio-checkmark"></span>
+                                            <span>לא</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="detail-question">
+                                    <span class="detail-number">5.</span>
+                                    <label>כמה אחוזי נכות נקבעו?</label>
+                                    <div class="percentage-input">
+                                        <input type="number" value="25" class="text-input">
+                                        <span>%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="question-indicator"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions 3-6 -->
+            <div class="question-item" id="question-3">
+                <div class="question-content">
+                    <div class="question-text">
+                        <span class="question-number">3.</span>
+                        <p>האם אתה סובל הפרעה במערכת שלד ושרירים?</p>
+                    </div>
+                    <div class="answer-buttons">
+                        <button class="answer-btn yes-btn" onclick="answerQuestion(3, 'yes')">כן, לחלק/לכולם</button>
+                        <button class="answer-btn no-btn" onclick="answerQuestion(3, 'no')">לא, לאף אחד</button>
+                    </div>
+                </div>
+                <div class="question-indicator"></div>
+            </div>
+
+            <div class="question-item" id="question-4">
+                <div class="question-content">
+                    <div class="question-text">
+                        <span class="question-number">4.</span>
+                        <p>האם אתה נוטל תרופות באופן קבוע?</p>
+                    </div>
+                    <div class="answer-buttons">
+                        <button class="answer-btn yes-btn" onclick="answerQuestion(4, 'yes')">כן, לחלק/לכולם</button>
+                        <button class="answer-btn no-btn" onclick="answerQuestion(4, 'no')">לא, לאף אחד</button>
+                    </div>
+                </div>
+                <div class="question-indicator"></div>
+            </div>
+
+            <div class="question-item" id="question-5">
+                <div class="question-content">
+                    <div class="question-text">
+                        <span class="question-number">5.</span>
+                        <p>האם אתה סובל מאלרגיות?</p>
+                    </div>
+                    <div class="answer-buttons">
+                        <button class="answer-btn yes-btn" onclick="answerQuestion(5, 'yes')">כן, לחלק/לכולם</button>
+                        <button class="answer-btn no-btn" onclick="answerQuestion(5, 'no')">לא, לאף אחד</button>
+                    </div>
+                </div>
+                <div class="question-indicator"></div>
+            </div>
+
+            <div class="question-item" id="question-6">
+                <div class="question-content">
+                    <div class="question-text">
+                        <span class="question-number">6.</span>
+                        <p>האם ככל הידוע לך, קיימת אצל אחד או יותר מקרובי משפחתך מדרגה ראשונה (הורים, אחים), מקרים של המחלות הבאות: סרטן, מחלות כליות, סכרת, מחלות לב, שבץ מוחי, אלצהיימר, פרקינסון?</p>
+                    </div>
+                    <div class="answer-buttons">
+                        <button class="answer-btn yes-btn" onclick="answerQuestion(6, 'yes')">כן, לחלק/לכולם</button>
+                        <button class="answer-btn no-btn" onclick="answerQuestion(6, 'no')">לא, לאף אחד</button>
+                    </div>
+                </div>
+                <div class="question-indicator"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-section">
+        <button class="next-btn disabled">הבא</button>
+        <button class="additional-coverage-btn">בחירת כיסויים נוספים</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html> 
