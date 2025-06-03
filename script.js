@@ -7,10 +7,10 @@ let formState = {
 
 // Family members data
 const familyMembers = {
-    yuval: { name: 'יובל אילן', type: 'מבוטח ראשי' },
-    esti: { name: 'אסתי אילן', type: 'בת זוג' },
-    rotem: { name: 'רותם אילן', type: 'ילדה' },
-    yaakov: { name: 'יעקב אילן', type: 'ילד' }
+    yuval: { name: 'יובל ישראלי', type: 'מבוטח ראשי' },
+    esti: { name: 'אסתי ישראלי', type: 'בת זוג' },
+    yaakov: { name: 'יעקב ישראלי', type: 'ילד' },
+    noam: { name: 'נועם ישראלי', type: 'ילדה' }
 };
 
 // Questions configuration
@@ -518,13 +518,19 @@ function updateProgress() {
     // Count answered questions
     const totalQuestions = 6;
     const answeredQuestions = Object.keys(formState.answers).length;
-    const progressPercentage = (answeredQuestions / totalQuestions) * 100;
+    
+    // Calculate progress based on current step + answered questions
+    // We are currently on step 6 (הצהרת בריאות), so 5 steps are completed + partial progress
+    const completedSteps = 5; // Steps 1-5 are fully completed
+    const currentStepProgress = answeredQuestions / totalQuestions; // Progress within current step
+    const totalSteps = 9;
+    const overallProgress = (completedSteps + currentStepProgress) / totalSteps;
     
     // Update progress bar
     const progressFill = document.querySelector('.progress-fill');
     if (progressFill) {
         const maxWidth = 914; // Based on the original design
-        const newWidth = (maxWidth * progressPercentage) / 100;
+        const newWidth = (maxWidth * overallProgress);
         progressFill.style.width = `${newWidth}px`;
     }
     
@@ -540,7 +546,7 @@ function updateProgress() {
         }
     }
     
-    console.log(`Progress: ${answeredQuestions}/${totalQuestions} questions answered`);
+    console.log(`Progress: ${answeredQuestions}/${totalQuestions} questions answered, overall: ${(overallProgress * 100).toFixed(1)}%`);
 }
 
 // Form submission
