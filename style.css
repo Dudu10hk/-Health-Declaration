@@ -1107,7 +1107,7 @@ input:checked + .slider:before {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 320px;
+    padding: 0 110px 0 146px;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -1131,7 +1131,7 @@ input:checked + .slider:before {
 }
 
 .additional-coverage-btn {
-    width: 188px;
+    width: 120px;
     height: 52px;
     background: white;
     border: 1px solid #007DFA;
@@ -1170,7 +1170,7 @@ input:checked + .slider:before {
     }
     
     .footer-section {
-        padding: 0 50px;
+        padding: 0 90px 0 86px;
     }
 }
 
