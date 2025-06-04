@@ -106,14 +106,20 @@ function answerQuestion(questionId, answer) {
     
     // Show/hide member selection based on answer
     const membersSection = document.getElementById(`members-${questionId}`);
+    console.log(`Looking for members section: members-${questionId}`, membersSection);
+    
     if (membersSection) {
         if (answer === 'yes') {
             membersSection.style.display = 'block';
+            console.log(`Showing members section for question ${questionId}`);
         } else {
             membersSection.style.display = 'none';
+            console.log(`Hiding members section for question ${questionId}`);
             // Clear member selections for this question
             clearMemberSelectionsForQuestion(questionId);
         }
+    } else {
+        console.error(`Members section not found for question ${questionId}`);
     }
     
     // Update progress
@@ -157,11 +163,15 @@ function selectMember(questionId, memberId, checkbox) {
         sectionId = `member-${memberId}-disorders`;
     } else if (questionId === 2) {
         sectionId = `member-${memberId}-family-history`;
+    } else if (questionId === 3) {
+        sectionId = `member-${memberId}-neurological`;
     } else {
         sectionId = `member-${memberId}-q${questionId}`;
     }
     
+    console.log(`Looking for section with ID: ${sectionId}`);
     let disordersSection = document.getElementById(sectionId);
+    console.log(`Found section:`, disordersSection);
     
     if (checkbox.checked) {
         if (!disordersSection && questionId === 1) {
@@ -172,6 +182,10 @@ function selectMember(questionId, memberId, checkbox) {
             // Create family history section dynamically for question 2
             createMemberFamilyHistorySection(memberId);
             disordersSection = document.getElementById(sectionId);
+        } else if (!disordersSection && questionId === 3) {
+            // For question 3, the neurological section should already exist in HTML
+            console.log(`Warning: Neurological section ${sectionId} not found for ${memberId}`);
+            disordersSection = document.getElementById(sectionId);
         } else if (!disordersSection) {
             // Create generic section for other questions
             createMemberGenericSection(memberId, questionId);
@@ -180,8 +194,10 @@ function selectMember(questionId, memberId, checkbox) {
         
         if (disordersSection) {
             disordersSection.style.display = 'block';
+            console.log(`Successfully showing section for ${memberId} question ${questionId}`);
+        } else {
+            console.error(`Failed to find or create section ${sectionId}`);
         }
-        console.log(`Showing section for ${memberId} question ${questionId}`);
     } else {
         if (disordersSection) {
             disordersSection.style.display = 'none';
@@ -192,6 +208,8 @@ function selectMember(questionId, memberId, checkbox) {
         if (formState.selectedDisorders[memberId]) {
             if (questionId === 2) {
                 delete formState.selectedDisorders[memberId].familyHistory;
+            } else if (questionId === 3) {
+                delete formState.selectedDisorders[memberId].neurological;
             } else {
                 formState.selectedDisorders[memberId] = {};
             }
@@ -1302,7 +1320,112 @@ function saveFollowupAnswer(memberId, answerType, value) {
 
 // Create follow-up section dynamically for family members
 function createFollowupSection(memberId) {
-    // This function is no longer needed as follow-up questions are now included
-    // in the createMemberFamilyHistorySection function
-    return;
+    return `
+        <div class="followup-questions" id="followup-questions-${memberId}" style="display: none;">
+            <div class="followup-question">
+                <div class="followup-question-header">
+                    <span class="followup-question-text">כמות בני משפחה חלו בשם המחלה:</span>
+                </div>
+                <div class="followup-input-container">
+                    <input type="number" class="followup-input" min="1" max="10" placeholder="הכנס מספר" onchange="saveFollowupAnswer('${memberId}', 'quantity', this.value)">
+                </div>
+            </div>
+            
+            <div class="followup-question">
+                <div class="followup-question-header">
+                    <span class="followup-question-text">מה גיל הצעיר מביניהם:</span>
+                </div>
+                <div class="followup-input-container">
+                    <input type="number" class="followup-input" min="0" max="120" placeholder="הכנס גיל" onchange="saveFollowupAnswer('${memberId}', 'youngest_age', this.value)">
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Neurological disorders functions for Question 3
+function selectNeurological(memberId, disorderId, checkbox) {
+    console.log(`Neurological disorder ${disorderId} for ${memberId}: ${checkbox.checked}`);
+    
+    // Initialize selectedDisorders for member if not exists
+    if (!formState.selectedDisorders[memberId]) {
+        formState.selectedDisorders[memberId] = {};
+    }
+    if (!formState.selectedDisorders[memberId].neurological) {
+        formState.selectedDisorders[memberId].neurological = {};
+    }
+    
+    // Update state
+    formState.selectedDisorders[memberId].neurological[disorderId] = checkbox.checked;
+    
+    // Show/hide detailed questions for specific disorders
+    const detailsSection = document.getElementById(`${memberId}-${disorderId}-details`);
+    if (detailsSection) {
+        if (checkbox.checked) {
+            detailsSection.style.display = 'block';
+        } else {
+            detailsSection.style.display = 'none';
+            // Clear any sub-answers for this disorder
+            if (formState.memberDetails[memberId] && formState.memberDetails[memberId].neurological) {
+                delete formState.memberDetails[memberId].neurological[disorderId];
+            }
+        }
+    }
+    
+    console.log('Updated neurological state:', formState.selectedDisorders[memberId].neurological);
+}
+
+function selectNeurologicalOption(memberId, disorderId, questionId, option, checkbox) {
+    console.log(`Neurological option: ${memberId} - ${disorderId} - ${questionId} - ${option}: ${checkbox.checked}`);
+    
+    // Initialize nested structures
+    if (!formState.memberDetails[memberId]) {
+        formState.memberDetails[memberId] = {};
+    }
+    if (!formState.memberDetails[memberId].neurological) {
+        formState.memberDetails[memberId].neurological = {};
+    }
+    if (!formState.memberDetails[memberId].neurological[disorderId]) {
+        formState.memberDetails[memberId].neurological[disorderId] = {};
+    }
+    
+    // Uncheck other checkboxes in the same question group (radio-like behavior)
+    const questionElement = checkbox.closest('.disorder-question');
+    if (questionElement) {
+        const allCheckboxes = questionElement.querySelectorAll('.disorder-option-checkbox');
+        allCheckboxes.forEach(cb => {
+            if (cb !== checkbox) {
+                cb.checked = false;
+            }
+        });
+    }
+    
+    // Update state
+    if (checkbox.checked) {
+        formState.memberDetails[memberId].neurological[disorderId][questionId] = option;
+    } else {
+        delete formState.memberDetails[memberId].neurological[disorderId][questionId];
+    }
+    
+    console.log('Updated neurological details:', formState.memberDetails[memberId].neurological);
+}
+
+function saveNeurologicalInput(memberId, disorderId, questionId, value) {
+    console.log(`Neurological input: ${memberId} - ${disorderId} - ${questionId} - ${value}`);
+    
+    // Initialize nested structures
+    if (!formState.memberDetails[memberId]) {
+        formState.memberDetails[memberId] = {};
+    }
+    if (!formState.memberDetails[memberId].neurological) {
+        formState.memberDetails[memberId].neurological = {};
+    }
+    if (!formState.memberDetails[memberId].neurological[disorderId]) {
+        formState.memberDetails[memberId].neurological[disorderId] = {};
+    }
+    
+    // Save the input value
+    formState.memberDetails[memberId].neurological[disorderId][questionId] = value;
+    
+    console.log('Updated neurological input details:', formState.memberDetails[memberId].neurological);
 }

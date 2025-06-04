@@ -957,6 +957,447 @@
                     </div>
                 </div>
                 <div class="question-indicator"></div>
+
+                <!-- Members Selection for Question 3 -->
+                <div class="members-selection" id="members-3" style="display: none;">
+                    <div class="members-header">
+                        <span>בחירת מבוטחים</span>
+                        <button class="clear-btn">
+                            <span>נקה</span>
+                        </button>
+                    </div>
+                    <div class="members-divider"></div>
+                    
+                    <div class="members-list">
+                        <div class="member-checkbox-item">
+                            <span>ישראל ישראלי</span>
+                            <input type="checkbox" class="member-checkbox" onchange="selectMember(3, 'israel', this)">
+                        </div>
+                        
+                        <!-- Neurological Disorders for Israel -->
+                        <div class="member-disorders-section" id="member-israel-neurological" style="display: none;">
+                            <!-- Disorders Selection -->
+                            <div class="disorders-selection">
+                                <div class="disorders-header">
+                                    <span>הפרעות במערכת העצבים והמוח עבור ישראל ישראלי:</span>
+                                </div>
+                                <div class="disorders-divider"></div>
+                                
+                                <div class="disorders-list">
+                                    <div class="disorder-checkbox-item">
+                                        <span>אפילפסיה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'epilepsy', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>כאבי ראש שהחלו בחצי השנה האחרונה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'headaches', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>מיגרנה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'migraine', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעות קשב וריכוז</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'adhd', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דלקת המוח (אנצפליטיס)</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'encephalitis', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דלקת קרום המוח (מנינגיטיס)</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'meningitis', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>חבלת ראש עם נזק מוחי או גולגלתי</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'head-trauma', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>גידול במוח ומערכת העצבים</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'brain-tumor', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>פוליו</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'polio', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>מיאסטניה גראביס</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'myasthenia', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>אירוע מוחי חולף (TIA)</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'tia', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>שבץ מוחי (CVA)</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'stroke', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דימום מוחי</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'brain-hemorrhage', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>תרדמת</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'coma', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>רעד</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'tremor', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>ניוון שרירים</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'muscle-degeneration', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>פרקינסון</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'parkinson', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>טרשת נפוצה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'ms', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>נוירופיברומטוזיס</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'neurofibromatosis', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעות תחושה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'sensory-disorders', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>סחרחורות או התעלפויות</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'dizziness', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>שיתוק מכל סוג שהוא</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'paralysis', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>פציאליס</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'facial-paralysis', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>אוטיזם ו/או PDD</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'autism', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>אספרגר</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'asperger', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>תסמונת דאון</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'down-syndrome', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>פיגור שכלי</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'intellectual-disability', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>עיכוב שפתי</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'speech-delay', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>שיתוק מוחין (CP)</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'cerebral-palsy', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעה ו/או עיכוב התפתחותי</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'developmental-delay', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>עיכוב מוטורי</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'motor-delay', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>ירידה בזכרון</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'memory-loss', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>מום או מחלה אחרת במערכת העצבים והמוח</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectNeurological('israel', 'other-neurological', this)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Epilepsy Details -->
+                            <div class="disorder-details" id="israel-epilepsy-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">אפילפסיה</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.1</span>
+                                                <span class="disorder-question-text">האם אובחנה במהלך חצי השנה האחרונה:</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>כן</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'epilepsy', 'recent-diagnosis', 'כן', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לא</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'epilepsy', 'recent-diagnosis', 'לא', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.2</span>
+                                                <span class="disorder-question-text">מאופיינת באירועי:</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>התנתקות (פטיט מל)</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'epilepsy', 'seizure-type', 'התנתקות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בפרכוסים (גרנד מל)</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'epilepsy', 'seizure-type', 'בפרכוסים', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.3</span>
+                                                <span class="disorder-question-text">נוטל טיפול תרופתי:</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>כן</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'epilepsy', 'medication', 'כן', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לא</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'epilepsy', 'medication', 'לא', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.4</span>
+                                                <span class="disorder-question-text">ישנם התקפים:</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>כן</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'epilepsy', 'has-seizures', 'כן', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לא</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'epilepsy', 'has-seizures', 'לא', this)">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="disorder-question" style="margin-top: 15px;">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-number">1.4.1</span>
+                                                    <span class="disorder-question-text">מספר התקפים בשנה:</span>
+                                                </div>
+                                                <div class="disorder-input">
+                                                    <input type="number" class="disorder-text-input" placeholder="מספר התקפים" min="0" onchange="saveNeurologicalInput('israel', 'epilepsy', 'seizures-per-year', this.value)">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.5</span>
+                                                <span class="disorder-question-text">מתי ההתקף האחרון:</span>
+                                            </div>
+                                            
+                                            <div class="disorder-question" style="margin-top: 10px;">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-text">אם בשנה האחרונה - לפני כמה חודשים:</span>
+                                                </div>
+                                                <div class="disorder-input">
+                                                    <input type="number" class="disorder-text-input" placeholder="חודשים" min="0" max="12" onchange="saveNeurologicalInput('israel', 'epilepsy', 'last-seizure-months', this.value)">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="disorder-question" style="margin-top: 10px;">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-text">אם לפני מעל שנה - לפני כמה שנים:</span>
+                                                </div>
+                                                <div class="disorder-input">
+                                                    <input type="number" class="disorder-text-input" placeholder="שנים" min="1" onchange="saveNeurologicalInput('israel', 'epilepsy', 'last-seizure-years', this.value)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Migraine Details -->
+                            <div class="disorder-details" id="israel-migraine-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">מיגרנה</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">3.1</span>
+                                                <span class="disorder-question-text">היעדרות מהעבודה של יותר מ-5 ימים בחודש במהלך החצי שנה האחרונה עקב התקפי המיגרנה?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>כן</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'migraine', 'work-absence', 'כן', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לא</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'migraine', 'work-absence', 'לא', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Meningitis Details -->
+                            <div class="disorder-details" id="israel-meningitis-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">דלקת קרום המוח (מנינגיטיס)</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">5.1</span>
+                                                <span class="disorder-question-text">היתה במהלך 6 החודשים האחרונים:</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>כן</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'meningitis', 'recent', 'כן', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לא</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'meningitis', 'recent', 'לא', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">5.2</span>
+                                                <span class="disorder-question-text">האם נותר נזק שארי ו/או אחר:</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>כן</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'meningitis', 'residual-damage', 'כן', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לא</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'meningitis', 'residual-damage', 'לא', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Facial Paralysis Details -->
+                            <div class="disorder-details" id="israel-facial-paralysis-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">פציאליס</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">16.1</span>
+                                                <span class="disorder-question-text">היה בשנה האחרונה:</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>כן</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'facial-paralysis', 'recent-year', 'כן', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לא</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'facial-paralysis', 'recent-year', 'לא', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">16.2</span>
+                                                <span class="disorder-question-text">מתי היה:</span>
+                                            </div>
+                                            
+                                            <div class="disorder-question" style="margin-top: 10px;">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-text">אם בשנה האחרונה - לפני כמה חודשים:</span>
+                                                </div>
+                                                <div class="disorder-input">
+                                                    <input type="number" class="disorder-text-input" placeholder="חודשים" min="0" max="12" onchange="saveNeurologicalInput('israel', 'facial-paralysis', 'when-months', this.value)">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="disorder-question" style="margin-top: 10px;">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-text">אם מעל שנה - לפני כמה שנים:</span>
+                                                </div>
+                                                <div class="disorder-input">
+                                                    <input type="number" class="disorder-text-input" placeholder="שנים" min="1" onchange="saveNeurologicalInput('israel', 'facial-paralysis', 'when-years', this.value)">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">16.3</span>
+                                                <span class="disorder-question-text">נותר נזק שארי:</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>כן</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'facial-paralysis', 'residual-damage', 'כן', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לא</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('israel', 'facial-paralysis', 'residual-damage', 'לא', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other family members -->
+                        <div class="member-checkbox-item">
+                            <span>שרה ישראלי</span>
+                            <input type="checkbox" class="member-checkbox" onchange="selectMember(3, 'sara', this)">
+                        </div>
+                        
+                        <div class="member-checkbox-item">
+                            <span>דוד ישראלי</span>
+                            <input type="checkbox" class="member-checkbox" onchange="selectMember(3, 'david', this)">
+                        </div>
+                        
+                        <div class="member-checkbox-item">
+                            <span>מיכל ישראלי</span>
+                            <input type="checkbox" class="member-checkbox" onchange="selectMember(3, 'michal', this)">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Question 4: Hospitalizations and Tests -->
