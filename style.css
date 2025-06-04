@@ -229,6 +229,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 25px;
+    padding-bottom: 170px;
 }
 
 /* BMI Section */
@@ -482,17 +483,28 @@ input:checked + .slider:before {
 
 .question-number {
     color: #2D3968;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
-    line-height: 18px;
-    margin-left: 6px;
+    line-height: 24px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.question-number::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: #F9B8B8;
+    display: block;
+    margin-left: 10px;
 }
 
 .question-text p {
     color: #2D3968;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    line-height: 19.2px;
+    line-height: 24px;
     text-align: right;
 }
 
@@ -529,10 +541,7 @@ input:checked + .slider:before {
 }
 
 .question-indicator {
-    width: 4px;
-    height: 18px;
-    background: #F9B8B8;
-    margin-top: 10px;
+    display: none;
 }
 
 /* Members Selection */
@@ -828,6 +837,11 @@ input:checked + .slider:before {
     font-weight: 500;
     line-height: 20px;
     text-align: right;
+}
+
+.disorders-header .member-name {
+    font-weight: 600;
+    margin-right: 4px;
 }
 
 .disorders-divider {

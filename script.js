@@ -599,11 +599,14 @@ function createDisorderDetailsSection(memberId, disorderId) {
     const disorderData = disorders[disorderId];
     if (!disorderData) return;
     
+    const memberCheckboxItem = document.querySelector(`input[onchange*="selectMember(1, '${memberId}', this)"]`).closest('.member-checkbox-item');
+    const memberName = memberCheckboxItem.querySelector('span').textContent;
+    
     const detailsHTML = `
         <div class="disorder-details" id="${memberId}-${disorderId}-details" style="display: block;">
             <div class="disorder-details-content">
                 <div class="disorder-title-wrapper">
-                    <h4 class="disorder-title">${disorderData.name}</h4>
+                    <h4 class="disorder-title">${disorderData.name} - ${memberName}</h4>
                     <div class="question-indicator"></div>
                 </div>
                 
@@ -807,13 +810,15 @@ function saveDisorderText(memberId, disorderId, questionId, value) {
 // Create member disorders section dynamically
 function createMemberDisordersSection(memberId) {
     const memberCheckboxItem = document.querySelector(`input[onchange*="selectMember(1, '${memberId}', this)"]`).closest('.member-checkbox-item');
+    const memberName = memberCheckboxItem.querySelector('span').textContent;
     
     const disordersHTML = `
         <div class="member-disorders-section" id="member-${memberId}-disorders" style="display: none;">
             <!-- Disorders Selection -->
             <div class="disorders-selection">
                 <div class="disorders-header">
-                    <span>בחר את ההפרעות הרלוונטיות</span>
+                    <span>בחר את ההפרעות הרלוונטיות עבור </span>
+                    <span class="member-name">${memberName}</span>
                 </div>
                 <div class="disorders-divider"></div>
                 
