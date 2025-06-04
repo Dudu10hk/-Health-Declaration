@@ -6,157 +6,50 @@ let formState = {
     selectedDisorders: {}
 };
 
-// Family members data
+// Family members data - updated to new family
 const familyMembers = {
-    yuval: { name: 'יובל ישראלי', type: 'מבוטח ראשי' },
-    esti: { name: 'אסתי ישראלי', type: 'בת זוג' },
-    yaakov: { name: 'יעקב ישראלי', type: 'ילד' },
-    noam: { name: 'נועם ישראלי', type: 'ילדה' }
+    israel: { name: 'ישראל ישראלי', type: 'מבוטח ראשי' },
+    sara: { name: 'שרה ישראלי', type: 'בת זוג' },
+    david: { name: 'דוד ישראלי', type: 'ילד' },
+    michal: { name: 'מיכל ישראלי', type: 'ילדה' }
 };
 
-// Disorders data
+// Disorders data - simplified for the new structure
 const disorders = {
-    'major-depression': { name: 'דיכאון מג\'ורי', questions: ['timing', 'hospitalization', 'duration', 'disability', 'percentage'] },
-    'postpartum-depression': { name: 'דיכאון לאחר לידה', questions: ['timing', 'hospitalization', 'duration'] },
-    'ocd': { name: 'OCD', questions: ['timing', 'treatment'] },
-    'eating-disorders': { name: 'הפרעות אכילה', questions: ['timing', 'type', 'treatment'] },
-    'anxiety': { name: 'חרדה', questions: ['timing'] },
-    'mood-disorder': { name: 'הפרעת מצב רוח', questions: ['timing', 'treatment'] },
-    'depression': { name: 'דיכאון', questions: ['timing', 'hospitalization', 'duration', 'disability', 'percentage'] }
+    'depression': { name: 'דיכאון', questions: ['timing', 'hospitalization', 'disability'] },
+    'mood-disorder': { name: 'הפרעת מצב רוח', questions: ['timing', 'hospitalization', 'disability'] },
+    'anxiety': { name: 'חרדה', questions: ['timing', 'hospitalization', 'disability'] },
+    'major-depression': { name: 'דיכאון מג\'ורי', questions: ['timing', 'hospitalization', 'disability'] },
+    'ocd': { name: 'OCD', questions: ['timing', 'hospitalization', 'disability'] },
+    'postpartum-depression': { name: 'דיכאון לאחר לידה', questions: ['timing', 'hospitalization', 'disability'] },
+    'eating-disorders': { name: 'הפרעות אכילה', questions: ['timing', 'hospitalization', 'disability'] }
 };
 
-// Questions configuration
+// Questions configuration - updated for new structure
 const questions = {
     1: {
-        title: 'מחלות תורשתיות',
-        text: 'האם ככל הידוע לך, קיימת אצל אחד או יותר מקרובי משפחתך מדרגה ראשונה...',
-        subQuestions: {
-            diseases: {
-                type: 'multiselect',
-                label: 'בחר את המחלות הרלוונטיות',
-                options: ['סרטן השד', 'סרטן השחלות', 'סרטן הערמונית', 'סרטן המעי הגס', 'כליות פוליציסטיות', 'צליאק', 'טרשת נפוצה', 'פרקינסון', 'אלצהיימר']
-            },
-            relatives: {
-                type: 'number',
-                label: 'כמה קרובי משפחה?'
-            },
-            ages: {
-                type: 'text',
-                label: 'גילאי האבחון'
-            }
-        }
+        title: 'הפרעות נפש',
+        text: 'האם מישהו מבני המשפחה סובל מהפרעת נפש לרבות דיכאון?',
+        hasMembers: true,
+        hasDisorders: true
     },
     2: {
-        title: 'הפרעות נפש',
-        text: 'האם ככל הידוע לך, קיימת אצל אחד או יותר מקרובי משפחתך מדרגה ראשונה, הפרעת נפש לרבות דיכאון?',
-        subQuestions: {
-            disorders: {
-                type: 'multiselect',
-                label: 'בחר את ההפרעות הרלוונטיות',
-                options: ['דיכאון', 'חרדה', 'הפרעת מצב רוח', 'OCD', 'הפרעות אכילה', 'דיכאון לאחר לידה', 'דיכאון מג\'ורי']
-            },
-            timing: {
-                type: 'radio',
-                label: 'מתי אובחן?',
-                options: ['בשנה האחרונה', 'בשנתיים האחרונות', 'לפני 3 שנים ומעלה']
-            },
-            hospitalization: {
-                type: 'radio',
-                label: 'האם היה אשפוז?',
-                options: ['כן', 'לא']
-            },
-            duration: {
-                type: 'text',
-                label: 'משך האשפוז'
-            },
-            disability: {
-                type: 'radio',
-                label: 'האם נקבעה נכות?',
-                options: ['כן', 'לא']
-            },
-            percentage: {
-                type: 'number',
-                label: 'אחוז הנכות'
-            }
-        }
+        title: 'היסטוריה משפחתית',
+        text: 'האם יש היסטוריה משפחתית של מחלות בקרובי משפחה (הורים ואחים)?',
+        hasMembers: true,
+        hasDisorders: false
     },
     3: {
-        title: 'הפרעות שלד ושרירים',
-        text: 'האם אתה סובל הפרעה במערכת שלד ושרירים?',
-        subQuestions: {
-            conditions: {
-                type: 'multiselect',
-                label: 'בחר את ההפרעות הרלוונטיות',
-                options: ['פריצת דיסק', 'דלקת פרקים', 'שבר עצם', 'קרע ברצועות', 'דלקת גידים']
-            },
-            severity: {
-                type: 'radio',
-                label: 'רמת החומרה',
-                options: ['קלה', 'בינונית', 'חמורה']
-            },
-            treatment: {
-                type: 'radio',
-                label: 'האם מקבל טיפול?',
-                options: ['כן', 'לא']
-            }
-        }
+        title: 'מערכת עצבים ומוח',
+        text: 'האם יש מומים/מחלות ו/או הפרעות במערכת העצבים והמוח?',
+        hasMembers: true,
+        hasDisorders: false
     },
     4: {
-        title: 'תרופות קבועות',
-        text: 'האם אתה נוטל תרופות באופן קבוע?',
-        subQuestions: {
-            medications: {
-                type: 'textarea',
-                label: 'פרט את התרופות'
-            },
-            duration: {
-                type: 'text',
-                label: 'משך הטיפול'
-            },
-            reason: {
-                type: 'text',
-                label: 'סיבת הטיפול'
-            }
-        }
-    },
-    5: {
-        title: 'אלרגיות',
-        text: 'האם אתה סובל מאלרגיות?',
-        subQuestions: {
-            allergens: {
-                type: 'multiselect',
-                label: 'סוגי אלרגיות',
-                options: ['מזון', 'תרופות', 'אבקה', 'בעלי חיים', 'צמחים', 'חומרי ניקוי']
-            },
-            severity: {
-                type: 'radio',
-                label: 'חומרת התגובה',
-                options: ['קלה', 'בינונית', 'חמורה', 'מסכנת חיים']
-            },
-            treatment: {
-                type: 'text',
-                label: 'טיפול נדרש'
-            }
-        }
-    },
-    6: {
-        title: 'היסטוריה משפחתית',
-        text: 'האם ככל הידוע לך, קיימת אצל אחד או יותר מקרובי משפחתך מדרגה ראשונה, מקרים של המחלות הבאות: סרטן, מחלות כליות, סכרת, מחלות לב, שבץ מוחי, אלצהיימר, פרקינסון?',
-        subQuestions: {
-            diseases: {
-                type: 'multiselect',
-                label: 'בחר את המחלות הרלוונטיות',
-                options: ['סרטן', 'מחלות כליות', 'סכרת', 'מחלות לב', 'שבץ מוחי', 'אלצהיימר', 'פרקינסון']
-            },
-            relatives: {
-                type: 'number',
-                label: 'כמה קרובי משפחה?'
-            },
-            ages: {
-                type: 'text',
-                label: 'גילאי האבחון'
-            }
-        }
+        title: 'אשפוזים ובדיקות',
+        text: 'האם היו אשפוזים, ניתוחים או בדיקות מיוחדות?',
+        hasMembers: true,
+        hasDisorders: false
     }
 };
 
@@ -173,13 +66,7 @@ function initializeForm() {
     formState.memberDetails = {};
     formState.selectedDisorders = {};
     
-    console.log('Form initialized with new disorder structure');
-    
-    // Don't pre-select any disorders - let the user make their selections
-    // formState.selectedDisorders.yuval = {
-    //     'depression': true,
-    //     'anxiety': true
-    // };
+    console.log('Form initialized with new 4-question structure');
 }
 
 function setupEventListeners() {
@@ -479,7 +366,7 @@ function setAllAnswersToNo() {
     console.log('Setting all answers to "no"');
     
     // Answer all questions with "no"
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= 4; i++) {
         answerQuestion(i, 'no');
     }
     
@@ -540,7 +427,7 @@ function clearMemberSelectionsForQuestion(questionId) {
 
 function updateProgress() {
     // Count answered questions
-    const totalQuestions = 6;
+    const totalQuestions = 4;
     const answeredQuestions = Object.keys(formState.answers).length;
     
     // Calculate progress based on current step + answered questions
@@ -578,7 +465,7 @@ function submitForm() {
     console.log('Submitting form with state:', formState);
     
     // Validate form
-    if (Object.keys(formState.answers).length < 6) {
+    if (Object.keys(formState.answers).length < 4) {
         alert('אנא ענה על כל השאלות לפני המשך');
         return;
     }
