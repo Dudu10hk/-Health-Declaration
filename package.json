@@ -1,0 +1,12 @@
+{
+  "name": "health-declaration-form",
+  "version": "1.0.0",
+  "description": "Hebrew health declaration form",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8002",
+    "start": "python3 -m http.server 8002",
+    "build": "echo 'No build step needed for static HTML'"
+  },
+  "type": "module"
+} 

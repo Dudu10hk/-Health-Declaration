@@ -80,8 +80,23 @@ function setupEventListeners() {
     const autoAnswerToggle = document.getElementById('autoAnswer');
     if (autoAnswerToggle) {
         autoAnswerToggle.addEventListener('change', function() {
+            console.log('Toggle changed:', this.checked);
             if (this.checked) {
+                console.log('🔴 Toggle ON - Setting all to NO (but keeping buttons enabled)');
                 setAllAnswersToNo();
+                // Note: We don't disable buttons anymore - user can still change answers
+            } else {
+                console.log('🟢 Toggle OFF - Clearing everything');
+                clearAllAnswers();
+                // Force a visual refresh
+                setTimeout(() => {
+                    console.log('🔄 Forcing visual refresh');
+                    // Make sure all buttons are visually cleared
+                    document.querySelectorAll('.answer-btn.selected').forEach(btn => {
+                        btn.classList.remove('selected');
+                        console.log('Removed selected from button:', btn.textContent);
+                    });
+                }, 100);
             }
         });
     }
@@ -443,6 +458,104 @@ function setAllAnswersToNo() {
         nextBtn.classList.remove('disabled');
         nextBtn.style.cursor = 'pointer';
     }
+}
+
+function clearAllAnswers() {
+    console.log('Clearing all answers');
+    
+    // Clear form state
+    formState.answers = {};
+    formState.selectedMembers = {};
+    formState.memberDetails = {};
+    formState.followupAnswers = {};
+    formState.selectedDisorders = {};
+    
+    // Remove selected class from all answer buttons
+    document.querySelectorAll('.answer-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
+    // Hide all member selection sections
+    document.querySelectorAll('.members-selection').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Hide all disorder sections
+    document.querySelectorAll('.member-disorders-section').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Hide all disorder details sections
+    document.querySelectorAll('.disorder-details').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Hide all follow-up questions
+    document.querySelectorAll('.followup-questions').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Uncheck all checkboxes except the auto answer toggle
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        if (checkbox.id !== 'autoAnswer') {
+            checkbox.checked = false;
+            updateCheckboxVisual(checkbox);
+        }
+    });
+    
+    // Uncheck all radio buttons
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.checked = false;
+        updateRadioVisual(radio);
+    });
+    
+    // Clear all text inputs
+    document.querySelectorAll('.followup-input, .disorder-text-input').forEach(input => {
+        input.value = '';
+    });
+    
+    // Clear all number inputs
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        if (!input.closest('.bmi-section')) { // Don't clear BMI inputs
+            input.value = '';
+        }
+    });
+    
+    // Clear all text inputs except BMI
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+        if (!input.closest('.bmi-section')) { // Don't clear BMI inputs
+            input.value = '';
+        }
+    });
+    
+    // Clear all textareas
+    document.querySelectorAll('textarea').forEach(textarea => {
+        textarea.value = '';
+    });
+    
+    // Clear all radio checkmarks visually
+    document.querySelectorAll('.radio-checkmark').forEach(checkmark => {
+        checkmark.classList.remove('checked');
+        checkmark.innerHTML = '';
+    });
+    
+    // Disable the next button
+    const nextBtn = document.querySelector('.next-btn');
+    if (nextBtn) {
+        nextBtn.classList.add('disabled');
+        nextBtn.style.cursor = 'not-allowed';
+    }
+    
+    // Reset progress bar
+    const progressFill = document.querySelector('.progress-fill');
+    if (progressFill) {
+        const maxWidth = 914;
+        const baseProgress = 5 / 9; // 5 completed steps out of 9 total
+        const newWidth = maxWidth * baseProgress;
+        progressFill.style.width = `${newWidth}px`;
+    }
+    
+    console.log('All answers and visual states cleared');
 }
 
 function clearMemberSelections() {
