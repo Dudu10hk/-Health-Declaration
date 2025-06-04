@@ -527,7 +527,7 @@ function selectDisorder(memberId, disorderId, checkbox) {
 function selectDisorderOption(memberId, disorderId, questionId, option, checkbox) {
     console.log(`Option selected: ${memberId} - ${disorderId} - ${questionId} - ${option}`);
     
-    // For single-select questions, uncheck other options
+    // For single-select questions, uncheck other options in the same question
     const questionContainer = checkbox.closest('.disorder-options');
     if (questionContainer) {
         const otherCheckboxes = questionContainer.querySelectorAll('.disorder-option-checkbox');
@@ -535,12 +535,22 @@ function selectDisorderOption(memberId, disorderId, questionId, option, checkbox
             if (cb !== checkbox) {
                 cb.checked = false;
                 updateCheckboxVisual(cb);
+                
+                // Hide any text inputs for the unchecked option
+                hideRelatedTextInputs(cb, memberId, disorderId, questionId);
             }
         });
     }
     
     // Update visual
     updateCheckboxVisual(checkbox);
+    
+    // Show/hide text input based on the selection
+    if (checkbox.checked && option === 'כן') {
+        showTextInputForQuestion(memberId, disorderId, questionId);
+    } else {
+        hideTextInputForQuestion(memberId, disorderId, questionId);
+    }
     
     // Save the answer
     if (!formState.memberDetails[memberId]) {
@@ -551,6 +561,78 @@ function selectDisorderOption(memberId, disorderId, questionId, option, checkbox
     }
     
     formState.memberDetails[memberId][disorderId][questionId] = checkbox.checked ? option : null;
+}
+
+// Show text input for specific questions when "yes" is selected
+function showTextInputForQuestion(memberId, disorderId, questionId) {
+    const inputId = `${memberId}-${disorderId}-${questionId}-input`;
+    const existingInput = document.getElementById(inputId);
+    
+    if (existingInput) {
+        existingInput.style.display = 'block';
+        return;
+    }
+    
+    // Create the text input based on question type
+    let inputHTML = '';
+    let placeholder = '';
+    
+    if (questionId === 'hospitalization') {
+        placeholder = 'מה משך האשפוז?';
+        inputHTML = `
+            <div class="disorder-input" id="${inputId}" style="margin-top: 15px;">
+                <input type="text" 
+                       class="disorder-text-input" 
+                       placeholder="${placeholder}"
+                       onchange="saveDisorderText('${memberId}', '${disorderId}', '${questionId}', this.value)">
+            </div>
+        `;
+    } else if (questionId === 'disability') {
+        placeholder = 'כמה אחוזי נכות נקבעו לך?';
+        inputHTML = `
+            <div class="disorder-percentage" id="${inputId}" style="margin-top: 15px;">
+                <input type="number" 
+                       class="disorder-text-input" 
+                       placeholder="${placeholder}"
+                       min="0" 
+                       max="100"
+                       onchange="saveDisorderText('${memberId}', '${disorderId}', '${questionId}', this.value)">
+                <span>%</span>
+            </div>
+        `;
+    }
+    
+    if (inputHTML) {
+        // Find the question container and add the input
+        const questionElement = document.querySelector(`[data-question="${memberId}-${disorderId}-${questionId}"]`);
+        if (questionElement) {
+            questionElement.insertAdjacentHTML('afterend', inputHTML);
+        }
+    }
+}
+
+// Hide text input for specific questions
+function hideTextInputForQuestion(memberId, disorderId, questionId) {
+    const inputId = `${memberId}-${disorderId}-${questionId}-input`;
+    const inputElement = document.getElementById(inputId);
+    
+    if (inputElement) {
+        inputElement.style.display = 'none';
+        
+        // Clear the saved value
+        if (formState.memberDetails[memberId] && 
+            formState.memberDetails[memberId][disorderId]) {
+            delete formState.memberDetails[memberId][disorderId][`${questionId}_text`];
+        }
+    }
+}
+
+// Hide text inputs when checkbox is unchecked
+function hideRelatedTextInputs(checkbox, memberId, disorderId, questionId) {
+    const option = checkbox.closest('.disorder-option').querySelector('span').textContent;
+    if (option === 'כן') {
+        hideTextInputForQuestion(memberId, disorderId, questionId);
+    }
 }
 
 // Handle text input for disorder details
@@ -565,5 +647,6 @@ function saveDisorderText(memberId, disorderId, questionId, value) {
         formState.memberDetails[memberId][disorderId] = {};
     }
     
-    formState.memberDetails[memberId][disorderId][questionId] = value;
+    // Save with a specific key for text inputs
+    formState.memberDetails[memberId][disorderId][`${questionId}_text`] = value;
 }
