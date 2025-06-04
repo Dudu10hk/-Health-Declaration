@@ -787,6 +787,115 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <!-- Polycystic Kidneys -->
+                                            <div class="disorder-question">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-number">5.</span>
+                                                    <span class="disorder-question-text">כליות פוליציסטיות אצל ההורים, אחים:</span>
+                                                </div>
+                                                <div class="disorder-options">
+                                                    <div class="disorder-option">
+                                                        <span>כן</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'polycystic-kidneys', 'polycystic', 'כן', this)">
+                                                    </div>
+                                                    <div class="disorder-option">
+                                                        <span>לא</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'polycystic-kidneys', 'polycystic', 'לא', this)">
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Sub-questions for polycystic kidneys -->
+                                                <div id="israel-polycystic-subquestions" style="display: none; margin-top: 20px; padding-right: 20px;">
+                                                    <div class="disorder-question" data-question="israel-polycystic-ultrasound">
+                                                        <div class="disorder-question-header">
+                                                            <span class="disorder-question-number">5.1</span>
+                                                            <span class="disorder-question-text">האם עברת בדיקת אולטרה סאונד של הכליות בשנתיים האחרונות?</span>
+                                                        </div>
+                                                        <div class="disorder-options">
+                                                            <div class="disorder-option">
+                                                                <span>כן</span>
+                                                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'polycystic-kidneys', 'ultrasound', 'כן', this)">
+                                                            </div>
+                                                            <div class="disorder-option">
+                                                                <span>לא</span>
+                                                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'polycystic-kidneys', 'ultrasound', 'לא', this)">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="disorder-question" data-question="israel-polycystic-cysts">
+                                                        <div class="disorder-question-header">
+                                                            <span class="disorder-question-number">5.2</span>
+                                                            <span class="disorder-question-text">האם אובחנו אצלך ציסטות בכליות?</span>
+                                                        </div>
+                                                        <div class="disorder-options">
+                                                            <div class="disorder-option">
+                                                                <span>כן</span>
+                                                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'polycystic-kidneys', 'cysts', 'כן', this)">
+                                                            </div>
+                                                            <div class="disorder-option">
+                                                                <span>לא</span>
+                                                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'polycystic-kidneys', 'cysts', 'לא', this)">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Huntington -->
+                                            <div class="disorder-question" data-question="israel-huntington">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-number">6.</span>
+                                                    <span class="disorder-question-text">הנטינגטון אצל הורים, אחים:</span>
+                                                </div>
+                                                <div class="disorder-options">
+                                                    <div class="disorder-option">
+                                                        <span>כן</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'general', 'huntington', 'כן', this)">
+                                                    </div>
+                                                    <div class="disorder-option">
+                                                        <span>לא</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'general', 'huntington', 'לא', this)">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Myotonic Dystrophy -->
+                                            <div class="disorder-question" data-question="israel-myotonic">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-number">7.</span>
+                                                    <span class="disorder-question-text">מיוטוניק דיסטרופי אצל הורים, אחים:</span>
+                                                </div>
+                                                <div class="disorder-options">
+                                                    <div class="disorder-option">
+                                                        <span>כן</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'general', 'myotonic', 'כן', this)">
+                                                    </div>
+                                                    <div class="disorder-option">
+                                                        <span>לא</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'general', 'myotonic', 'לא', this)">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Celiac -->
+                                            <div class="disorder-question" data-question="israel-celiac">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-number">8.</span>
+                                                    <span class="disorder-question-text">צליאק אצל אחד או יותר מקרובי המשפחה (הורים, אחים):</span>
+                                                </div>
+                                                <div class="disorder-options">
+                                                    <div class="disorder-option">
+                                                        <span>כן</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'general', 'celiac', 'כן', this)">
+                                                    </div>
+                                                    <div class="disorder-option">
+                                                        <span>לא</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'general', 'celiac', 'לא', this)">
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
