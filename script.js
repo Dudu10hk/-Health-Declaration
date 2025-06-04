@@ -146,17 +146,22 @@ function selectMember(questionId, memberId, checkbox) {
     updateCheckboxVisual(checkbox);
     
     // Show/hide member disorders section
-    const disordersSection = document.getElementById(`member-${memberId}-disorders`);
-    if (disordersSection) {
-        disordersSection.style.display = checkbox.checked ? 'block' : 'none';
-    }
+    let disordersSection = document.getElementById(`member-${memberId}-disorders`);
     
-    // Generate or remove member details based on selection
     if (checkbox.checked) {
-        // Member was selected - ensure disorders section is visible
+        if (!disordersSection) {
+            // Create the disorders section dynamically for members that don't have it
+            createMemberDisordersSection(memberId);
+            disordersSection = document.getElementById(`member-${memberId}-disorders`);
+        }
+        if (disordersSection) {
+            disordersSection.style.display = 'block';
+        }
         console.log(`Showing disorders for ${memberId}`);
     } else {
-        // Member was deselected - hide disorders section
+        if (disordersSection) {
+            disordersSection.style.display = 'none';
+        }
         console.log(`Hiding disorders for ${memberId}`);
         
         // Clear member's disorder selections
@@ -517,10 +522,93 @@ function selectDisorder(memberId, disorderId, checkbox) {
     const detailsSection = document.getElementById(`${memberId}-${disorderId}-details`);
     if (detailsSection) {
         detailsSection.style.display = checkbox.checked ? 'block' : 'none';
+    } else if (checkbox.checked) {
+        // Create the disorder details section dynamically
+        createDisorderDetailsSection(memberId, disorderId);
     }
     
     // Update checkbox visual
     updateCheckboxVisual(checkbox);
+}
+
+// Create disorder details section dynamically
+function createDisorderDetailsSection(memberId, disorderId) {
+    const disorderData = disorders[disorderId];
+    if (!disorderData) return;
+    
+    const detailsHTML = `
+        <div class="disorder-details" id="${memberId}-${disorderId}-details" style="display: block;">
+            <div class="disorder-details-content">
+                <div class="disorder-title-wrapper">
+                    <h4 class="disorder-title">${disorderData.name}</h4>
+                    <div class="question-indicator"></div>
+                </div>
+                
+                <div class="disorder-questions">
+                    <div class="disorder-question">
+                        <div class="disorder-question-header">
+                            <span class="disorder-question-number">1.</span>
+                            <span class="disorder-question-text">מועד האבחון</span>
+                        </div>
+                        <div class="disorder-options">
+                            <div class="disorder-option">
+                                <span>אובחן בשנה האחרונה</span>
+                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('${memberId}', '${disorderId}', 'timing', 'אובחן בשנה האחרונה', this)">
+                            </div>
+                            <div class="disorder-option">
+                                <span>בשנתיים האחרונות</span>
+                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('${memberId}', '${disorderId}', 'timing', 'בשנתיים האחרונות', this)">
+                            </div>
+                            <div class="disorder-option">
+                                <span>לפני 3 שנים אובחן לפני שנתיים</span>
+                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('${memberId}', '${disorderId}', 'timing', 'לפני 3 שנים אובחן לפני שנתיים', this)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="disorder-question" data-question="${memberId}-${disorderId}-hospitalization">
+                        <div class="disorder-question-header">
+                            <span class="disorder-question-number">2.</span>
+                            <span class="disorder-question-text">אשפוז</span>
+                        </div>
+                        <div class="disorder-options">
+                            <div class="disorder-option">
+                                <span>כן</span>
+                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('${memberId}', '${disorderId}', 'hospitalization', 'כן', this)">
+                            </div>
+                            <div class="disorder-option">
+                                <span>לא</span>
+                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('${memberId}', '${disorderId}', 'hospitalization', 'לא', this)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="disorder-question" data-question="${memberId}-${disorderId}-disability">
+                        <div class="disorder-question-header">
+                            <span class="disorder-question-number">3.</span>
+                            <span class="disorder-question-text">נכות</span>
+                        </div>
+                        <div class="disorder-options">
+                            <div class="disorder-option">
+                                <span>כן</span>
+                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('${memberId}', '${disorderId}', 'disability', 'כן', this)">
+                            </div>
+                            <div class="disorder-option">
+                                <span>לא</span>
+                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('${memberId}', '${disorderId}', 'disability', 'לא', this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Find the disorders section for this member and append the details
+    const memberDisordersSection = document.getElementById(`member-${memberId}-disorders`);
+    if (memberDisordersSection) {
+        memberDisordersSection.insertAdjacentHTML('beforeend', detailsHTML);
+    }
 }
 
 // Handle disorder option selection (for individual questions within disorders)
@@ -651,4 +739,56 @@ function saveDisorderText(memberId, disorderId, questionId, value) {
     
     // Save with a specific key for text inputs
     formState.memberDetails[memberId][disorderId][`${questionId}_text`] = value;
+}
+
+// Create member disorders section dynamically
+function createMemberDisordersSection(memberId) {
+    const memberCheckboxItem = document.querySelector(`input[onchange*="selectMember(1, '${memberId}', this)"]`).closest('.member-checkbox-item');
+    
+    const disordersHTML = `
+        <div class="member-disorders-section" id="member-${memberId}-disorders" style="display: none;">
+            <!-- Disorders Selection -->
+            <div class="disorders-selection">
+                <div class="disorders-header">
+                    <span>בחר את ההפרעות הרלוונטיות</span>
+                </div>
+                <div class="disorders-divider"></div>
+                
+                <div class="disorders-list">
+                    <div class="disorder-checkbox-item">
+                        <span>דיכאון</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('${memberId}', 'depression', this)">
+                    </div>
+                    <div class="disorder-checkbox-item">
+                        <span>הפרעת מצב רוח</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('${memberId}', 'mood-disorder', this)">
+                    </div>
+                    <div class="disorder-checkbox-item">
+                        <span>חרדה</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('${memberId}', 'anxiety', this)">
+                    </div>
+                    <div class="disorder-checkbox-item">
+                        <span>דיכאון מג'ורי</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('${memberId}', 'major-depression', this)">
+                    </div>
+                    <div class="disorder-checkbox-item">
+                        <span>OCD</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('${memberId}', 'ocd', this)">
+                    </div>
+                    <div class="disorder-checkbox-item">
+                        <span>דיכאון לאחר לידה</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('${memberId}', 'postpartum-depression', this)">
+                    </div>
+                    <div class="disorder-checkbox-item">
+                        <span>הפרעות אכילה</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('${memberId}', 'eating-disorders', this)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    if (memberCheckboxItem) {
+        memberCheckboxItem.insertAdjacentHTML('afterend', disordersHTML);
+    }
 }
