@@ -1331,4 +1331,40 @@ input:checked + .slider:before {
 /* Remove the remaining background */
 #member-israel-family-history .followup-questions {
     margin-top: 20px;
+}
+
+/* Disorder Categories */
+.disorder-category {
+    margin-bottom: 25px;
+    padding: 15px 0;
+    border-bottom: 1px solid #E2E3EA;
+}
+
+.disorder-category:last-child {
+    border-bottom: none;
+}
+
+.disorder-category-title {
+    color: #2D3968;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 22px;
+    text-align: right;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #59D189;
+    display: inline-block;
+    margin-right: 0;
+}
+
+.disorder-category-items {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    direction: rtl;
+    padding: 0;
+    max-width: 100%;
+    margin-top: 10px;
 } 

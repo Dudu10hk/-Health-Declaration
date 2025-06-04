@@ -1344,37 +1344,306 @@ function createFollowupSection(memberId) {
 }
 
 // Neurological disorders functions for Question 3
-function selectNeurological(memberId, disorderId, checkbox) {
-    console.log(`Neurological disorder ${disorderId} for ${memberId}: ${checkbox.checked}`);
+function selectNeurological(member, disorder, checkbox) {
+    // Store the answer (you can expand this as needed)
+    console.log(`Member: ${member}, Disorder: ${disorder}, Selected: ${checkbox.checked}`);
     
-    // Initialize selectedDisorders for member if not exists
-    if (!formState.selectedDisorders[memberId]) {
-        formState.selectedDisorders[memberId] = {};
+    // Update checkbox visual
+    updateCheckboxVisual(checkbox);
+    
+    // If disorder has detail questions, show/hide them
+    const detailsId = `${member}-${disorder}-details`;
+    const detailsElement = document.getElementById(detailsId);
+    
+    if (detailsElement) {
+        detailsElement.style.display = checkbox.checked ? 'block' : 'none';
+    } else if (checkbox.checked) {
+        // Create detailed questions section for specific disorders
+        createNeurologicalDetailsSection(member, disorder);
     }
-    if (!formState.selectedDisorders[memberId].neurological) {
-        formState.selectedDisorders[memberId].neurological = {};
-    }
-    
-    // Update state
-    formState.selectedDisorders[memberId].neurological[disorderId] = checkbox.checked;
-    
-    // Show/hide detailed questions for specific disorders
-    const detailsSection = document.getElementById(`${memberId}-${disorderId}-details`);
-    if (detailsSection) {
-        if (checkbox.checked) {
-            detailsSection.style.display = 'block';
-        } else {
-            detailsSection.style.display = 'none';
-            // Clear any sub-answers for this disorder
-            if (formState.memberDetails[memberId] && formState.memberDetails[memberId].neurological) {
-                delete formState.memberDetails[memberId].neurological[disorderId];
-            }
-        }
-    }
-    
-    console.log('Updated neurological state:', formState.selectedDisorders[memberId].neurological);
 }
 
+// Create detailed questions section for neurological disorders
+function createNeurologicalDetailsSection(member, disorder) {
+    let detailsHTML = '';
+    
+    if (disorder === 'epilepsy') {
+        detailsHTML = `
+            <div class="disorder-details" id="${member}-${disorder}-details" style="display: block;">
+                <div class="disorder-details-content">
+                    <div class="disorder-title-wrapper">
+                        <h4 class="disorder-title">אפילפסיה</h4>
+                        <div class="question-indicator"></div>
+                    </div>
+                    
+                    <div class="disorder-questions">
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">1.1</span>
+                                <span class="disorder-question-text">אובחנה במהלך חצי השנה האחרונה:</span>
+                            </div>
+                            <div class="disorder-options">
+                                <div class="disorder-option">
+                                    <span>כן</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'recent-diagnosis', 'כן', this)">
+                                </div>
+                                <div class="disorder-option">
+                                    <span>לא</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'recent-diagnosis', 'לא', this)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">1.2</span>
+                                <span class="disorder-question-text">מאופיינת באירועי:</span>
+                            </div>
+                            <div class="disorder-options">
+                                <div class="disorder-option">
+                                    <span>התנתקות (פטיט מל)</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'seizure-type', 'התנתקות', this)">
+                                </div>
+                                <div class="disorder-option">
+                                    <span>בפרכוסים (גרנד מל)</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'seizure-type', 'בפרכוסים', this)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">1.3</span>
+                                <span class="disorder-question-text">נוטל טיפול תרופתי:</span>
+                            </div>
+                            <div class="disorder-options">
+                                <div class="disorder-option">
+                                    <span>כן</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'medication', 'כן', this)">
+                                </div>
+                                <div class="disorder-option">
+                                    <span>לא</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'medication', 'לא', this)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">1.4</span>
+                                <span class="disorder-question-text">ישנם התקפים:</span>
+                            </div>
+                            <div class="disorder-options">
+                                <div class="disorder-option">
+                                    <span>כן</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'has-seizures', 'כן', this)">
+                                </div>
+                                <div class="disorder-option">
+                                    <span>לא</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'has-seizures', 'לא', this)">
+                                </div>
+                            </div>
+                            
+                            <div class="disorder-question" style="margin-top: 15px;">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-number">1.4.1</span>
+                                    <span class="disorder-question-text">מספר התקפים בשנה:</span>
+                                </div>
+                                <div class="disorder-input">
+                                    <input type="number" class="disorder-text-input" placeholder="מספר התקפים" min="0" onchange="saveNeurologicalInput('${member}', '${disorder}', 'seizures-per-year', this.value)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">1.5</span>
+                                <span class="disorder-question-text">מתי ההתקף האחרון:</span>
+                            </div>
+                            
+                            <div class="disorder-question" style="margin-top: 10px;">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-text">אם בשנה האחרונה - לפני כמה חודשים:</span>
+                                </div>
+                                <div class="disorder-input">
+                                    <input type="number" class="disorder-text-input" placeholder="חודשים" min="0" max="12" onchange="saveNeurologicalInput('${member}', '${disorder}', 'last-seizure-months', this.value)">
+                                </div>
+                            </div>
+                            
+                            <div class="disorder-question" style="margin-top: 10px;">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-text">אם לפני מעל שנה - לפני כמה שנים:</span>
+                                </div>
+                                <div class="disorder-input">
+                                    <input type="number" class="disorder-text-input" placeholder="שנים" min="1" onchange="saveNeurologicalInput('${member}', '${disorder}', 'last-seizure-years', this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (disorder === 'migraine') {
+        detailsHTML = `
+            <div class="disorder-details" id="${member}-${disorder}-details" style="display: block;">
+                <div class="disorder-details-content">
+                    <div class="disorder-title-wrapper">
+                        <h4 class="disorder-title">מיגרנה</h4>
+                        <div class="question-indicator"></div>
+                    </div>
+                    
+                    <div class="disorder-questions">
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">3.1</span>
+                                <span class="disorder-question-text">היעדרות מהעבודה של יותר מ-5 ימים בחודש במהלך החצי שנה האחרונה עקב התקפי המיגרנה?</span>
+                            </div>
+                            <div class="disorder-options">
+                                <div class="disorder-option">
+                                    <span>כן</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'work-absence', 'כן', this)">
+                                </div>
+                                <div class="disorder-option">
+                                    <span>לא</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'work-absence', 'לא', this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (disorder === 'facial-paralysis') {
+        detailsHTML = `
+            <div class="disorder-details" id="${member}-${disorder}-details" style="display: block;">
+                <div class="disorder-details-content">
+                    <div class="disorder-title-wrapper">
+                        <h4 class="disorder-title">פציאליס</h4>
+                        <div class="question-indicator"></div>
+                    </div>
+                    
+                    <div class="disorder-questions">
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">15.1</span>
+                                <span class="disorder-question-text">היה בשנה האחרונה:</span>
+                            </div>
+                            <div class="disorder-options">
+                                <div class="disorder-option">
+                                    <span>כן</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'recent-year', 'כן', this)">
+                                </div>
+                                <div class="disorder-option">
+                                    <span>לא</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'recent-year', 'לא', this)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">15.2</span>
+                                <span class="disorder-question-text">מתי היה:</span>
+                            </div>
+                            
+                            <div class="disorder-question" style="margin-top: 10px;">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-text">אם בשנה האחרונה - לפני כמה חודשים:</span>
+                                </div>
+                                <div class="disorder-input">
+                                    <input type="number" class="disorder-text-input" placeholder="חודשים" min="0" max="12" onchange="saveNeurologicalInput('${member}', '${disorder}', 'when-months', this.value)">
+                                </div>
+                            </div>
+                            
+                            <div class="disorder-question" style="margin-top: 10px;">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-text">אם מעל שנה - לפני כמה שנים:</span>
+                                </div>
+                                <div class="disorder-input">
+                                    <input type="number" class="disorder-text-input" placeholder="שנים" min="1" onchange="saveNeurologicalInput('${member}', '${disorder}', 'when-years', this.value)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">15.3</span>
+                                <span class="disorder-question-text">נותר נזק שארי:</span>
+                            </div>
+                            <div class="disorder-options">
+                                <div class="disorder-option">
+                                    <span>כן</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'residual-damage', 'כן', this)">
+                                </div>
+                                <div class="disorder-option">
+                                    <span>לא</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'residual-damage', 'לא', this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (disorder === 'meningitis') {
+        detailsHTML = `
+            <div class="disorder-details" id="${member}-${disorder}-details" style="display: block;">
+                <div class="disorder-details-content">
+                    <div class="disorder-title-wrapper">
+                        <h4 class="disorder-title">דלקת קרום המוח (מנינגיטיס)</h4>
+                        <div class="question-indicator"></div>
+                    </div>
+                    
+                    <div class="disorder-questions">
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">5.1</span>
+                                <span class="disorder-question-text">היתה במהלך 6 החודשים האחרונים:</span>
+                            </div>
+                            <div class="disorder-options">
+                                <div class="disorder-option">
+                                    <span>כן</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'recent', 'כן', this)">
+                                </div>
+                                <div class="disorder-option">
+                                    <span>לא</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'recent', 'לא', this)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">5.2</span>
+                                <span class="disorder-question-text">האם נותר נזק שארי ו/או אחר:</span>
+                            </div>
+                            <div class="disorder-options">
+                                <div class="disorder-option">
+                                    <span>כן</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'residual-damage', 'כן', this)">
+                                </div>
+                                <div class="disorder-option">
+                                    <span>לא</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectNeurologicalOption('${member}', '${disorder}', 'residual-damage', 'לא', this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Add the details section to the neurological disorders section
+    if (detailsHTML) {
+        const neurologicalSection = document.getElementById(`member-${member}-neurological`);
+        if (neurologicalSection) {
+            neurologicalSection.insertAdjacentHTML('beforeend', detailsHTML);
+        }
+    }
+}
+
+// Handle neurological option selection
 function selectNeurologicalOption(memberId, disorderId, questionId, option, checkbox) {
     console.log(`Neurological option: ${memberId} - ${disorderId} - ${questionId} - ${option}: ${checkbox.checked}`);
     
@@ -1410,6 +1679,7 @@ function selectNeurologicalOption(memberId, disorderId, questionId, option, chec
     console.log('Updated neurological details:', formState.memberDetails[memberId].neurological);
 }
 
+// Handle neurological input
 function saveNeurologicalInput(memberId, disorderId, questionId, value) {
     console.log(`Neurological input: ${memberId} - ${disorderId} - ${questionId} - ${value}`);
     
