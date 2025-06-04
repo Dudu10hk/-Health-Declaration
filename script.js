@@ -67,6 +67,11 @@ function initializeForm() {
     formState.memberDetails = {};
     formState.selectedDisorders = {};
     
+    // Remove any pre-selected states from buttons
+    document.querySelectorAll('.answer-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
     console.log('Form initialized with new 4-question structure');
 }
 
