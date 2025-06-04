@@ -2,7 +2,8 @@
 let formState = {
     answers: {},
     selectedMembers: {},
-    memberDetails: {}
+    memberDetails: {},
+    selectedDisorders: {}
 };
 
 // Family members data
@@ -11,6 +12,17 @@ const familyMembers = {
     esti: { name: 'אסתי ישראלי', type: 'בת זוג' },
     yaakov: { name: 'יעקב ישראלי', type: 'ילד' },
     noam: { name: 'נועם ישראלי', type: 'ילדה' }
+};
+
+// Disorders data
+const disorders = {
+    'major-depression': { name: 'דיכאון מג\'ורי', questions: ['timing', 'hospitalization', 'duration', 'disability', 'percentage'] },
+    'postpartum-depression': { name: 'דיכאון לאחר לידה', questions: ['timing', 'hospitalization', 'duration'] },
+    'ocd': { name: 'OCD', questions: ['timing', 'treatment'] },
+    'eating-disorders': { name: 'הפרעות אכילה', questions: ['timing', 'type', 'treatment'] },
+    'anxiety': { name: 'חרדה', questions: ['timing'] },
+    'mood-disorder': { name: 'הפרעת מצב רוח', questions: ['timing', 'treatment'] },
+    'depression': { name: 'דיכאון', questions: ['timing', 'hospitalization', 'duration', 'disability', 'percentage'] }
 };
 
 // Questions configuration
@@ -159,8 +171,15 @@ function initializeForm() {
     formState.answers = {};
     formState.selectedMembers = {};
     formState.memberDetails = {};
+    formState.selectedDisorders = {};
     
-    console.log('Form initialized');
+    console.log('Form initialized with new disorder structure');
+    
+    // Don't pre-select any disorders - let the user make their selections
+    // formState.selectedDisorders.yuval = {
+    //     'depression': true,
+    //     'anxiety': true
+    // };
 }
 
 function setupEventListeners() {
@@ -228,44 +247,49 @@ function updateQuestionButtons(questionId, answer) {
 }
 
 function selectMember(questionId, memberId, checkbox) {
-    console.log(`Member ${memberId} selected for question ${questionId}: ${checkbox.checked}`);
+    console.log(`Member ${memberId} for question ${questionId}: ${checkbox.checked}`);
     
-    // Initialize question in selectedMembers if not exists
+    // Update form state
     if (!formState.selectedMembers[questionId]) {
         formState.selectedMembers[questionId] = {};
     }
-    
-    // Update member selection state
     formState.selectedMembers[questionId][memberId] = checkbox.checked;
     
-    // Show/hide member details based on selection
-    const memberDetails = document.getElementById(`member-details-${memberId}`);
-    if (memberDetails) {
-        if (checkbox.checked) {
-            memberDetails.style.display = 'block';
-            generateMemberDetails(questionId, memberId);
-        } else {
-            memberDetails.style.display = 'none';
-            // Clear member details for this member and question
-            if (formState.memberDetails[questionId]) {
-                delete formState.memberDetails[questionId][memberId];
-            }
-        }
+    // Update checkbox visual
+    updateCheckboxVisual(checkbox);
+    
+    // Show/hide member disorders section
+    const disordersSection = document.getElementById(`member-${memberId}-disorders`);
+    if (disordersSection) {
+        disordersSection.style.display = checkbox.checked ? 'block' : 'none';
     }
     
-    // Update checkbox visual state
-    updateCheckboxVisual(checkbox);
+    // Generate or remove member details based on selection
+    if (checkbox.checked) {
+        // Member was selected - ensure disorders section is visible
+        console.log(`Showing disorders for ${memberId}`);
+    } else {
+        // Member was deselected - hide disorders section
+        console.log(`Hiding disorders for ${memberId}`);
+        
+        // Clear member's disorder selections
+        if (formState.selectedDisorders[memberId]) {
+            formState.selectedDisorders[memberId] = {};
+        }
+    }
 }
 
 function updateCheckboxVisual(checkbox) {
-    const checkmark = checkbox.nextElementSibling;
-    if (checkmark && checkmark.classList.contains('checkmark')) {
-        if (checkbox.checked) {
-            checkmark.style.display = 'flex';
-            checkmark.innerHTML = '✓';
-        } else {
-            checkmark.style.display = 'none';
-        }
+    // Handle both member checkboxes and disorder checkboxes
+    if (checkbox.classList.contains('member-checkbox') || 
+        checkbox.classList.contains('disorder-checkbox') || 
+        checkbox.classList.contains('disorder-option-checkbox')) {
+        
+        // The visual state is handled by CSS :checked pseudo-class
+        // and ::after content for the checkmark
+        
+        // Optional: trigger any additional visual updates here
+        console.log('Checkbox visual updated:', checkbox.checked);
     }
 }
 
@@ -589,3 +613,70 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     initializeInteractiveElements();
 });
+
+// Handle disorder selection
+function selectDisorder(memberId, disorderId, checkbox) {
+    console.log(`Disorder ${disorderId} for member ${memberId}: ${checkbox.checked}`);
+    
+    // Initialize member disorders if not exists
+    if (!formState.selectedDisorders[memberId]) {
+        formState.selectedDisorders[memberId] = {};
+    }
+    
+    // Update disorder state
+    formState.selectedDisorders[memberId][disorderId] = checkbox.checked;
+    
+    // Show/hide disorder details
+    const detailsSection = document.getElementById(`${memberId}-${disorderId}-details`);
+    if (detailsSection) {
+        detailsSection.style.display = checkbox.checked ? 'block' : 'none';
+    }
+    
+    // Update checkbox visual
+    updateCheckboxVisual(checkbox);
+}
+
+// Handle disorder option selection (for individual questions within disorders)
+function selectDisorderOption(memberId, disorderId, questionId, option, checkbox) {
+    console.log(`Option selected: ${memberId} - ${disorderId} - ${questionId} - ${option}`);
+    
+    // For single-select questions, uncheck other options
+    const questionContainer = checkbox.closest('.disorder-options');
+    if (questionContainer) {
+        const otherCheckboxes = questionContainer.querySelectorAll('.disorder-option-checkbox');
+        otherCheckboxes.forEach(cb => {
+            if (cb !== checkbox) {
+                cb.checked = false;
+                updateCheckboxVisual(cb);
+            }
+        });
+    }
+    
+    // Update visual
+    updateCheckboxVisual(checkbox);
+    
+    // Save the answer
+    if (!formState.memberDetails[memberId]) {
+        formState.memberDetails[memberId] = {};
+    }
+    if (!formState.memberDetails[memberId][disorderId]) {
+        formState.memberDetails[memberId][disorderId] = {};
+    }
+    
+    formState.memberDetails[memberId][disorderId][questionId] = checkbox.checked ? option : null;
+}
+
+// Handle text input for disorder details
+function saveDisorderText(memberId, disorderId, questionId, value) {
+    console.log(`Text saved: ${memberId} - ${disorderId} - ${questionId} - ${value}`);
+    
+    // Save the text answer
+    if (!formState.memberDetails[memberId]) {
+        formState.memberDetails[memberId] = {};
+    }
+    if (!formState.memberDetails[memberId][disorderId]) {
+        formState.memberDetails[memberId][disorderId] = {};
+    }
+    
+    formState.memberDetails[memberId][disorderId][questionId] = value;
+}

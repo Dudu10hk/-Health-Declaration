@@ -259,99 +259,566 @@
                     <div class="members-list">
                         <div class="member-checkbox-item">
                             <span>יובל ישראלי</span>
-                            <input type="checkbox" class="member-checkbox" checked onchange="selectMember(2, 'yuval', this)">
+                            <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'yuval', this)">
                         </div>
+                        
+                        <!-- Disorders selection and details for Yuval -->
+                        <div class="member-disorders-section" id="member-yuval-disorders" style="display: none;">
+                            <!-- Disorders Selection -->
+                            <div class="disorders-selection">
+                                <div class="disorders-header">
+                                    <span>בחר את ההפרעות הרלוונטיות</span>
+                                </div>
+                                <div class="disorders-divider"></div>
+                                
+                                <div class="disorders-list">
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yuval', 'depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעת מצב רוח</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yuval', 'mood-disorder', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>חרדה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yuval', 'anxiety', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון מג'ורי</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yuval', 'major-depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>OCD</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yuval', 'ocd', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון לאחר לידה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yuval', 'postpartum-depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעות אכילה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yuval', 'eating-disorders', this)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Disorder Details - Depression (hidden by default) -->
+                            <div class="disorder-details" id="yuval-depression-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">דיכאון</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.</span>
+                                                <span class="disorder-question-text">מתי אובחן דיכאון?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>בשנה האחרונה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'depression', 'timing', 'בשנה האחרונה', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בשנתיים האחרונות</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'depression', 'timing', 'בשנתיים האחרונות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לפני 3 שנים ומעלה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'depression', 'timing', 'לפני 3 שנים ומעלה', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">2.</span>
+                                                <span class="disorder-question-text">האם אושפזת בשל הדיכאון?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>כן</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'depression', 'hospitalization', 'כן', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לא</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'depression', 'hospitalization', 'לא', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">3.</span>
+                                                <span class="disorder-question-text">נא לציין את משך האשפוז:</span>
+                                            </div>
+                                            <div class="disorder-input">
+                                                <input type="text" class="disorder-text-input" placeholder="למשל: 1 חודשים" onchange="saveDisorderText('yuval', 'depression', 'duration', this.value)">
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">4.</span>
+                                                <span class="disorder-question-text">האם נקבעה נכות?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>כן</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'depression', 'disability', 'כן', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לא</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'depression', 'disability', 'לא', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">5.</span>
+                                                <span class="disorder-question-text">כמה אחוזי נכות נקבעו?</span>
+                                            </div>
+                                            <div class="disorder-percentage">
+                                                <input type="number" class="disorder-text-input" placeholder="25" onchange="saveDisorderText('yuval', 'depression', 'percentage', this.value)">
+                                                <span>%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Disorder Details - Anxiety (hidden by default) -->
+                            <div class="disorder-details" id="yuval-anxiety-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">חרדה</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.</span>
+                                                <span class="disorder-question-text">מתי אובחנה חרדה?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>בשנה האחרונה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'anxiety', 'timing', 'בשנה האחרונה', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בשנתיים האחרונות</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'anxiety', 'timing', 'בשנתיים האחרונות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לפני 3 שנים ומעלה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'anxiety', 'timing', 'לפני 3 שנים ומעלה', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Add disorder details sections for other disorders as needed -->
+                            <div class="disorder-details" id="yuval-mood-disorder-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">הפרעת מצב רוח</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.</span>
+                                                <span class="disorder-question-text">מתי אובחנה הפרעת מצב רוח?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>בשנה האחרונה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'mood-disorder', 'timing', 'בשנה האחרונה', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בשנתיים האחרונות</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'mood-disorder', 'timing', 'בשנתיים האחרונות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לפני 3 שנים ומעלה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'mood-disorder', 'timing', 'לפני 3 שנים ומעלה', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="disorder-details" id="yuval-major-depression-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">דיכאון מג'ורי</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.</span>
+                                                <span class="disorder-question-text">מתי אובחן דיכאון מג'ורי?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>בשנה האחרונה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'major-depression', 'timing', 'בשנה האחרונה', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בשנתיים האחרונות</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'major-depression', 'timing', 'בשנתיים האחרונות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לפני 3 שנים ומעלה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'major-depression', 'timing', 'לפני 3 שנים ומעלה', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="disorder-details" id="yuval-ocd-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">OCD</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.</span>
+                                                <span class="disorder-question-text">מתי אובחן OCD?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>בשנה האחרונה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'ocd', 'timing', 'בשנה האחרונה', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בשנתיים האחרונות</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'ocd', 'timing', 'בשנתיים האחרונות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לפני 3 שנים ומעלה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'ocd', 'timing', 'לפני 3 שנים ומעלה', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="disorder-details" id="yuval-postpartum-depression-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">דיכאון לאחר לידה</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.</span>
+                                                <span class="disorder-question-text">מתי אובחן דיכאון לאחר לידה?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>בשנה האחרונה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'postpartum-depression', 'timing', 'בשנה האחרונה', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בשנתיים האחרונות</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'postpartum-depression', 'timing', 'בשנתיים האחרונות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לפני 3 שנים ומעלה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'postpartum-depression', 'timing', 'לפני 3 שנים ומעלה', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="disorder-details" id="yuval-eating-disorders-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">הפרעות אכילה</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.</span>
+                                                <span class="disorder-question-text">מתי אובחנו הפרעות אכילה?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>בשנה האחרונה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'eating-disorders', 'timing', 'בשנה האחרונה', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בשנתיים האחרונות</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'eating-disorders', 'timing', 'בשנתיים האחרונות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לפני 3 שנים ומעלה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yuval', 'eating-disorders', 'timing', 'לפני 3 שנים ומעלה', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other family members (positioned after disorder details) -->
                         <div class="member-checkbox-item">
                             <span>אסתי ישראלי</span>
                             <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'esti', this)">
                         </div>
+                        
+                        <!-- Disorders selection and details for Esti -->
+                        <div class="member-disorders-section" id="member-esti-disorders" style="display: none;">
+                            <!-- Disorders Selection -->
+                            <div class="disorders-selection">
+                                <div class="disorders-header">
+                                    <span>בחר את ההפרעות הרלוונטיות</span>
+                                </div>
+                                <div class="disorders-divider"></div>
+                                
+                                <div class="disorders-list">
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('esti', 'depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעת מצב רוח</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('esti', 'mood-disorder', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>חרדה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('esti', 'anxiety', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון מג'ורי</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('esti', 'major-depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>OCD</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('esti', 'ocd', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון לאחר לידה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('esti', 'postpartum-depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעות אכילה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('esti', 'eating-disorders', this)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Disorder Details for Esti - Depression -->
+                            <div class="disorder-details" id="esti-depression-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">דיכאון</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.</span>
+                                                <span class="disorder-question-text">מתי אובחן דיכאון?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>בשנה האחרונה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('esti', 'depression', 'timing', 'בשנה האחרונה', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בשנתיים האחרונות</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('esti', 'depression', 'timing', 'בשנתיים האחרונות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לפני 3 שנים ומעלה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('esti', 'depression', 'timing', 'לפני 3 שנים ומעלה', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Add more disorder details for Esti as needed -->
+                        </div>
+                        
                         <div class="member-checkbox-item">
                             <span>יעקב ישראלי</span>
                             <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'yaakov', this)">
                         </div>
+                        
+                        <!-- Disorders selection and details for Yaakov -->
+                        <div class="member-disorders-section" id="member-yaakov-disorders" style="display: none;">
+                            <!-- Disorders Selection -->
+                            <div class="disorders-selection">
+                                <div class="disorders-header">
+                                    <span>בחר את ההפרעות הרלוונטיות</span>
+                                </div>
+                                <div class="disorders-divider"></div>
+                                
+                                <div class="disorders-list">
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yaakov', 'depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעת מצב רוח</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yaakov', 'mood-disorder', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>חרדה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yaakov', 'anxiety', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון מג'ורי</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yaakov', 'major-depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>OCD</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yaakov', 'ocd', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון לאחר לידה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yaakov', 'postpartum-depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעות אכילה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('yaakov', 'eating-disorders', this)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Disorder Details for Yaakov - Depression -->
+                            <div class="disorder-details" id="yaakov-depression-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">דיכאון</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.</span>
+                                                <span class="disorder-question-text">מתי אובחן דיכאון?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>בשנה האחרונה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yaakov', 'depression', 'timing', 'בשנה האחרונה', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בשנתיים האחרונות</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yaakov', 'depression', 'timing', 'בשנתיים האחרונות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לפני 3 שנים ומעלה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('yaakov', 'depression', 'timing', 'לפני 3 שנים ומעלה', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="member-checkbox-item">
                             <span>נועם ישראלי</span>
                             <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'noam', this)">
                         </div>
-                    </div>
-
-                    <!-- Member Details -->
-                    <div class="member-details" id="member-details-yuval">
-                        <div class="details-content">
-                            <h4>דיכאון - פרטים עבור יובל ישראלי</h4>
-                            <div class="details-questions">
-                                <div class="detail-question">
-                                    <span class="detail-number">1.</span>
-                                    <label>מתי אובחן דיכאון?</label>
-                                    <div class="detail-options">
-                                        <label>
-                                            <input type="radio" name="yuval-timing" value="שנה">
-                                            <span class="radio-checkmark"></span>
-                                            <span>בשנה האחרונה</span>
-                                        </label>
-                                        <label>
-                                            <input type="radio" name="yuval-timing" value="שנתיים">
-                                            <span class="radio-checkmark"></span>
-                                            <span>בשנתיים האחרונות</span>
-                                        </label>
-                                        <label>
-                                            <input type="radio" name="yuval-timing" value="שלוש" checked>
-                                            <span class="radio-checkmark checked"></span>
-                                            <span>לפני 3 שנים ומעלה</span>
-                                        </label>
-                                    </div>
+                        
+                        <!-- Disorders selection and details for Noam -->
+                        <div class="member-disorders-section" id="member-noam-disorders" style="display: none;">
+                            <!-- Disorders Selection -->
+                            <div class="disorders-selection">
+                                <div class="disorders-header">
+                                    <span>בחר את ההפרעות הרלוונטיות</span>
                                 </div>
+                                <div class="disorders-divider"></div>
                                 
-                                <div class="detail-question">
-                                    <span class="detail-number">2.</span>
-                                    <label>האם אושפזת בשל הדיכאון?</label>
-                                    <div class="detail-options">
-                                        <label>
-                                            <input type="radio" name="yuval-hospital" value="כן" checked>
-                                            <span class="radio-checkmark checked"></span>
-                                            <span>כן</span>
-                                        </label>
-                                        <label>
-                                            <input type="radio" name="yuval-hospital" value="לא">
-                                            <span class="radio-checkmark"></span>
-                                            <span>לא</span>
-                                        </label>
+                                <div class="disorders-list">
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('noam', 'depression', this)">
                                     </div>
-                                </div>
-
-                                <div class="detail-question">
-                                    <span class="detail-number">3.</span>
-                                    <label>נא לציין את משך האשפוז:</label>
-                                    <input type="text" value="1 חודשים" class="text-input">
-                                </div>
-
-                                <div class="detail-question">
-                                    <span class="detail-number">4.</span>
-                                    <label>האם נקבעה נכות?</label>
-                                    <div class="detail-options">
-                                        <label>
-                                            <input type="radio" name="yuval-disability" value="כן" checked>
-                                            <span class="radio-checkmark checked"></span>
-                                            <span>כן</span>
-                                        </label>
-                                        <label>
-                                            <input type="radio" name="yuval-disability" value="לא">
-                                            <span class="radio-checkmark"></span>
-                                            <span>לא</span>
-                                        </label>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעת מצב רוח</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('noam', 'mood-disorder', this)">
                                     </div>
-                                </div>
-
-                                <div class="detail-question">
-                                    <span class="detail-number">5.</span>
-                                    <label>כמה אחוזי נכות נקבעו?</label>
-                                    <div class="percentage-input">
-                                        <input type="number" value="25" class="text-input">
-                                        <span>%</span>
+                                    <div class="disorder-checkbox-item">
+                                        <span>חרדה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('noam', 'anxiety', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון מג'ורי</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('noam', 'major-depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>OCD</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('noam', 'ocd', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>דיכאון לאחר לידה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('noam', 'postpartum-depression', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>הפרעות אכילה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectDisorder('noam', 'eating-disorders', this)">
                                     </div>
                                 </div>
                             </div>
-                            <div class="question-indicator"></div>
+
+                            <!-- Disorder Details for Noam - Depression -->
+                            <div class="disorder-details" id="noam-depression-details" style="display: none;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-title-wrapper">
+                                        <h4 class="disorder-title">דיכאון</h4>
+                                        <div class="question-indicator"></div>
+                                    </div>
+                                    <div class="disorder-questions">
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">1.</span>
+                                                <span class="disorder-question-text">מתי אובחן דיכאון?</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>בשנה האחרונה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('noam', 'depression', 'timing', 'בשנה האחרונה', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>בשנתיים האחרונות</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('noam', 'depression', 'timing', 'בשנתיים האחרונות', this)">
+                                                </div>
+                                                <div class="disorder-option">
+                                                    <span>לפני 3 שנים ומעלה</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectDisorderOption('noam', 'depression', 'timing', 'לפני 3 שנים ומעלה', this)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
