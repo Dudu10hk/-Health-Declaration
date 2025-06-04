@@ -944,7 +944,7 @@ input:checked + .slider:before {
 .disorder-questions {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 25px;
     padding: 0;
     direction: rtl;
 }
@@ -953,9 +953,9 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 15px;
     direction: rtl;
-    padding: 10px 0;
+    padding: 5px 0;
 }
 
 .disorder-question-header {
