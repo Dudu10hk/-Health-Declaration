@@ -145,28 +145,50 @@ function selectMember(questionId, memberId, checkbox) {
     // Update checkbox visual
     updateCheckboxVisual(checkbox);
     
-    // Show/hide member disorders section
-    let disordersSection = document.getElementById(`member-${memberId}-disorders`);
+    // Show/hide appropriate section based on question type
+    let sectionId;
+    if (questionId === 1) {
+        sectionId = `member-${memberId}-disorders`;
+    } else if (questionId === 2) {
+        sectionId = `member-${memberId}-family-history`;
+    } else {
+        sectionId = `member-${memberId}-q${questionId}`;
+    }
+    
+    let disordersSection = document.getElementById(sectionId);
     
     if (checkbox.checked) {
-        if (!disordersSection) {
-            // Create the disorders section dynamically for members that don't have it
+        if (!disordersSection && questionId === 1) {
+            // Create the disorders section dynamically for question 1
             createMemberDisordersSection(memberId);
-            disordersSection = document.getElementById(`member-${memberId}-disorders`);
+            disordersSection = document.getElementById(sectionId);
+        } else if (!disordersSection && questionId === 2) {
+            // Create family history section dynamically for question 2
+            createMemberFamilyHistorySection(memberId);
+            disordersSection = document.getElementById(sectionId);
+        } else if (!disordersSection) {
+            // Create generic section for other questions
+            createMemberGenericSection(memberId, questionId);
+            disordersSection = document.getElementById(sectionId);
         }
+        
         if (disordersSection) {
             disordersSection.style.display = 'block';
         }
-        console.log(`Showing disorders for ${memberId}`);
+        console.log(`Showing section for ${memberId} question ${questionId}`);
     } else {
         if (disordersSection) {
             disordersSection.style.display = 'none';
         }
-        console.log(`Hiding disorders for ${memberId}`);
+        console.log(`Hiding section for ${memberId} question ${questionId}`);
         
-        // Clear member's disorder selections
+        // Clear member's selections
         if (formState.selectedDisorders[memberId]) {
-            formState.selectedDisorders[memberId] = {};
+            if (questionId === 2) {
+                delete formState.selectedDisorders[memberId].familyHistory;
+            } else {
+                formState.selectedDisorders[memberId] = {};
+            }
         }
     }
 }
@@ -790,5 +812,164 @@ function createMemberDisordersSection(memberId) {
     
     if (memberCheckboxItem) {
         memberCheckboxItem.insertAdjacentHTML('afterend', disordersHTML);
+    }
+}
+
+// Handle family disease selection for question 2
+function selectFamilyDisease(memberId, diseaseId, checkbox) {
+    console.log(`Family disease ${diseaseId} for member ${memberId}: ${checkbox.checked}`);
+    
+    // Initialize family diseases if not exists
+    if (!formState.selectedDisorders[memberId]) {
+        formState.selectedDisorders[memberId] = {};
+    }
+    if (!formState.selectedDisorders[memberId].familyHistory) {
+        formState.selectedDisorders[memberId].familyHistory = {};
+    }
+    
+    // Update disease state
+    formState.selectedDisorders[memberId].familyHistory[diseaseId] = checkbox.checked;
+    
+    // Update checkbox visual
+    updateCheckboxVisual(checkbox);
+}
+
+// Handle family disorder option selection (for sub-questions)
+function selectFamilyDisorderOption(memberId, categoryId, questionId, option, checkbox) {
+    console.log(`Family disorder option: ${memberId} - ${categoryId} - ${questionId} - ${option}`);
+    
+    // For single-select questions, uncheck other options in the same question
+    const questionContainer = checkbox.closest('.disorder-options');
+    if (questionContainer) {
+        const otherCheckboxes = questionContainer.querySelectorAll('.disorder-option-checkbox');
+        otherCheckboxes.forEach(cb => {
+            if (cb !== checkbox) {
+                cb.checked = false;
+                updateCheckboxVisual(cb);
+            }
+        });
+    }
+    
+    // Update visual
+    updateCheckboxVisual(checkbox);
+    
+    // Handle special cases that show sub-questions
+    if (categoryId === 'familial-polyposis' && questionId === 'polyposis' && option === 'כן') {
+        showPolypoisSubQuestions(memberId, checkbox.checked);
+    } else if (categoryId === 'polycystic-kidneys' && questionId === 'polycystic' && option === 'כן') {
+        showPolycysticKidneysSubQuestions(memberId, checkbox.checked);
+    }
+    
+    // Save the answer
+    if (!formState.memberDetails[memberId]) {
+        formState.memberDetails[memberId] = {};
+    }
+    if (!formState.memberDetails[memberId].familyHistory) {
+        formState.memberDetails[memberId].familyHistory = {};
+    }
+    if (!formState.memberDetails[memberId].familyHistory[categoryId]) {
+        formState.memberDetails[memberId].familyHistory[categoryId] = {};
+    }
+    
+    formState.memberDetails[memberId].familyHistory[categoryId][questionId] = checkbox.checked ? option : null;
+}
+
+// Show polyposis sub-questions
+function showPolypoisSubQuestions(memberId, show) {
+    const subQuestionsDiv = document.getElementById(`${memberId}-polyposis-subquestions`);
+    if (subQuestionsDiv) {
+        subQuestionsDiv.style.display = show ? 'block' : 'none';
+    }
+}
+
+// Show polycystic kidneys sub-questions
+function showPolycysticKidneysSubQuestions(memberId, show) {
+    const subQuestionsDiv = document.getElementById(`${memberId}-polycystic-subquestions`);
+    if (subQuestionsDiv) {
+        subQuestionsDiv.style.display = show ? 'block' : 'none';
+    }
+}
+
+// Create member family history section dynamically
+function createMemberFamilyHistorySection(memberId) {
+    const memberCheckboxItem = document.querySelector(`input[onchange*="selectFamilyDisease(1, '${memberId}', this)"]`).closest('.member-checkbox-item');
+    
+    const familyHistoryHTML = `
+        <div class="member-family-history-section" id="member-${memberId}-family-history" style="display: none;">
+            <!-- Family History Selection -->
+            <div class="family-history-selection">
+                <div class="family-history-header">
+                    <span>בחר את המחלות המשפחתיות</span>
+                </div>
+                <div class="family-history-divider"></div>
+                
+                <div class="family-history-list">
+                    <div class="family-history-checkbox-item">
+                        <span>דיכאון</span>
+                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'depression', this)">
+                    </div>
+                    <div class="family-history-checkbox-item">
+                        <span>הפרעת מצב רוח</span>
+                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'mood-disorder', this)">
+                    </div>
+                    <div class="family-history-checkbox-item">
+                        <span>חרדה</span>
+                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'anxiety', this)">
+                    </div>
+                    <div class="family-history-checkbox-item">
+                        <span>דיכאון מג'ורי</span>
+                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'major-depression', this)">
+                    </div>
+                    <div class="family-history-checkbox-item">
+                        <span>OCD</span>
+                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'ocd', this)">
+                    </div>
+                    <div class="family-history-checkbox-item">
+                        <span>דיכאון לאחר לידה</span>
+                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'postpartum-depression', this)">
+                    </div>
+                    <div class="family-history-checkbox-item">
+                        <span>הפרעות אכילה</span>
+                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'eating-disorders', this)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    if (memberCheckboxItem) {
+        memberCheckboxItem.insertAdjacentHTML('afterend', familyHistoryHTML);
+    }
+}
+
+// Create member generic section dynamically
+function createMemberGenericSection(memberId, questionId) {
+    const memberCheckboxItem = document.querySelector(`input[onchange*="selectMember(1, '${memberId}', this)"]`).closest('.member-checkbox-item');
+    
+    const genericHTML = `
+        <div class="member-generic-section" id="member-${memberId}-q${questionId}" style="display: none;">
+            <!-- Generic Section -->
+            <div class="generic-section">
+                <div class="generic-header">
+                    <span>בחר את התשובה המתאימה</span>
+                </div>
+                <div class="generic-divider"></div>
+                
+                <div class="generic-options">
+                    <div class="generic-option">
+                        <span>כן</span>
+                        <input type="radio" name="generic-${questionId}" value="yes">
+                    </div>
+                    <div class="generic-option">
+                        <span>לא</span>
+                        <input type="radio" name="generic-${questionId}" value="no">
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    if (memberCheckboxItem) {
+        memberCheckboxItem.insertAdjacentHTML('afterend', genericHTML);
     }
 }

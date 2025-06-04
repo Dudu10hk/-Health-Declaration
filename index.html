@@ -623,7 +623,7 @@
                 <div class="question-content">
                     <div class="question-text">
                         <span class="question-number">2.</span>
-                        <p>האם יש היסטוריה משפחתית של מחלות בקרובי משפחה (הורים ואחים)?</p>
+                        <p>מומים/מחלות ו/או הפרעות אצל קרובי משפחה ביולוגיים מדרגה ראשונה (הורים ואחים)?</p>
                     </div>
                     <div class="answer-buttons">
                         <button class="answer-btn no-btn selected" onclick="answerQuestion(2, 'no')">לא, לאף אחד</button>
@@ -631,6 +631,185 @@
                     </div>
                 </div>
                 <div class="question-indicator"></div>
+
+                <!-- Members Selection for Question 2 -->
+                <div class="members-selection" id="members-2" style="display: none;">
+                    <div class="members-header">
+                        <span>בחירת מבוטחים</span>
+                        <button class="clear-btn">
+                            <span>נקה</span>
+                        </button>
+                    </div>
+                    <div class="members-divider"></div>
+                    
+                    <div class="members-list">
+                        <div class="member-checkbox-item">
+                            <span>ישראל ישראלי</span>
+                            <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'israel', this)">
+                        </div>
+                        
+                        <!-- Family Medical History for Israel -->
+                        <div class="member-disorders-section" id="member-israel-family-history" style="display: none;">
+                            <!-- Family Diseases Selection -->
+                            <div class="disorders-selection">
+                                <div class="disorders-header">
+                                    <span>מחלות עיקריות אצל הורים ואחים של ישראל ישראלי:</span>
+                                </div>
+                                <div class="disorders-divider"></div>
+                                
+                                <div class="disorders-list">
+                                    <div class="disorder-checkbox-item">
+                                        <span>סרטן המעי הגס</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('israel', 'colon-cancer', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>סרטן השד</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('israel', 'breast-cancer', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>סרטן השחלות</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('israel', 'ovarian-cancer', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>סרטן הערמונית</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('israel', 'prostate-cancer', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>טרשת נפוצה</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('israel', 'multiple-sclerosis', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>ALS</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('israel', 'als', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>פרקינסון</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('israel', 'parkinson', this)">
+                                    </div>
+                                    <div class="disorder-checkbox-item">
+                                        <span>אלצהיימר</span>
+                                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('israel', 'alzheimer', this)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Questions Section -->
+                            <div class="disorder-details" style="display: block;">
+                                <div class="disorder-details-content">
+                                    <div class="disorder-questions">
+                                        <!-- Question 2: Familial Polyposis -->
+                                        <div class="disorder-question">
+                                            <div class="disorder-question-header">
+                                                <span class="disorder-question-number">2.</span>
+                                                <span class="disorder-question-text">פוליפוזיס משפחתית אצל ההורים, אחים של ישראל ישראלי:</span>
+                                            </div>
+                                            <div class="disorder-options">
+                                                <div class="disorder-option">
+                                                    <span>פוליפוזיס משפחתית</span>
+                                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'familial-polyposis', 'polyposis', 'כן', this)">
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Sub-questions for polyposis -->
+                                            <div id="israel-polyposis-subquestions" style="display: none; margin-top: 20px; padding-right: 20px;">
+                                                <div class="disorder-question" data-question="israel-polyposis-diagnosed">
+                                                    <div class="disorder-question-header">
+                                                        <span class="disorder-question-number">2.1</span>
+                                                        <span class="disorder-question-text">האם אובחנו אצלך פוליפים בדרכי העיכול?</span>
+                                                    </div>
+                                                    <div class="disorder-options">
+                                                        <div class="disorder-option">
+                                                            <span>כן</span>
+                                                            <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'familial-polyposis', 'diagnosed', 'כן', this)">
+                                                        </div>
+                                                        <div class="disorder-option">
+                                                            <span>לא</span>
+                                                            <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'familial-polyposis', 'diagnosed', 'לא', this)">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="disorder-question" data-question="israel-polyposis-monitoring">
+                                                    <div class="disorder-question-header">
+                                                        <span class="disorder-question-number">2.2</span>
+                                                        <span class="disorder-question-text">האם אתה נמצא במעקב קבוע אצל רופא גסטרואנטרולוג?</span>
+                                                    </div>
+                                                    <div class="disorder-options">
+                                                        <div class="disorder-option">
+                                                            <span>כן</span>
+                                                            <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'familial-polyposis', 'monitoring', 'כן', this)">
+                                                        </div>
+                                                        <div class="disorder-option">
+                                                            <span>לא</span>
+                                                            <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'familial-polyposis', 'monitoring', 'לא', this)">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Additional diseases -->
+                                        <div style="margin-top: 30px;">
+                                            <h5 style="color: #2D3968; font-size: 18px; font-weight: 600; margin-bottom: 20px;">מחלות נוספות עבור ישראל ישראלי:</h5>
+                                            
+                                            <!-- Heart Disease -->
+                                            <div class="disorder-question" data-question="israel-heart-disease">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-number">3.</span>
+                                                    <span class="disorder-question-text">מחלת לב אצל שניים או יותר קרובי משפחה (הורים, אחים):</span>
+                                                </div>
+                                                <div class="disorder-options">
+                                                    <div class="disorder-option">
+                                                        <span>כן</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'general', 'heart-disease', 'כן', this)">
+                                                    </div>
+                                                    <div class="disorder-option">
+                                                        <span>לא</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'general', 'heart-disease', 'לא', this)">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Diabetes -->
+                                            <div class="disorder-question" data-question="israel-diabetes">
+                                                <div class="disorder-question-header">
+                                                    <span class="disorder-question-number">4.</span>
+                                                    <span class="disorder-question-text">סכרת אצל שניים או יותר קרובי משפחה (הורים, אחים):</span>
+                                                </div>
+                                                <div class="disorder-options">
+                                                    <div class="disorder-option">
+                                                        <span>כן</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'general', 'diabetes', 'כן', this)">
+                                                    </div>
+                                                    <div class="disorder-option">
+                                                        <span>לא</span>
+                                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('israel', 'general', 'diabetes', 'לא', this)">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other family members -->
+                        <div class="member-checkbox-item">
+                            <span>שרה ישראלי</span>
+                            <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'sara', this)">
+                        </div>
+                        
+                        <div class="member-checkbox-item">
+                            <span>דוד ישראלי</span>
+                            <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'david', this)">
+                        </div>
+                        
+                        <div class="member-checkbox-item">
+                            <span>מיכל ישראלי</span>
+                            <input type="checkbox" class="member-checkbox" onchange="selectMember(2, 'michal', this)">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Question 3: Nervous System and Brain -->
