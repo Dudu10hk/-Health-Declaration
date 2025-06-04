@@ -3,7 +3,8 @@ let formState = {
     answers: {},
     selectedMembers: {},
     memberDetails: {},
-    selectedDisorders: {}
+    selectedDisorders: {},
+    followupAnswers: {} // Added for follow-up questions
 };
 
 // Family members data - updated to new family
@@ -397,9 +398,20 @@ function setAllAnswersToNo() {
         answerQuestion(i, 'no');
     }
     
+    // Clear all follow-up answers
+    formState.followupAnswers = {};
+    
     // Hide all member selection sections
     document.querySelectorAll('.members-selection').forEach(section => {
         section.style.display = 'none';
+    });
+    
+    // Clear and hide all follow-up questions
+    const followupSections = document.querySelectorAll('[id^="followup-questions-"]');
+    followupSections.forEach(section => {
+        section.style.display = 'none';
+        const inputs = section.querySelectorAll('.followup-input');
+        inputs.forEach(input => input.value = '');
     });
     
     // Enable the next button
@@ -424,9 +436,18 @@ function clearMemberSelections() {
         details.style.display = 'none';
     });
     
+    // Clear and hide all follow-up questions
+    const followupSections = document.querySelectorAll('[id^="followup-questions-"]');
+    followupSections.forEach(section => {
+        section.style.display = 'none';
+        const inputs = section.querySelectorAll('.followup-input');
+        inputs.forEach(input => input.value = '');
+    });
+    
     // Clear form state
     formState.selectedMembers = {};
     formState.memberDetails = {};
+    formState.followupAnswers = {};
 }
 
 function clearMemberSelectionsForQuestion(questionId) {
@@ -435,6 +456,11 @@ function clearMemberSelectionsForQuestion(questionId) {
     // Clear from form state
     delete formState.selectedMembers[questionId];
     delete formState.memberDetails[questionId];
+    
+    // Clear follow-up answers for all members if this is question 2
+    if (questionId === 2) {
+        formState.followupAnswers = {};
+    }
     
     // Update UI
     const membersSection = document.getElementById(`members-${questionId}`);
@@ -449,6 +475,16 @@ function clearMemberSelectionsForQuestion(questionId) {
         details.forEach(detail => {
             detail.style.display = 'none';
         });
+        
+        // Clear and hide follow-up questions for question 2
+        if (questionId === 2) {
+            const followupSections = document.querySelectorAll('[id^="followup-questions-"]');
+            followupSections.forEach(section => {
+                section.style.display = 'none';
+                const inputs = section.querySelectorAll('.followup-input');
+                inputs.forEach(input => input.value = '');
+            });
+        }
     }
 }
 
@@ -830,6 +866,39 @@ function selectFamilyDisease(memberId, diseaseId, checkbox) {
     // Update disease state
     formState.selectedDisorders[memberId].familyHistory[diseaseId] = checkbox.checked;
     
+    // Check if any of the specific diseases are selected to show follow-up questions
+    const specificDiseases = [
+        'colon-cancer', 'breast-cancer', 'ovarian-cancer', 'prostate-cancer',
+        'multiple-sclerosis', 'als', 'parkinson', 'alzheimer'
+    ];
+    
+    // Check if any specific disease is selected for this member
+    let shouldShowFollowup = false;
+    if (formState.selectedDisorders[memberId] && formState.selectedDisorders[memberId].familyHistory) {
+        specificDiseases.forEach(disease => {
+            if (formState.selectedDisorders[memberId].familyHistory[disease]) {
+                shouldShowFollowup = true;
+            }
+        });
+    }
+    
+    // Show or hide follow-up questions for this member
+    const followupSection = document.getElementById(`followup-questions-${memberId}`);
+    if (followupSection) {
+        followupSection.style.display = shouldShowFollowup ? 'block' : 'none';
+        
+        // Clear follow-up answers if hiding the section
+        if (!shouldShowFollowup && formState.followupAnswers[memberId]) {
+            delete formState.followupAnswers[memberId];
+            // Clear the input values
+            const inputs = followupSection.querySelectorAll('.followup-input');
+            inputs.forEach(input => input.value = '');
+        }
+    } else if (shouldShowFollowup) {
+        // Create follow-up section dynamically if it doesn't exist
+        createFollowupSection(memberId);
+    }
+    
     // Update checkbox visual
     updateCheckboxVisual(checkbox);
 }
@@ -892,45 +961,276 @@ function showPolycysticKidneysSubQuestions(memberId, show) {
 
 // Create member family history section dynamically
 function createMemberFamilyHistorySection(memberId) {
-    const memberCheckboxItem = document.querySelector(`input[onchange*="selectFamilyDisease(1, '${memberId}', this)"]`).closest('.member-checkbox-item');
+    const memberCheckboxItem = document.querySelector(`input[onchange*="selectMember(2, '${memberId}', this)"]`).closest('.member-checkbox-item');
+    
+    const memberName = familyMembers[memberId]?.name || memberId;
     
     const familyHistoryHTML = `
-        <div class="member-family-history-section" id="member-${memberId}-family-history" style="display: none;">
-            <!-- Family History Selection -->
-            <div class="family-history-selection">
-                <div class="family-history-header">
-                    <span>בחר את המחלות המשפחתיות</span>
+        <div class="member-disorders-section" id="member-${memberId}-family-history" style="display: none;">
+            <!-- Family Diseases Selection -->
+            <div class="disorders-selection">
+                <div class="disorders-header">
+                    <span>מחלות עיקריות אצל הורים ואחים של ${memberName}:</span>
                 </div>
-                <div class="family-history-divider"></div>
+                <div class="disorders-divider"></div>
                 
-                <div class="family-history-list">
-                    <div class="family-history-checkbox-item">
-                        <span>דיכאון</span>
-                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'depression', this)">
+                <div class="disorders-list">
+                    <div class="disorder-checkbox-item">
+                        <span>סרטן המעי הגס</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('${memberId}', 'colon-cancer', this)">
                     </div>
-                    <div class="family-history-checkbox-item">
-                        <span>הפרעת מצב רוח</span>
-                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'mood-disorder', this)">
+                    <div class="disorder-checkbox-item">
+                        <span>סרטן השד</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('${memberId}', 'breast-cancer', this)">
                     </div>
-                    <div class="family-history-checkbox-item">
-                        <span>חרדה</span>
-                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'anxiety', this)">
+                    <div class="disorder-checkbox-item">
+                        <span>סרטן השחלות</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('${memberId}', 'ovarian-cancer', this)">
                     </div>
-                    <div class="family-history-checkbox-item">
-                        <span>דיכאון מג'ורי</span>
-                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'major-depression', this)">
+                    <div class="disorder-checkbox-item">
+                        <span>סרטן הערמונית</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('${memberId}', 'prostate-cancer', this)">
                     </div>
-                    <div class="family-history-checkbox-item">
-                        <span>OCD</span>
-                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'ocd', this)">
+                    <div class="disorder-checkbox-item">
+                        <span>טרשת נפוצה</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('${memberId}', 'multiple-sclerosis', this)">
                     </div>
-                    <div class="family-history-checkbox-item">
-                        <span>דיכאון לאחר לידה</span>
-                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'postpartum-depression', this)">
+                    <div class="disorder-checkbox-item">
+                        <span>ALS</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('${memberId}', 'als', this)">
                     </div>
-                    <div class="family-history-checkbox-item">
-                        <span>הפרעות אכילה</span>
-                        <input type="checkbox" class="family-history-checkbox" onchange="selectFamilyDisease('${memberId}', 'eating-disorders', this)">
+                    <div class="disorder-checkbox-item">
+                        <span>פרקינסון</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('${memberId}', 'parkinson', this)">
+                    </div>
+                    <div class="disorder-checkbox-item">
+                        <span>אלצהיימר</span>
+                        <input type="checkbox" class="disorder-checkbox" onchange="selectFamilyDisease('${memberId}', 'alzheimer', this)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Follow-up Questions - Hidden initially -->
+            <div class="followup-questions" id="followup-questions-${memberId}" style="display: none;">
+                <div class="followup-question">
+                    <span class="followup-question-text">כמות בני משפחה חלו בשם המחלה:</span>
+                    <div class="followup-input-container">
+                        <input type="number" class="followup-input" min="1" max="10" placeholder="הכנס מספר" onchange="saveFollowupAnswer('${memberId}', 'quantity', this.value)">
+                    </div>
+                </div>
+                
+                <div class="followup-question">
+                    <span class="followup-question-text">מה גיל הצעיר מביניהם:</span>
+                    <div class="followup-input-container">
+                        <input type="number" class="followup-input" min="0" max="120" placeholder="הכנס גיל" onchange="saveFollowupAnswer('${memberId}', 'youngest_age', this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Questions Section -->
+            <div class="disorder-details" style="display: block;">
+                <div class="disorder-details-content">
+                    <div class="disorder-questions">
+                        <!-- Question 2: Familial Polyposis -->
+                        <div class="disorder-question">
+                            <div class="disorder-question-header">
+                                <span class="disorder-question-number">2.</span>
+                                <span class="disorder-question-text">פוליפוזיס משפחתית אצל ההורים, אחים של ${memberName}:</span>
+                            </div>
+                            <div class="disorder-options">
+                                <div class="disorder-option">
+                                    <span>פוליפוזיס משפחתית</span>
+                                    <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'familial-polyposis', 'polyposis', 'כן', this)">
+                                </div>
+                            </div>
+                            
+                            <!-- Sub-questions for polyposis -->
+                            <div id="${memberId}-polyposis-subquestions" style="display: none; margin-top: 20px; padding-right: 20px;">
+                                <div class="disorder-question" data-question="${memberId}-polyposis-diagnosed">
+                                    <div class="disorder-question-header">
+                                        <span class="disorder-question-number">2.1</span>
+                                        <span class="disorder-question-text">האם אובחנו אצלך פוליפים בדרכי העיכול?</span>
+                                    </div>
+                                    <div class="disorder-options">
+                                        <div class="disorder-option">
+                                            <span>כן</span>
+                                            <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'familial-polyposis', 'diagnosed', 'כן', this)">
+                                        </div>
+                                        <div class="disorder-option">
+                                            <span>לא</span>
+                                            <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'familial-polyposis', 'diagnosed', 'לא', this)">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="disorder-question" data-question="${memberId}-polyposis-monitoring">
+                                    <div class="disorder-question-header">
+                                        <span class="disorder-question-number">2.2</span>
+                                        <span class="disorder-question-text">האם אתה נמצא במעקב קבוע אצל רופא גסטרואנטרולוג?</span>
+                                    </div>
+                                    <div class="disorder-options">
+                                        <div class="disorder-option">
+                                            <span>כן</span>
+                                            <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'familial-polyposis', 'monitoring', 'כן', this)">
+                                        </div>
+                                        <div class="disorder-option">
+                                            <span>לא</span>
+                                            <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'familial-polyposis', 'monitoring', 'לא', this)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional diseases -->
+                        <div style="margin-top: 20px;">
+                            <h5 style="color: #2D3968; font-size: 18px; font-weight: 600; margin-bottom: 20px;">מחלות נוספות עבור ${memberName}:</h5>
+                            
+                            <!-- Heart Disease -->
+                            <div class="disorder-question" data-question="${memberId}-heart-disease">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-number">3.</span>
+                                    <span class="disorder-question-text">מחלת לב אצל שניים או יותר קרובי משפחה (הורים, אחים):</span>
+                                </div>
+                                <div class="disorder-options">
+                                    <div class="disorder-option">
+                                        <span>כן</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'general', 'heart-disease', 'כן', this)">
+                                    </div>
+                                    <div class="disorder-option">
+                                        <span>לא</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'general', 'heart-disease', 'לא', this)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Diabetes -->
+                            <div class="disorder-question" data-question="${memberId}-diabetes">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-number">4.</span>
+                                    <span class="disorder-question-text">סכרת אצל שניים או יותר קרובי משפחה (הורים, אחים):</span>
+                                </div>
+                                <div class="disorder-options">
+                                    <div class="disorder-option">
+                                        <span>כן</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'general', 'diabetes', 'כן', this)">
+                                    </div>
+                                    <div class="disorder-option">
+                                        <span>לא</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'general', 'diabetes', 'לא', this)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Polycystic Kidneys -->
+                            <div class="disorder-question">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-number">5.</span>
+                                    <span class="disorder-question-text">כליות פוליציסטיות אצל ההורים, אחים:</span>
+                                </div>
+                                <div class="disorder-options">
+                                    <div class="disorder-option">
+                                        <span>כן</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'polycystic-kidneys', 'polycystic', 'כן', this)">
+                                    </div>
+                                    <div class="disorder-option">
+                                        <span>לא</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'polycystic-kidneys', 'polycystic', 'לא', this)">
+                                    </div>
+                                </div>
+                                
+                                <!-- Sub-questions for polycystic kidneys -->
+                                <div id="${memberId}-polycystic-subquestions" style="display: none; margin-top: 20px; padding-right: 20px;">
+                                    <div class="disorder-question" data-question="${memberId}-polycystic-ultrasound">
+                                        <div class="disorder-question-header">
+                                            <span class="disorder-question-number">5.1</span>
+                                            <span class="disorder-question-text">האם עברת בדיקת אולטרה סאונד של הכליות בשנתיים האחרונות?</span>
+                                        </div>
+                                        <div class="disorder-options">
+                                            <div class="disorder-option">
+                                                <span>כן</span>
+                                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'polycystic-kidneys', 'ultrasound', 'כן', this)">
+                                            </div>
+                                            <div class="disorder-option">
+                                                <span>לא</span>
+                                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'polycystic-kidneys', 'ultrasound', 'לא', this)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="disorder-question" data-question="${memberId}-polycystic-cysts">
+                                        <div class="disorder-question-header">
+                                            <span class="disorder-question-number">5.2</span>
+                                            <span class="disorder-question-text">האם אובחנו אצלך ציסטות בכליות?</span>
+                                        </div>
+                                        <div class="disorder-options">
+                                            <div class="disorder-option">
+                                                <span>כן</span>
+                                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'polycystic-kidneys', 'cysts', 'כן', this)">
+                                            </div>
+                                            <div class="disorder-option">
+                                                <span>לא</span>
+                                                <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'polycystic-kidneys', 'cysts', 'לא', this)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Huntington -->
+                            <div class="disorder-question" data-question="${memberId}-huntington">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-number">6.</span>
+                                    <span class="disorder-question-text">הנטינגטון אצל הורים, אחים:</span>
+                                </div>
+                                <div class="disorder-options">
+                                    <div class="disorder-option">
+                                        <span>כן</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'general', 'huntington', 'כן', this)">
+                                    </div>
+                                    <div class="disorder-option">
+                                        <span>לא</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'general', 'huntington', 'לא', this)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Myotonic Dystrophy -->
+                            <div class="disorder-question" data-question="${memberId}-myotonic">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-number">7.</span>
+                                    <span class="disorder-question-text">מיוטוניק דיסטרופי אצל הורים, אחים:</span>
+                                </div>
+                                <div class="disorder-options">
+                                    <div class="disorder-option">
+                                        <span>כן</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'general', 'myotonic', 'כן', this)">
+                                    </div>
+                                    <div class="disorder-option">
+                                        <span>לא</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'general', 'myotonic', 'לא', this)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Celiac -->
+                            <div class="disorder-question" data-question="${memberId}-celiac">
+                                <div class="disorder-question-header">
+                                    <span class="disorder-question-number">8.</span>
+                                    <span class="disorder-question-text">צליאק אצל אחד או יותר מקרובי המשפחה (הורים, אחים):</span>
+                                </div>
+                                <div class="disorder-options">
+                                    <div class="disorder-option">
+                                        <span>כן</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'general', 'celiac', 'כן', this)">
+                                    </div>
+                                    <div class="disorder-option">
+                                        <span>לא</span>
+                                        <input type="checkbox" class="disorder-option-checkbox" onchange="selectFamilyDisorderOption('${memberId}', 'general', 'celiac', 'לא', this)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -972,4 +1272,27 @@ function createMemberGenericSection(memberId, questionId) {
     if (memberCheckboxItem) {
         memberCheckboxItem.insertAdjacentHTML('afterend', genericHTML);
     }
+}
+
+// Handle follow-up questions
+function saveFollowupAnswer(memberId, answerType, value) {
+    console.log(`Follow-up answer saved: Member ${memberId}, ${answerType}: ${value}`);
+    
+    // Initialize follow-up answers for this member if not exists
+    if (!formState.followupAnswers[memberId]) {
+        formState.followupAnswers[memberId] = {};
+    }
+    
+    // Save the answer
+    formState.followupAnswers[memberId][answerType] = value;
+    
+    // Update progress if needed
+    updateProgress();
+}
+
+// Create follow-up section dynamically for family members
+function createFollowupSection(memberId) {
+    // This function is no longer needed as follow-up questions are now included
+    // in the createMemberFamilyHistorySection function
+    return;
 }

@@ -693,6 +693,27 @@
                                 </div>
                             </div>
 
+                            <!-- Follow-up Questions - Hidden initially -->
+                            <div class="followup-questions" id="followup-questions-israel" style="display: none;">
+                                <div class="followup-question">
+                                    <div class="followup-question-header">
+                                        <span class="followup-question-text">כמות בני משפחה חלו בשם המחלה:</span>
+                                    </div>
+                                    <div class="followup-input-container">
+                                        <input type="number" class="followup-input" min="1" max="10" placeholder="הכנס מספר" onchange="saveFollowupAnswer('israel', 'quantity', this.value)">
+                                    </div>
+                                </div>
+                                
+                                <div class="followup-question">
+                                    <div class="followup-question-header">
+                                        <span class="followup-question-text">מה גיל הצעיר מביניהם:</span>
+                                    </div>
+                                    <div class="followup-input-container">
+                                        <input type="number" class="followup-input" min="0" max="120" placeholder="הכנס גיל" onchange="saveFollowupAnswer('israel', 'youngest_age', this.value)">
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Additional Questions Section -->
                             <div class="disorder-details" style="display: block;">
                                 <div class="disorder-details-content">
