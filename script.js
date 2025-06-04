@@ -569,7 +569,7 @@ function showTextInputForQuestion(memberId, disorderId, questionId) {
     const existingInput = document.getElementById(inputId);
     
     if (existingInput) {
-        existingInput.style.display = 'block';
+        existingInput.style.display = 'flex';
         return;
     }
     
@@ -580,33 +580,35 @@ function showTextInputForQuestion(memberId, disorderId, questionId) {
     if (questionId === 'hospitalization') {
         placeholder = 'מה משך האשפוז?';
         inputHTML = `
-            <div class="disorder-input" id="${inputId}" style="margin-top: 15px;">
+            <div class="disorder-input" id="${inputId}" style="margin-top: 15px; display: flex; justify-content: flex-start; direction: rtl; width: 100%; text-align: right;">
                 <input type="text" 
                        class="disorder-text-input" 
                        placeholder="${placeholder}"
+                       style="text-align: right; direction: rtl; margin-right: 0; margin-left: auto;"
                        onchange="saveDisorderText('${memberId}', '${disorderId}', '${questionId}', this.value)">
             </div>
         `;
     } else if (questionId === 'disability') {
         placeholder = 'כמה אחוזי נכות נקבעו לך?';
         inputHTML = `
-            <div class="disorder-percentage" id="${inputId}" style="margin-top: 15px;">
+            <div class="disorder-percentage" id="${inputId}" style="margin-top: 15px; display: flex; justify-content: flex-start; direction: rtl; width: 100%; text-align: right; align-items: center; gap: 10px;">
+                <span style="order: 2;">%</span>
                 <input type="number" 
                        class="disorder-text-input" 
                        placeholder="${placeholder}"
                        min="0" 
                        max="100"
+                       style="text-align: right; direction: rtl; order: 1;"
                        onchange="saveDisorderText('${memberId}', '${disorderId}', '${questionId}', this.value)">
-                <span>%</span>
             </div>
         `;
     }
     
     if (inputHTML) {
-        // Find the question container and add the input
+        // Find the question container and add the input inside it at the end
         const questionElement = document.querySelector(`[data-question="${memberId}-${disorderId}-${questionId}"]`);
         if (questionElement) {
-            questionElement.insertAdjacentHTML('afterend', inputHTML);
+            questionElement.insertAdjacentHTML('beforeend', inputHTML);
         }
     }
 }
