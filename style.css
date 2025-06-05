@@ -1996,3 +1996,82 @@ input:checked + .slider:before {
         gap: 10px;
     }
 }
+
+/* Table Follow-up Rows */
+.followup-row {
+    background: #F8F9FA !important;
+    border-left: 4px solid #59D189;
+}
+
+.followup-row td {
+    padding: 10px 8px !important;
+    font-size: 12px !important;
+    vertical-align: top !important;
+}
+
+.followup-row td:first-child {
+    font-weight: 600 !important;
+    color: #2D3968 !important;
+    background: #E8F4EA;
+}
+
+.table-disorders-container,
+.table-diseases-container,
+.table-neuro-container {
+    max-height: 150px;
+    overflow-y: auto;
+    text-align: right;
+    direction: rtl;
+    padding: 5px;
+}
+
+.table-disorder-checkbox,
+.table-disease-checkbox,
+.table-neuro-checkbox {
+    display: flex !important;
+    align-items: center;
+    gap: 5px;
+    margin: 3px 0 !important;
+    font-size: 11px !important;
+    cursor: pointer;
+    direction: rtl;
+    justify-content: flex-start;
+}
+
+.table-disorder-checkbox input,
+.table-disease-checkbox input,
+.table-neuro-checkbox input {
+    width: 14px !important;
+    height: 14px !important;
+    margin: 0 !important;
+    accent-color: #59D189;
+}
+
+.disorder-details-דיכאון,
+.disorder-details-חרדה,
+.disorder-details-ADHD {
+    background: white;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+/* Responsive table follow-ups */
+@media (max-width: 768px) {
+    .followup-row td {
+        padding: 8px 5px !important;
+        font-size: 10px !important;
+    }
+    
+    .table-disorders-container,
+    .table-diseases-container,
+    .table-neuro-container {
+        max-height: 100px;
+        font-size: 10px;
+    }
+    
+    .table-disorder-checkbox,
+    .table-disease-checkbox,
+    .table-neuro-checkbox {
+        font-size: 9px !important;
+    }
+}
