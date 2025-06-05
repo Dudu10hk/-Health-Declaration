@@ -2075,3 +2075,403 @@ input:checked + .slider:before {
         font-size: 9px !important;
     }
 }
+
+/* Enhanced Scrollable Table Mode */
+.table-scroll-container {
+    position: relative;
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 6px 14px rgba(45, 57, 104, 0.06);
+    border: 1px solid rgba(45, 57, 104, 0.14);
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.table-progress-bar {
+    height: 4px;
+    background: #E8F2F8;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.table-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2E8BC0 0%, #59D189 100%);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.table-navigation {
+    background: #F8F9FA;
+    padding: 12px 20px;
+    border-bottom: 1px solid #E2E3EA;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    direction: rtl;
+}
+
+.table-nav-title {
+    color: #2D3968;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.table-member-navigator {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    direction: ltr;
+}
+
+.member-nav-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #2E8BC0;
+    background: white;
+    color: #2E8BC0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.member-nav-btn:hover {
+    background: #E8F2F8;
+    transform: translateY(-1px);
+}
+
+.member-nav-btn.active {
+    background: #2E8BC0;
+    color: white;
+}
+
+.member-nav-btn.current {
+    background: #59D189;
+    color: white;
+    border-color: #59D189;
+}
+
+.nav-arrow {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #2E8BC0;
+    background: white;
+    color: #2E8BC0;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.nav-arrow:hover {
+    background: #2E8BC0;
+    color: white;
+}
+
+.nav-arrow:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.table-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.table-scroll-area {
+    overflow-x: auto;
+    overflow-y: visible;
+    position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: #2E8BC0 #E8F2F8;
+}
+
+.table-scroll-area::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-scroll-area::-webkit-scrollbar-track {
+    background: #E8F2F8;
+}
+
+.table-scroll-area::-webkit-scrollbar-thumb {
+    background: #2E8BC0;
+    border-radius: 4px;
+}
+
+.enhanced-questions-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    direction: rtl;
+    min-width: 800px;
+}
+
+.enhanced-questions-table thead th {
+    background: #E8F2F8;
+    color: #2D3968;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 2px solid #2E8BC0;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    white-space: nowrap;
+}
+
+.enhanced-questions-table thead th:first-child {
+    position: sticky;
+    right: 0;
+    z-index: 10;
+    background: #D4E6F0;
+    text-align: right;
+    padding-right: 20px;
+    min-width: 300px;
+    max-width: 300px;
+    box-shadow: 2px 0 4px rgba(46, 139, 192, 0.1);
+}
+
+.enhanced-questions-table tbody tr {
+    border-bottom: 1px solid #E2E3EA;
+    transition: background-color 0.2s ease;
+}
+
+.enhanced-questions-table tbody tr:hover {
+    background: #F8F9FA;
+}
+
+.enhanced-questions-table tbody td {
+    padding: 12px 8px;
+    text-align: center;
+    vertical-align: middle;
+    border-left: 1px solid #E2E3EA;
+    white-space: nowrap;
+}
+
+.enhanced-questions-table tbody td:first-child {
+    position: sticky;
+    right: 0;
+    z-index: 5;
+    background: white;
+    text-align: right;
+    padding-right: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2D3968;
+    line-height: 1.4;
+    min-width: 300px;
+    max-width: 300px;
+    box-shadow: 2px 0 4px rgba(46, 139, 192, 0.1);
+    white-space: normal;
+}
+
+.enhanced-questions-table tbody tr:hover td:first-child {
+    background: #F8F9FA;
+}
+
+/* Scroll indicators */
+.scroll-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 60px;
+    background: linear-gradient(90deg, transparent, rgba(46, 139, 192, 0.1));
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2E8BC0;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 8;
+}
+
+.scroll-indicator.left {
+    left: 300px;
+    background: linear-gradient(90deg, rgba(46, 139, 192, 0.1), transparent);
+}
+
+.scroll-indicator.right {
+    right: 10px;
+    background: linear-gradient(90deg, transparent, rgba(46, 139, 192, 0.1));
+}
+
+.scroll-indicator.show {
+    opacity: 1;
+}
+
+/* Member column headers with member info */
+.member-column-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 120px;
+    padding: 8px;
+}
+
+.member-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #59D189;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.member-name-small {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2D3968;
+}
+
+.member-role-small {
+    font-size: 10px;
+    color: #666;
+    opacity: 0.8;
+}
+
+/* Enhanced radio buttons for table */
+.enhanced-table-radio-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    align-items: center;
+}
+
+.enhanced-table-radio-option {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.enhanced-table-radio-option input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    appearance: none;
+    border: 2px solid #2E8BC0;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.enhanced-table-radio-option input[type="radio"]:checked {
+    background: #59D189;
+    border-color: #59D189;
+}
+
+.enhanced-table-radio-option input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.enhanced-table-radio-option label {
+    color: #2D3968;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.enhanced-table-radio-option:hover input[type="radio"] {
+    border-color: #59D189;
+    transform: scale(1.1);
+}
+
+/* Member progress indicators */
+.member-progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #E2E3EA;
+    margin: 0 auto;
+    transition: background 0.2s ease;
+}
+
+.member-progress-dot.completed {
+    background: #59D189;
+}
+
+.member-progress-dot.partial {
+    background: #FFA726;
+}
+
+/* Auto-scroll smooth behavior */
+.table-scroll-area {
+    scroll-behavior: smooth;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+    .enhanced-questions-table thead th:first-child,
+    .enhanced-questions-table tbody td:first-child {
+        min-width: 250px;
+        max-width: 250px;
+    }
+    
+    .member-column-header {
+        min-width: 100px;
+        padding: 6px;
+    }
+    
+    .table-member-navigator {
+        gap: 6px;
+    }
+    
+    .member-nav-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .enhanced-questions-table thead th:first-child,
+    .enhanced-questions-table tbody td:first-child {
+        min-width: 200px;
+        max-width: 200px;
+    }
+    
+    .table-navigation {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 15px;
+    }
+    
+    .table-member-navigator {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .scroll-indicator.left {
+        left: 200px;
+    }
+}

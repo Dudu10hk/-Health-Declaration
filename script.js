@@ -1999,32 +1999,30 @@ function saveNeurologicalInput(memberId, disorderId, questionId, value) {
 
 // New functions for table mode
 function toggleViewMode() {
-    const normalMode = document.getElementById('normal-mode');
-    const tableMode = document.getElementById('table-mode');
-    const switchText = document.getElementById('switch-text');
+    const normalMode = document.querySelector('.normal-mode');
+    const tableMode = document.querySelector('.table-mode');
+    const switchBtn = document.querySelector('.floating-switch');
     
-    formState.currentViewMode = formState.currentViewMode === 'normal' ? 'table' : 'normal';
-    
-    if (formState.currentViewMode === 'table') {
-        normalMode.classList.add('hidden');
-        tableMode.classList.add('active');
-        switchText.textContent = 'מצב רגיל';
+    if (normalMode.style.display === 'none') {
+        // Switch to normal mode
+        normalMode.style.display = 'block';
+        tableMode.style.display = 'none';
+        switchBtn.innerHTML = '<span class="switch-icon">📊</span> מצב טבלה';
         
-        // Sync data from normal to table mode
-        syncNormalToTable();
-        
-        // Setup table mode event listeners
-        setupTableModeListeners();
-    } else {
-        normalMode.classList.remove('hidden');
-        tableMode.classList.remove('active');
-        switchText.textContent = 'מצב טבלה';
-        
-        // Sync data from table to normal mode
+        // Sync data from table to normal
         syncTableToNormal();
+    } else {
+        // Switch to table mode
+        normalMode.style.display = 'none';
+        tableMode.style.display = 'block';
+        switchBtn.innerHTML = '<span class="switch-icon">📋</span> מצב רגיל';
+        
+        // Initialize enhanced table
+        initializeEnhancedTable();
+        
+        // Sync data from normal to table
+        syncNormalToTable();
     }
-    
-    updateProgress();
 }
 
 // Sync data from normal mode to table mode
@@ -2477,4 +2475,481 @@ function handleTableNeurologicalSelection(memberId, disorder, checkbox) {
 // Handle table hospitalization text
 function handleTableHospitalizationText(memberId, text) {
     console.log(`Hospitalization details for ${memberId}: ${text}`);
+}
+
+// Enhanced table mode variables
+let currentMemberView = 0;
+let totalMembersInView = 4;
+let tableScrollPosition = 0;
+
+function initializeEnhancedTable() {
+    const tableMode = document.querySelector('.table-mode');
+    tableMode.innerHTML = createEnhancedTableHTML();
+    setupEnhancedTableListeners();
+    updateTableProgress();
+}
+
+function createEnhancedTableHTML() {
+    const familyMembers = [
+        { id: 'israel', name: 'ישראל', role: 'מבוטח', avatar: 'י' },
+        { id: 'sara', name: 'שרה', role: 'בת זוג', avatar: 'ש' },
+        { id: 'david', name: 'דוד', role: 'ילד', avatar: 'ד' },
+        { id: 'michal', name: 'מיכל', role: 'ילד', avatar: 'מ' },
+        { id: 'yosef', name: 'יוסף', role: 'ילד', avatar: 'י' },
+        { id: 'rachel', name: 'רחל', role: 'ילד', avatar: 'ר' },
+        { id: 'aaron', name: 'אהרון', role: 'ילד', avatar: 'א' },
+        { id: 'tamar', name: 'תמר', role: 'ילד', avatar: 'ת' }
+    ];
+
+    let tableHTML = `
+        <!-- BMI Table Section -->
+        <div class="table-scroll-container">
+            <div class="table-progress-bar">
+                <div class="table-progress-fill" id="bmi-table-progress-fill"></div>
+            </div>
+            
+            <div class="table-wrapper">
+                <div class="table-scroll-area" id="bmi-table-scroll-area">
+                    <table class="enhanced-questions-table" id="bmi-table">
+                        <thead>
+                            <tr>
+                                <th style="position: sticky; right: 0; z-index: 10; background: #D4E6F0; min-width: 300px;">נתוני BMI</th>`;
+
+    // Add member columns for BMI
+    familyMembers.forEach(member => {
+        tableHTML += `
+                                <th>
+                                    <div class="member-column-header">
+                                        <div class="member-avatar" style="background: ${getMemberColor(member.id)};">${member.avatar}</div>
+                                        <div class="member-name-small">${member.name}</div>
+                                        <div class="member-role-small">${member.role}</div>
+                                    </div>
+                                </th>`;
+    });
+
+    tableHTML += `
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="position: sticky; right: 0; z-index: 5; background: white; min-width: 300px; font-weight: 500; color: #2D3968; padding-right: 20px;">גובה (ס"מ)</td>`;
+
+    familyMembers.forEach(member => {
+        tableHTML += `
+                                <td>
+                                    <input type="number" 
+                                           class="bmi-table-input" 
+                                           id="height-${member.id}" 
+                                           placeholder="170"
+                                           onchange="updateBMITableData('${member.id}', 'height', this.value)">
+                                </td>`;
+    });
+
+    tableHTML += `
+                            </tr>
+                            <tr>
+                                <td style="position: sticky; right: 0; z-index: 5; background: white; min-width: 300px; font-weight: 500; color: #2D3968; padding-right: 20px;">משקל (ק"ג)</td>`;
+
+    familyMembers.forEach(member => {
+        tableHTML += `
+                                <td>
+                                    <input type="number" 
+                                           class="bmi-table-input" 
+                                           id="weight-${member.id}" 
+                                           placeholder="70"
+                                           onchange="updateBMITableData('${member.id}', 'weight', this.value)">
+                                </td>`;
+    });
+
+    tableHTML += `
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Questions Table Section -->
+        <div class="table-scroll-container">
+            <div class="table-progress-bar">
+                <div class="table-progress-fill" id="table-progress-fill"></div>
+            </div>
+            
+            <div class="table-wrapper">
+                <div class="table-scroll-area" id="table-scroll-area">
+                    <table class="enhanced-questions-table" id="enhanced-questions-table">
+                        <thead>
+                            <tr>
+                                <th style="position: sticky; right: 0; z-index: 10; background: #D4E6F0; min-width: 300px;">שאלה</th>`;
+
+    // Add member columns for questions
+    familyMembers.forEach(member => {
+        tableHTML += `
+                                <th>
+                                    <div class="member-column-header">
+                                        <div class="member-avatar" style="background: ${getMemberColor(member.id)};">${member.avatar}</div>
+                                        <div class="member-name-small">${member.name}</div>
+                                        <div class="member-role-small">${member.role}</div>
+                                        <div class="member-progress-dot" id="progress-${member.id}"></div>
+                                    </div>
+                                </th>`;
+    });
+
+    tableHTML += `
+                            </tr>
+                        </thead>
+                        <tbody id="questions-tbody">`;
+
+    // Add question rows
+    const questions = [
+        'בריאות נפש',
+        'מחלות תורשתיות במשפחה', 
+        'בעיות נוירולוגיות',
+        'אשפוזים'
+    ];
+
+    questions.forEach((question, qIndex) => {
+        const questionId = `question-${qIndex + 1}`;
+        tableHTML += `
+                            <tr data-question="${questionId}">
+                                <td style="position: sticky; right: 0; z-index: 5; background: white; min-width: 300px; font-weight: 500; color: #2D3968; padding-right: 20px;">${question}</td>`;
+
+        familyMembers.forEach(member => {
+            tableHTML += `
+                                <td>
+                                    <div class="enhanced-table-radio-group">
+                                        <div class="enhanced-table-radio-option">
+                                            <input type="radio" 
+                                                   id="${questionId}-${member.id}-yes" 
+                                                   name="${questionId}-${member.id}" 
+                                                   value="yes" 
+                                                   onchange="handleEnhancedTableAnswer('${questionId}', '${member.id}', 'yes')">
+                                            <label for="${questionId}-${member.id}-yes">כן</label>
+                                        </div>
+                                        <div class="enhanced-table-radio-option">
+                                            <input type="radio" 
+                                                   id="${questionId}-${member.id}-no" 
+                                                   name="${questionId}-${member.id}" 
+                                                   value="no" 
+                                                   onchange="handleEnhancedTableAnswer('${questionId}', '${member.id}', 'no')">
+                                            <label for="${questionId}-${member.id}-no">לא</label>
+                                        </div>
+                                    </div>
+                                </td>`;
+        });
+
+        tableHTML += `
+                            </tr>`;
+    });
+
+    tableHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>`;
+
+    return tableHTML;
+}
+
+function updateBMITableData(memberId, field, value) {
+    console.log(`BMI Update: ${memberId} ${field} = ${value}`);
+    // Store BMI data for sync with normal mode
+    if (!window.bmiTableData) {
+        window.bmiTableData = {};
+    }
+    if (!window.bmiTableData[memberId]) {
+        window.bmiTableData[memberId] = {};
+    }
+    window.bmiTableData[memberId][field] = value;
+}
+
+function setupEnhancedTableListeners() {
+    // Set up auto-scroll on horizontal scroll
+    const scrollArea = document.getElementById('table-scroll-area');
+    if (scrollArea) {
+        scrollArea.addEventListener('scroll', function() {
+            // Simple scroll tracking without navigation indicators
+            console.log('Table scrolled');
+        });
+    }
+}
+
+function updateTableProgress() {
+    // Calculate progress based on answered questions
+    const totalQuestions = 4 * 8; // 4 questions × 8 members
+    let answeredQuestions = 0;
+    
+    // Count answered radio buttons
+    const allRadios = document.querySelectorAll('.enhanced-questions-table input[type="radio"]:checked');
+    answeredQuestions = allRadios.length;
+    
+    const progressPercent = (answeredQuestions / totalQuestions) * 100;
+    const progressFill = document.getElementById('table-progress-fill');
+    if (progressFill) {
+        progressFill.style.width = progressPercent + '%';
+    }
+}
+
+// Remove unused navigation functions
+/* 
+function updateScrollIndicators() { ... }
+function updateCurrentMemberHighlight() { ... }
+function updateNavigationButtons() { ... }
+function scrollToMember(memberIndex) { ... }
+function scrollToPreviousMember() { ... }
+function scrollToNextMember() { ... }
+*/
+
+function handleEnhancedTableAnswer(questionId, memberId, answer) {
+    console.log(`Answer: ${questionId}, ${memberId}, ${answer}`);
+    
+    // Update member progress
+    updateMemberProgress(memberId);
+    
+    // Update overall progress
+    updateTableProgress();
+    
+    // Handle follow-up questions
+    if (answer === 'yes') {
+        createInlineFollowupQuestion(questionId, memberId);
+    } else {
+        removeInlineFollowupQuestion(questionId, memberId);
+    }
+}
+
+function updateMemberProgress(memberId) {
+    const progressDot = document.getElementById(`progress-${memberId}`);
+    if (!progressDot) return;
+    
+    const questions = ['mental-health', 'family-history', 'neurological', 'hospitalizations'];
+    let answeredCount = 0;
+    
+    questions.forEach(questionId => {
+        if (tableAnswers[questionId] && tableAnswers[questionId][memberId]) {
+            answeredCount++;
+        }
+    });
+    
+    if (answeredCount === 0) {
+        progressDot.className = 'member-progress-dot';
+    } else if (answeredCount === questions.length) {
+        progressDot.className = 'member-progress-dot completed';
+    } else {
+        progressDot.className = 'member-progress-dot partial';
+    }
+}
+
+function handleTableAutoAnswer() {
+    const checkbox = document.getElementById('tableAutoAnswerToggle');
+    if (!checkbox) return;
+    
+    const isChecked = checkbox.checked;
+    const allMembers = ['israel', 'sara', 'david', 'michal', 'yosef', 'rachel', 'avraham', 'rivka'];
+    const questions = ['mental-health', 'family-history', 'neurological', 'hospitalizations'];
+    
+    if (isChecked) {
+        // Fill all with "no"
+        questions.forEach(questionId => {
+            allMembers.forEach(memberId => {
+                const noRadio = document.getElementById(`${questionId}_${memberId}_no`);
+                if (noRadio) {
+                    noRadio.checked = true;
+                    handleEnhancedTableAnswer(questionId, memberId, 'no');
+                }
+            });
+        });
+    } else {
+        // Clear all answers
+        questions.forEach(questionId => {
+            allMembers.forEach(memberId => {
+                const yesRadio = document.getElementById(`${questionId}_${memberId}_yes`);
+                const noRadio = document.getElementById(`${questionId}_${memberId}_no`);
+                if (yesRadio) yesRadio.checked = false;
+                if (noRadio) noRadio.checked = false;
+                
+                if (tableAnswers[questionId]) {
+                    delete tableAnswers[questionId][memberId];
+                }
+                
+                updateMemberProgress(memberId);
+            });
+        });
+    }
+}
+
+function getMemberColor(memberId) {
+    const colors = {
+        'israel': '#2E8BC0',
+        'sara': '#59D189', 
+        'david': '#FFA726',
+        'michal': '#AB47BC',
+        'yosef': '#FF7043',
+        'rachel': '#26A69A',
+        'aaron': '#42A5F5',
+        'tamar': '#EF5350'
+    };
+    return colors[memberId] || '#2E8BC0';
+}
+
+function createInlineFollowupQuestion(questionId, memberId) {
+    // First remove any existing follow-up
+    removeInlineFollowupQuestion(questionId, memberId);
+    
+    const questionsTable = document.getElementById('enhanced-questions-table');
+    const mainRow = questionsTable.querySelector(`tr[data-question="${questionId}"]`);
+    if (!mainRow) {
+        console.log(`Row not found for ${questionId}`);
+        return;
+    }
+    
+    // Create follow-up row
+    const followupRow = document.createElement('tr');
+    followupRow.className = 'followup-row';
+    followupRow.setAttribute('data-followup', `${questionId}-${memberId}`);
+    
+    let followupContent = '';
+    const familyMembers = ['israel', 'sara', 'david', 'michal', 'yosef', 'rachel', 'aaron', 'tamar'];
+    
+    // Determine follow-up content based on question
+    if (questionId === 'question-1') { // בריאות נפש
+        followupContent = `
+            <td style="position: sticky; right: 0; z-index: 5; background: #E8F4EA; padding-right: 20px; font-weight: 600; color: #2D3968; font-size: 14px;">
+                שאלות המשך - ${getMemberDisplayName(memberId)}
+            </td>`;
+        
+        familyMembers.forEach(member => {
+            if (member === memberId) {
+                followupContent += `
+                    <td style="background: #E8F4EA; padding: 8px; font-size: 12px;">
+                        <div style="text-align: right; direction: rtl; max-height: 120px; overflow-y: auto;">
+                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
+                                <input type="checkbox" id="${questionId}-${memberId}-depression" 
+                                       onchange="handleTableDisorderSelection('${memberId}', 'depression', this)">
+                                <label for="${questionId}-${memberId}-depression">דיכאון</label>
+                            </div>
+                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
+                                <input type="checkbox" id="${questionId}-${memberId}-anxiety" 
+                                       onchange="handleTableDisorderSelection('${memberId}', 'anxiety', this)">
+                                <label for="${questionId}-${memberId}-anxiety">חרדה</label>
+                            </div>
+                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
+                                <input type="checkbox" id="${questionId}-${memberId}-adhd" 
+                                       onchange="handleTableDisorderSelection('${memberId}', 'adhd', this)">
+                                <label for="${questionId}-${memberId}-adhd">ADHD</label>
+                            </div>
+                        </div>
+                    </td>`;
+            } else {
+                followupContent += '<td style="background: #F8F9FA;"></td>';
+            }
+        });
+        
+    } else if (questionId === 'question-2') { // מחלות תורשתיות
+        followupContent = `
+            <td style="position: sticky; right: 0; z-index: 5; background: #E8F4EA; padding-right: 20px; font-weight: 600; color: #2D3968; font-size: 14px;">
+                מחלות תורשתיות - ${getMemberDisplayName(memberId)}
+            </td>`;
+            
+        familyMembers.forEach(member => {
+            if (member === memberId) {
+                followupContent += `
+                    <td style="background: #E8F4EA; padding: 8px; font-size: 12px;">
+                        <div style="text-align: right; direction: rtl; max-height: 120px; overflow-y: auto;">
+                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
+                                <input type="checkbox" id="${questionId}-${memberId}-diabetes" 
+                                       onchange="handleTableFamilyDiseaseSelection('${memberId}', 'diabetes', this)">
+                                <label for="${questionId}-${memberId}-diabetes">סוכרת</label>
+                            </div>
+                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
+                                <input type="checkbox" id="${questionId}-${memberId}-heart" 
+                                       onchange="handleTableFamilyDiseaseSelection('${memberId}', 'heart', this)">
+                                <label for="${questionId}-${memberId}-heart">מחלות לב</label>
+                            </div>
+                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
+                                <input type="checkbox" id="${questionId}-${memberId}-cancer" 
+                                       onchange="handleTableFamilyDiseaseSelection('${memberId}', 'cancer', this)">
+                                <label for="${questionId}-${memberId}-cancer">סרטן</label>
+                            </div>
+                        </div>
+                    </td>`;
+            } else {
+                followupContent += '<td style="background: #F8F9FA;"></td>';
+            }
+        });
+        
+    } else if (questionId === 'question-3') { // בעיות נוירולוגיות
+        followupContent = `
+            <td style="position: sticky; right: 0; z-index: 5; background: #E8F4EA; padding-right: 20px; font-weight: 600; color: #2D3968; font-size: 14px;">
+                בעיות נוירולוגיות - ${getMemberDisplayName(memberId)}
+            </td>`;
+            
+        familyMembers.forEach(member => {
+            if (member === memberId) {
+                followupContent += `
+                    <td style="background: #E8F4EA; padding: 8px; font-size: 12px;">
+                        <div style="text-align: right; direction: rtl; max-height: 120px; overflow-y: auto;">
+                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
+                                <input type="checkbox" id="${questionId}-${memberId}-epilepsy" 
+                                       onchange="handleTableNeurologicalSelection('${memberId}', 'epilepsy', this)">
+                                <label for="${questionId}-${memberId}-epilepsy">אפילפסיה</label>
+                            </div>
+                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
+                                <input type="checkbox" id="${questionId}-${memberId}-migraine" 
+                                       onchange="handleTableNeurologicalSelection('${memberId}', 'migraine', this)">
+                                <label for="${questionId}-${memberId}-migraine">מיגרנה</label>
+                            </div>
+                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
+                                <input type="checkbox" id="${questionId}-${memberId}-stroke" 
+                                       onchange="handleTableNeurologicalSelection('${memberId}', 'stroke', this)">
+                                <label for="${questionId}-${memberId}-stroke">שבץ</label>
+                            </div>
+                        </div>
+                    </td>`;
+            } else {
+                followupContent += '<td style="background: #F8F9FA;"></td>';
+            }
+        });
+        
+    } else if (questionId === 'question-4') { // אשפוזים
+        followupContent = `
+            <td style="position: sticky; right: 0; z-index: 5; background: #E8F4EA; padding-right: 20px; font-weight: 600; color: #2D3968; font-size: 14px;">
+                פרטי אשפוזים - ${getMemberDisplayName(memberId)}
+            </td>`;
+            
+        familyMembers.forEach(member => {
+            if (member === memberId) {
+                followupContent += `
+                    <td style="background: #E8F4EA; padding: 8px;">
+                        <textarea 
+                               placeholder="פרט את האשפוזים..." 
+                               style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; text-align: right; direction: rtl; font-size: 11px; resize: vertical; min-height: 40px;"
+                               onchange="handleTableHospitalizationText('${memberId}', this.value)"></textarea>
+                    </td>`;
+            } else {
+                followupContent += '<td style="background: #F8F9FA;"></td>';
+            }
+        });
+    }
+    
+    followupRow.innerHTML = followupContent;
+    
+    // Insert after the main row
+    const tbody = mainRow.parentNode;
+    const nextRow = mainRow.nextSibling;
+    if (nextRow) {
+        tbody.insertBefore(followupRow, nextRow);
+    } else {
+        tbody.appendChild(followupRow);
+    }
+    
+    console.log(`Follow-up created for ${questionId}, ${memberId}`);
+}
+
+function removeInlineFollowupQuestion(questionId, memberId) {
+    const existingFollowup = document.querySelector(`tr[data-followup="${questionId}-${memberId}"]`);
+    if (existingFollowup) {
+        existingFollowup.remove();
+        console.log(`Follow-up removed for ${questionId}, ${memberId}`);
+    }
 }
