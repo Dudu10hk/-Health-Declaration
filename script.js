@@ -1,10 +1,32 @@
 // Global state management
 let formState = {
+    // Original structure for normal mode compatibility
     answers: {},
     selectedMembers: {},
     memberDetails: {},
     selectedDisorders: {},
-    followupAnswers: {} // Added for follow-up questions
+    followupAnswers: {},
+    
+    // New structure for enhanced functionality
+    questions: {
+        1: { answered: false, answer: null, selectedMembers: [] },
+        2: { answered: false, answer: null, selectedMembers: [] },
+        3: { answered: false, answer: null, selectedMembers: [] },
+        4: { answered: false, answer: null, selectedMembers: [] }
+    },
+    members: {
+        'israel': { selected: false, details: {} },
+        'sara': { selected: false, details: {} },
+        'david': { selected: false, details: {} },
+        'michal': { selected: false, details: {} }
+    },
+    disorders: {},
+    familyHistory: {},
+    neurological: {},
+    autoAnswerEnabled: false,
+    currentViewMode: 'normal',
+    tableAnswers: {},
+    tableFollowupAnswers: {}
 };
 
 // Family members data - updated to new family
@@ -66,6 +88,7 @@ function initializeForm() {
     formState.selectedMembers = {};
     formState.memberDetails = {};
     formState.selectedDisorders = {};
+    formState.followupAnswers = {};
     
     // Remove any pre-selected states from buttons
     document.querySelectorAll('.answer-btn').forEach(btn => {
@@ -111,34 +134,60 @@ function setupEventListeners() {
 }
 
 function answerQuestion(questionId, answer) {
-    console.log(`Question ${questionId} answered: ${answer}`);
+    console.log(`Answering question ${questionId} with: ${answer}`);
     
-    // Update form state
+    // Save answer to form state
     formState.answers[questionId] = answer;
     
-    // Update UI
+    // Update button visual states
     updateQuestionButtons(questionId, answer);
     
     // Show/hide member selection based on answer
     const membersSection = document.getElementById(`members-${questionId}`);
-    console.log(`Looking for members section: members-${questionId}`, membersSection);
-    
-    if (membersSection) {
-        if (answer === 'yes') {
-            membersSection.style.display = 'block';
-            console.log(`Showing members section for question ${questionId}`);
-        } else {
-            membersSection.style.display = 'none';
-            console.log(`Hiding members section for question ${questionId}`);
-            // Clear member selections for this question
-            clearMemberSelectionsForQuestion(questionId);
+    if (answer === 'yes') {
+        membersSection.style.display = 'block';
+        
+        // Initialize member tracking for this question if not exists
+        if (!formState.selectedMembers[questionId]) {
+            formState.selectedMembers[questionId] = [];
         }
     } else {
-        console.error(`Members section not found for question ${questionId}`);
+        membersSection.style.display = 'none';
+        
+        // Clear any selected members for this question
+        if (formState.selectedMembers[questionId]) {
+            formState.selectedMembers[questionId] = [];
+        }
+        
+        // Hide all member detail sections for this question
+        const memberDetailsSelectors = [
+            `#member-israel-disorders`,
+            `#member-sara-disorders`, 
+            `#member-david-disorders`,
+            `#member-michal-disorders`,
+            `#member-israel-family-history`,
+            `#member-israel-neurological`
+        ];
+        
+        memberDetailsSelectors.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.display = 'none';
+            }
+        });
+        
+        // Clear member checkboxes
+        const memberCheckboxes = document.querySelectorAll(`#members-${questionId} .member-checkbox`);
+        memberCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+            updateCheckboxVisual(checkbox);
+        });
     }
     
-    // Update progress
+    // Update overall progress
     updateProgress();
+    
+    console.log('Current formState:', formState);
 }
 
 function updateQuestionButtons(questionId, answer) {
@@ -160,76 +209,101 @@ function updateQuestionButtons(questionId, answer) {
     }
 }
 
+// Handle member selection
 function selectMember(questionId, memberId, checkbox) {
-    console.log(`Member ${memberId} for question ${questionId}: ${checkbox.checked}`);
+    console.log(`Selecting member ${memberId} for question ${questionId}:`, checkbox.checked);
     
-    // Update form state
+    // Initialize arrays if they don't exist
     if (!formState.selectedMembers[questionId]) {
-        formState.selectedMembers[questionId] = {};
+        formState.selectedMembers[questionId] = [];
     }
-    formState.selectedMembers[questionId][memberId] = checkbox.checked;
+    
+    // Update member selection state
+    if (checkbox.checked) {
+        // Add member to selected list if not already there
+        if (!formState.selectedMembers[questionId].includes(memberId)) {
+            formState.selectedMembers[questionId].push(memberId);
+        }
+        
+        // Show member details section based on question type
+        let detailsSelector = '';
+        switch(questionId) {
+            case 1:
+                detailsSelector = `#member-${memberId}-disorders`;
+                // Create disorders section if it doesn't exist
+                if (!document.querySelector(detailsSelector)) {
+                    createMemberDisordersSection(memberId);
+                }
+                break;
+            case 2:
+                detailsSelector = `#member-${memberId}-family-history`;
+                // Create family history section if it doesn't exist
+                if (!document.querySelector(detailsSelector)) {
+                    createMemberFamilyHistorySection(memberId);
+                }
+                break;
+            case 3:
+                detailsSelector = `#member-${memberId}-neurological`;
+                break;
+            case 4:
+                detailsSelector = `#member-${memberId}-hospitalizations`;
+                // Create generic section for hospitalizations if needed
+                if (!document.querySelector(detailsSelector)) {
+                    createMemberGenericSection(memberId, questionId);
+                }
+                break;
+        }
+        
+        const detailsSection = document.querySelector(detailsSelector);
+        if (detailsSection) {
+            detailsSection.style.display = 'block';
+            console.log(`Showing details section: ${detailsSelector}`);
+        } else {
+            console.log(`Details section not found: ${detailsSelector}`);
+        }
+    } else {
+        // Remove member from selected list
+        const index = formState.selectedMembers[questionId].indexOf(memberId);
+        if (index > -1) {
+            formState.selectedMembers[questionId].splice(index, 1);
+        }
+        
+        // Hide member details section
+        let detailsSelector = '';
+        switch(questionId) {
+            case 1:
+                detailsSelector = `#member-${memberId}-disorders`;
+                break;
+            case 2:
+                detailsSelector = `#member-${memberId}-family-history`;
+                break;
+            case 3:
+                detailsSelector = `#member-${memberId}-neurological`;
+                break;
+            case 4:
+                detailsSelector = `#member-${memberId}-hospitalizations`;
+                break;
+        }
+        
+        const detailsSection = document.querySelector(detailsSelector);
+        if (detailsSection) {
+            detailsSection.style.display = 'none';
+            console.log(`Hiding details section: ${detailsSelector}`);
+        }
+        
+        // Clear any saved details for this member and question
+        if (formState.memberDetails[questionId] && formState.memberDetails[questionId][memberId]) {
+            delete formState.memberDetails[questionId][memberId];
+        }
+    }
     
     // Update checkbox visual
     updateCheckboxVisual(checkbox);
     
-    // Show/hide appropriate section based on question type
-    let sectionId;
-    if (questionId === 1) {
-        sectionId = `member-${memberId}-disorders`;
-    } else if (questionId === 2) {
-        sectionId = `member-${memberId}-family-history`;
-    } else if (questionId === 3) {
-        sectionId = `member-${memberId}-neurological`;
-    } else {
-        sectionId = `member-${memberId}-q${questionId}`;
-    }
+    // Update progress
+    updateProgress();
     
-    console.log(`Looking for section with ID: ${sectionId}`);
-    let disordersSection = document.getElementById(sectionId);
-    console.log(`Found section:`, disordersSection);
-    
-    if (checkbox.checked) {
-        if (!disordersSection && questionId === 1) {
-            // Create the disorders section dynamically for question 1
-            createMemberDisordersSection(memberId);
-            disordersSection = document.getElementById(sectionId);
-        } else if (!disordersSection && questionId === 2) {
-            // Create family history section dynamically for question 2
-            createMemberFamilyHistorySection(memberId);
-            disordersSection = document.getElementById(sectionId);
-        } else if (!disordersSection && questionId === 3) {
-            // For question 3, the neurological section should already exist in HTML
-            console.log(`Warning: Neurological section ${sectionId} not found for ${memberId}`);
-            disordersSection = document.getElementById(sectionId);
-        } else if (!disordersSection) {
-            // Create generic section for other questions
-            createMemberGenericSection(memberId, questionId);
-            disordersSection = document.getElementById(sectionId);
-        }
-        
-        if (disordersSection) {
-            disordersSection.style.display = 'block';
-            console.log(`Successfully showing section for ${memberId} question ${questionId}`);
-        } else {
-            console.error(`Failed to find or create section ${sectionId}`);
-        }
-    } else {
-        if (disordersSection) {
-            disordersSection.style.display = 'none';
-        }
-        console.log(`Hiding section for ${memberId} question ${questionId}`);
-        
-        // Clear member's selections
-        if (formState.selectedDisorders[memberId]) {
-            if (questionId === 2) {
-                delete formState.selectedDisorders[memberId].familyHistory;
-            } else if (questionId === 3) {
-                delete formState.selectedDisorders[memberId].neurological;
-            } else {
-                formState.selectedDisorders[memberId] = {};
-            }
-        }
-    }
+    console.log('Updated selectedMembers:', formState.selectedMembers);
 }
 
 function updateCheckboxVisual(checkbox) {
@@ -428,134 +502,94 @@ function saveMemberDetailAnswer(questionId, memberId, field, value) {
     console.log('Member detail saved:', questionId, memberId, field, value);
 }
 
+// Auto-answer functionality
 function setAllAnswersToNo() {
-    console.log('Setting all answers to "no"');
+    console.log('Setting all answers to "No"');
     
-    // Answer all questions with "no"
-    for (let i = 1; i <= 4; i++) {
-        answerQuestion(i, 'no');
+    if (formState.currentViewMode === 'table') {
+        // Table mode: set all radio buttons to "no"
+        const questions = [1, 2, 3, 4];
+        const members = ['israel', 'sara', 'david', 'michal'];
+        
+        questions.forEach(q => {
+            members.forEach(member => {
+                const radioNo = document.getElementById(`q${q}-${member}-no`);
+                if (radioNo) {
+                    radioNo.checked = true;
+                    handleTableAnswer(q, member, 'no');
+                }
+            });
+        });
+    } else {
+        // Normal mode: set all question buttons to "no"
+        for (let questionId = 1; questionId <= 4; questionId++) {
+            // Find and click the "no" button for each question
+            const questionDiv = document.getElementById(`question-${questionId}`);
+            if (questionDiv) {
+                const noButton = questionDiv.querySelector('.no-btn');
+                if (noButton) {
+                    // Simulate clicking the "no" button
+                    answerQuestion(questionId, 'no');
+                    
+                    // Update button visual state
+                    const yesButton = questionDiv.querySelector('.yes-btn');
+                    if (yesButton) {
+                        yesButton.classList.remove('selected');
+                    }
+                    noButton.classList.add('selected');
+                }
+            }
+        }
     }
     
-    // Clear all follow-up answers
-    formState.followupAnswers = {};
-    
-    // Hide all member selection sections
-    document.querySelectorAll('.members-selection').forEach(section => {
-        section.style.display = 'none';
-    });
-    
-    // Clear and hide all follow-up questions
-    const followupSections = document.querySelectorAll('[id^="followup-questions-"]');
-    followupSections.forEach(section => {
-        section.style.display = 'none';
-        const inputs = section.querySelectorAll('.followup-input');
-        inputs.forEach(input => input.value = '');
-    });
-    
-    // Enable the next button
-    const nextBtn = document.querySelector('.next-btn');
-    if (nextBtn) {
-        nextBtn.classList.remove('disabled');
-        nextBtn.style.cursor = 'pointer';
-    }
+    updateProgress();
 }
 
+// Clear all answers functionality
 function clearAllAnswers() {
     console.log('Clearing all answers');
     
-    // Clear form state
-    formState.answers = {};
-    formState.selectedMembers = {};
-    formState.memberDetails = {};
-    formState.followupAnswers = {};
-    formState.selectedDisorders = {};
-    
-    // Remove selected class from all answer buttons
-    document.querySelectorAll('.answer-btn').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    
-    // Hide all member selection sections
-    document.querySelectorAll('.members-selection').forEach(section => {
-        section.style.display = 'none';
-    });
-    
-    // Hide all disorder sections
-    document.querySelectorAll('.member-disorders-section').forEach(section => {
-        section.style.display = 'none';
-    });
-    
-    // Hide all disorder details sections
-    document.querySelectorAll('.disorder-details').forEach(section => {
-        section.style.display = 'none';
-    });
-    
-    // Hide all follow-up questions
-    document.querySelectorAll('.followup-questions').forEach(section => {
-        section.style.display = 'none';
-    });
-    
-    // Uncheck all checkboxes except the auto answer toggle
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        if (checkbox.id !== 'autoAnswer') {
+    if (formState.currentViewMode === 'table') {
+        // Table mode clearing
+        clearAllTableAnswers();
+    } else {
+        // Normal mode: clear all answers and selections
+        formState.answers = {};
+        formState.selectedMembers = {};
+        formState.memberDetails = {};
+        formState.selectedDisorders = {};
+        formState.followupAnswers = {};
+        
+        // Clear all question button selections
+        for (let questionId = 1; questionId <= 4; questionId++) {
+            const questionDiv = document.getElementById(`question-${questionId}`);
+            if (questionDiv) {
+                const buttons = questionDiv.querySelectorAll('.answer-btn');
+                buttons.forEach(button => button.classList.remove('selected'));
+            }
+            
+            // Hide member selection sections
+            const membersSection = document.getElementById(`members-${questionId}`);
+            if (membersSection) {
+                membersSection.style.display = 'none';
+            }
+        }
+        
+        // Clear all member checkboxes
+        const memberCheckboxes = document.querySelectorAll('.member-checkbox');
+        memberCheckboxes.forEach(checkbox => {
             checkbox.checked = false;
             updateCheckboxVisual(checkbox);
-        }
-    });
-    
-    // Uncheck all radio buttons
-    document.querySelectorAll('input[type="radio"]').forEach(radio => {
-        radio.checked = false;
-        updateRadioVisual(radio);
-    });
-    
-    // Clear all text inputs
-    document.querySelectorAll('.followup-input, .disorder-text-input').forEach(input => {
-        input.value = '';
-    });
-    
-    // Clear all number inputs
-    document.querySelectorAll('input[type="number"]').forEach(input => {
-        if (!input.closest('.bmi-section')) { // Don't clear BMI inputs
-            input.value = '';
-        }
-    });
-    
-    // Clear all text inputs except BMI
-    document.querySelectorAll('input[type="text"]').forEach(input => {
-        if (!input.closest('.bmi-section')) { // Don't clear BMI inputs
-            input.value = '';
-        }
-    });
-    
-    // Clear all textareas
-    document.querySelectorAll('textarea').forEach(textarea => {
-        textarea.value = '';
-    });
-    
-    // Clear all radio checkmarks visually
-    document.querySelectorAll('.radio-checkmark').forEach(checkmark => {
-        checkmark.classList.remove('checked');
-        checkmark.innerHTML = '';
-    });
-    
-    // Disable the next button
-    const nextBtn = document.querySelector('.next-btn');
-    if (nextBtn) {
-        nextBtn.classList.add('disabled');
-        nextBtn.style.cursor = 'not-allowed';
+        });
+        
+        // Hide all member detail sections
+        const memberDetailSections = document.querySelectorAll('[id^="member-"][id$="-disorders"], [id^="member-"][id$="-family-history"], [id^="member-"][id$="-neurological"]');
+        memberDetailSections.forEach(section => {
+            section.style.display = 'none';
+        });
     }
     
-    // Reset progress bar
-    const progressFill = document.querySelector('.progress-fill');
-    if (progressFill) {
-        const maxWidth = 914;
-        const baseProgress = 5 / 9; // 5 completed steps out of 9 total
-        const newWidth = maxWidth * baseProgress;
-        progressFill.style.width = `${newWidth}px`;
-    }
-    
-    console.log('All answers and visual states cleared');
+    updateProgress();
 }
 
 function clearMemberSelections() {
@@ -624,39 +658,62 @@ function clearMemberSelectionsForQuestion(questionId) {
     }
 }
 
+// Update progress and next button state
 function updateProgress() {
-    // Count answered questions
-    const totalQuestions = 4;
-    const answeredQuestions = Object.keys(formState.answers).length;
+    let isComplete = false;
     
-    // Calculate progress based on current step + answered questions
-    // We are currently on step 6 (הצהרת בריאות), so 5 steps are completed + partial progress
-    const completedSteps = 5; // Steps 1-5 are fully completed
-    const currentStepProgress = answeredQuestions / totalQuestions; // Progress within current step
-    const totalSteps = 9;
-    const overallProgress = (completedSteps + currentStepProgress) / totalSteps;
-    
-    // Update progress bar
-    const progressFill = document.querySelector('.progress-fill');
-    if (progressFill) {
-        const maxWidth = 914; // Based on the original design
-        const newWidth = (maxWidth * overallProgress);
-        progressFill.style.width = `${newWidth}px`;
-    }
-    
-    // Enable/disable next button
-    const nextBtn = document.querySelector('.next-btn');
-    if (nextBtn) {
-        if (answeredQuestions === totalQuestions) {
-            nextBtn.classList.remove('disabled');
-            nextBtn.style.cursor = 'pointer';
-        } else {
-            nextBtn.classList.add('disabled');
-            nextBtn.style.cursor = 'not-allowed';
+    if (formState.currentViewMode === 'table') {
+        // Table mode progress calculation
+        const totalAnswers = 16; // 4 questions × 4 members
+        let answeredCount = 0;
+        
+        for (let q = 1; q <= 4; q++) {
+            if (formState.tableAnswers[q]) {
+                ['israel', 'sara', 'david', 'michal'].forEach(member => {
+                    if (formState.tableAnswers[q][member]) {
+                        answeredCount++;
+                    }
+                });
+            }
         }
+        
+        isComplete = (answeredCount === totalAnswers);
+        console.log(`Table mode progress: ${answeredCount}/${totalAnswers} answered`);
+    } else {
+        // Normal mode progress calculation
+        const totalQuestions = 4;
+        let answeredQuestions = 0;
+        
+        for (let i = 1; i <= totalQuestions; i++) {
+            if (formState.answers[i]) {
+                answeredQuestions++;
+                
+                // If answered "yes", check if at least one member is selected
+                if (formState.answers[i] === 'yes') {
+                    if (!formState.selectedMembers[i] || formState.selectedMembers[i].length === 0) {
+                        // Question answered "yes" but no members selected - not complete
+                        isComplete = false;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        isComplete = (answeredQuestions === totalQuestions);
+        console.log(`Normal mode progress: ${answeredQuestions}/${totalQuestions} questions answered`);
     }
     
-    console.log(`Progress: ${answeredQuestions}/${totalQuestions} questions answered, overall: ${(overallProgress * 100).toFixed(1)}%`);
+    // Update next button state
+    const nextBtn = document.querySelector('.next-btn');
+    if (isComplete) {
+        nextBtn.classList.remove('disabled');
+        nextBtn.disabled = false;
+        nextBtn.style.cursor = 'pointer';
+    } else {
+        nextBtn.classList.add('disabled');
+        nextBtn.disabled = true;
+        nextBtn.style.cursor = 'not-allowed';
+    }
 }
 
 // Form submission
@@ -1938,4 +1995,506 @@ function saveNeurologicalInput(memberId, disorderId, questionId, value) {
     formState.memberDetails[memberId].neurological[disorderId][questionId] = value;
     
     console.log('Updated neurological input details:', formState.memberDetails[memberId].neurological);
+}
+
+// New functions for table mode
+function toggleViewMode() {
+    const normalMode = document.getElementById('normal-mode');
+    const tableMode = document.getElementById('table-mode');
+    const switchText = document.getElementById('switch-text');
+    
+    formState.currentViewMode = formState.currentViewMode === 'normal' ? 'table' : 'normal';
+    
+    if (formState.currentViewMode === 'table') {
+        normalMode.classList.add('hidden');
+        tableMode.classList.add('active');
+        switchText.textContent = 'מצב רגיל';
+        
+        // Sync data from normal to table mode
+        syncNormalToTable();
+        
+        // Setup table mode event listeners
+        setupTableModeListeners();
+    } else {
+        normalMode.classList.remove('hidden');
+        tableMode.classList.remove('active');
+        switchText.textContent = 'מצב טבלה';
+        
+        // Sync data from table to normal mode
+        syncTableToNormal();
+    }
+    
+    updateProgress();
+}
+
+// Handle table radio button answers
+function handleTableAnswer(questionId, memberId, answer) {
+    console.log(`Table answer: Q${questionId}, Member: ${memberId}, Answer: ${answer}`);
+    
+    // Initialize if needed
+    if (!formState.tableAnswers[questionId]) {
+        formState.tableAnswers[questionId] = {};
+    }
+    
+    // Save the answer
+    formState.tableAnswers[questionId][memberId] = answer;
+    
+    // Show/hide follow-up sections based on "yes" answers
+    updateTableFollowupSections(questionId);
+    
+    // Update progress
+    updateTableProgress();
+    
+    console.log('Current table answers:', formState.tableAnswers);
+}
+
+// Update table progress and enable/disable next button
+function updateTableProgress() {
+    const totalAnswers = 16; // 4 questions × 4 members
+    let answeredCount = 0;
+    
+    // Count answered questions
+    for (let q = 1; q <= 4; q++) {
+        if (formState.tableAnswers[q]) {
+            ['israel', 'sara', 'david', 'michal'].forEach(member => {
+                if (formState.tableAnswers[q][member]) {
+                    answeredCount++;
+                }
+            });
+        }
+    }
+    
+    const nextBtn = document.querySelector('.next-btn');
+    if (answeredCount === totalAnswers) {
+        nextBtn.classList.remove('disabled');
+        nextBtn.disabled = false;
+    } else {
+        nextBtn.classList.add('disabled');
+        nextBtn.disabled = true;
+    }
+    
+    console.log(`Table progress: ${answeredCount}/${totalAnswers} answered`);
+}
+
+// Update follow-up sections visibility
+function updateTableFollowupSections(questionId) {
+    const followupSection = document.getElementById(`table-followup-q${questionId}`);
+    const followupContent = document.getElementById(`table-followup-content-q${questionId}`);
+    
+    if (!followupSection || !followupContent) return;
+    
+    // Check if any member answered "yes" for this question
+    const hasYesAnswers = formState.tableAnswers[questionId] && 
+        Object.values(formState.tableAnswers[questionId]).some(answer => answer === 'yes');
+    
+    if (hasYesAnswers) {
+        followupSection.classList.add('show');
+        generateTableFollowupContent(questionId, followupContent);
+    } else {
+        followupSection.classList.remove('show');
+        followupContent.innerHTML = '';
+    }
+}
+
+// Generate follow-up content for table mode
+function generateTableFollowupContent(questionId, container) {
+    const membersWithYes = [];
+    
+    // Find members who answered "yes"
+    if (formState.tableAnswers[questionId]) {
+        Object.entries(formState.tableAnswers[questionId]).forEach(([memberId, answer]) => {
+            if (answer === 'yes') {
+                membersWithYes.push(memberId);
+            }
+        });
+    }
+    
+    if (membersWithYes.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    // Generate content based on question type
+    let content = '';
+    
+    membersWithYes.forEach(memberId => {
+        const memberName = getMemberDisplayName(memberId);
+        content += `<div class="table-member-section">`;
+        content += `<div class="table-member-title">${memberName}</div>`;
+        
+        switch (questionId) {
+            case 1: // Mental health disorders
+                content += generateMentalHealthTableContent(memberId);
+                break;
+            case 2: // Family history
+                content += generateFamilyHistoryTableContent(memberId);
+                break;
+            case 3: // Neurological
+                content += generateNeurologicalTableContent(memberId);
+                break;
+            case 4: // Hospitalizations
+                content += generateHospitalizationsTableContent(memberId);
+                break;
+        }
+        
+        content += `</div>`;
+    });
+    
+    container.innerHTML = content;
+    
+    // Add event listeners to the new content
+    addTableFollowupEventListeners(questionId, membersWithYes);
+}
+
+// Generate mental health content for table mode
+function generateMentalHealthTableContent(memberId) {
+    const disorders = [
+        { id: 'depression', name: 'דיכאון' },
+        { id: 'mood-disorder', name: 'הפרעת מצב רוח' },
+        { id: 'anxiety', name: 'חרדה' },
+        { id: 'major-depression', name: 'דיכאון מג\'ורי' },
+        { id: 'ocd', name: 'OCD' },
+        { id: 'postpartum-depression', name: 'דיכאון לאחר לידה' },
+        { id: 'eating-disorders', name: 'הפרעות אכילה' }
+    ];
+    
+    let content = '<div class="table-disorders-grid">';
+    
+    disorders.forEach(disorder => {
+        content += `
+            <div class="table-disorder-item">
+                <div class="table-disorder-checkbox">
+                    <input type="checkbox" id="table-${memberId}-${disorder.id}" 
+                           onchange="handleTableDisorderSelection('${memberId}', '${disorder.id}', this)">
+                    <span>${disorder.name}</span>
+                </div>
+                <div class="table-disorder-details" id="table-${memberId}-${disorder.id}-details">
+                    <div class="table-disorder-question">
+                        <div class="table-disorder-question-text">מועד האבחון:</div>
+                        <div class="table-disorder-options">
+                            <div class="table-disorder-option">
+                                <input type="radio" id="table-${memberId}-${disorder.id}-timing-recent" 
+                                       name="table-${memberId}-${disorder.id}-timing" value="recent">
+                                <label for="table-${memberId}-${disorder.id}-timing-recent">אובחן בשנה האחרונה</label>
+                            </div>
+                            <div class="table-disorder-option">
+                                <input type="radio" id="table-${memberId}-${disorder.id}-timing-two-years" 
+                                       name="table-${memberId}-${disorder.id}-timing" value="two-years">
+                                <label for="table-${memberId}-${disorder.id}-timing-two-years">בשנתיים האחרונות</label>
+                            </div>
+                            <div class="table-disorder-option">
+                                <input type="radio" id="table-${memberId}-${disorder.id}-timing-older" 
+                                       name="table-${memberId}-${disorder.id}-timing" value="older">
+                                <label for="table-${memberId}-${disorder.id}-timing-older">לפני 3 שנים</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-disorder-question">
+                        <div class="table-disorder-question-text">אשפוז:</div>
+                        <div class="table-disorder-options">
+                            <div class="table-disorder-option">
+                                <input type="radio" id="table-${memberId}-${disorder.id}-hospitalization-yes" 
+                                       name="table-${memberId}-${disorder.id}-hospitalization" value="yes">
+                                <label for="table-${memberId}-${disorder.id}-hospitalization-yes">כן</label>
+                            </div>
+                            <div class="table-disorder-option">
+                                <input type="radio" id="table-${memberId}-${disorder.id}-hospitalization-no" 
+                                       name="table-${memberId}-${disorder.id}-hospitalization" value="no">
+                                <label for="table-${memberId}-${disorder.id}-hospitalization-no">לא</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-disorder-question">
+                        <div class="table-disorder-question-text">נכות:</div>
+                        <div class="table-disorder-options">
+                            <div class="table-disorder-option">
+                                <input type="radio" id="table-${memberId}-${disorder.id}-disability-yes" 
+                                       name="table-${memberId}-${disorder.id}-disability" value="yes">
+                                <label for="table-${memberId}-${disorder.id}-disability-yes">כן</label>
+                            </div>
+                            <div class="table-disorder-option">
+                                <input type="radio" id="table-${memberId}-${disorder.id}-disability-no" 
+                                       name="table-${memberId}-${disorder.id}-disability" value="no">
+                                <label for="table-${memberId}-${disorder.id}-disability-no">לא</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    content += '</div>';
+    return content;
+}
+
+// Generate family history content for table mode
+function generateFamilyHistoryTableContent(memberId) {
+    const diseases = [
+        { id: 'colon-cancer', name: 'סרטן המעי הגס' },
+        { id: 'breast-cancer', name: 'סרטן השד' },
+        { id: 'ovarian-cancer', name: 'סרטן השחלות' },
+        { id: 'prostate-cancer', name: 'סרטן הערמונית' },
+        { id: 'multiple-sclerosis', name: 'טרשת נפוצה' },
+        { id: 'als', name: 'ALS' },
+        { id: 'parkinson', name: 'פרקינסון' },
+        { id: 'alzheimer', name: 'אלצהיימר' }
+    ];
+    
+    let content = '<div class="table-disorders-grid">';
+    
+    diseases.forEach(disease => {
+        content += `
+            <div class="table-disorder-item">
+                <div class="table-disorder-checkbox">
+                    <input type="checkbox" id="table-family-${memberId}-${disease.id}" 
+                           onchange="handleTableFamilyDiseaseSelection('${memberId}', '${disease.id}', this)">
+                    <span>${disease.name}</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    content += '</div>';
+    return content;
+}
+
+// Generate neurological content for table mode
+function generateNeurologicalTableContent(memberId) {
+    const disorders = [
+        { id: 'epilepsy', name: 'אפילפסיה' },
+        { id: 'headaches', name: 'כאבי ראש שהחלו בחצי השנה האחרונה' },
+        { id: 'migraine', name: 'מיגרנה' },
+        { id: 'encephalitis', name: 'דלקת המוח (אנצפליטיס)' },
+        { id: 'meningitis', name: 'דלקת קרום המוח (מנינגיטיס)' },
+        { id: 'head-trauma', name: 'חבלת ראש עם נזק מוחי או גולגלתי' },
+        { id: 'brain-tumor', name: 'גידול במוח ומערכת העצבים' },
+        { id: 'ms', name: 'טרשת נפוצה' },
+        { id: 'parkinson', name: 'פרקינסון' },
+        { id: 'stroke', name: 'שבץ מוחי (CVA)' },
+        { id: 'autism', name: 'אוטיזם ו/או PDD' },
+        { id: 'adhd', name: 'הפרעות קשב וריכוז' }
+    ];
+    
+    let content = '<div class="table-disorders-grid">';
+    
+    disorders.forEach(disorder => {
+        content += `
+            <div class="table-disorder-item">
+                <div class="table-disorder-checkbox">
+                    <input type="checkbox" id="table-neuro-${memberId}-${disorder.id}" 
+                           onchange="handleTableNeurologicalSelection('${memberId}', '${disorder.id}', this)">
+                    <span>${disorder.name}</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    content += '</div>';
+    return content;
+}
+
+// Generate hospitalizations content for table mode
+function generateHospitalizationsTableContent(memberId) {
+    return `
+        <div class="table-disorder-item">
+            <div class="table-disorder-question">
+                <div class="table-disorder-question-text">פרטי אשפוז/ניתוח/בדיקה מיוחדת:</div>
+                <textarea rows="4" cols="50" placeholder="אנא פרט..." 
+                          style="width: 100%; padding: 10px; border: 1px solid #E2E3EA; border-radius: 6px; resize: vertical; direction: rtl; text-align: right;"></textarea>
+            </div>
+        </div>
+    `;
+}
+
+// Handle disorder selection in table mode
+function handleTableDisorderSelection(memberId, disorderId, checkbox) {
+    const detailsSection = document.getElementById(`table-${memberId}-${disorderId}-details`);
+    
+    if (checkbox.checked) {
+        detailsSection.classList.add('show');
+    } else {
+        detailsSection.classList.remove('show');
+        // Clear all related radio buttons
+        const radioButtons = detailsSection.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach(radio => radio.checked = false);
+    }
+}
+
+// Handle family disease selection in table mode
+function handleTableFamilyDiseaseSelection(memberId, diseaseId, checkbox) {
+    // Save selection to form state
+    if (!formState.tableFollowupAnswers) {
+        formState.tableFollowupAnswers = {};
+    }
+    if (!formState.tableFollowupAnswers[2]) {
+        formState.tableFollowupAnswers[2] = {};
+    }
+    if (!formState.tableFollowupAnswers[2][memberId]) {
+        formState.tableFollowupAnswers[2][memberId] = {};
+    }
+    
+    formState.tableFollowupAnswers[2][memberId][diseaseId] = checkbox.checked;
+}
+
+// Handle neurological selection in table mode
+function handleTableNeurologicalSelection(memberId, disorderId, checkbox) {
+    // Save selection to form state
+    if (!formState.tableFollowupAnswers) {
+        formState.tableFollowupAnswers = {};
+    }
+    if (!formState.tableFollowupAnswers[3]) {
+        formState.tableFollowupAnswers[3] = {};
+    }
+    if (!formState.tableFollowupAnswers[3][memberId]) {
+        formState.tableFollowupAnswers[3][memberId] = {};
+    }
+    
+    formState.tableFollowupAnswers[3][memberId][disorderId] = checkbox.checked;
+}
+
+// Add event listeners for table followup content
+function addTableFollowupEventListeners(questionId, memberIds) {
+    // Add any additional event listeners needed for the dynamic content
+    console.log(`Added table followup event listeners for Q${questionId}, members:`, memberIds);
+}
+
+// Get member display name
+function getMemberDisplayName(memberId) {
+    const memberNames = {
+        'israel': 'ישראל ישראלי',
+        'sara': 'שרה ישראלי',
+        'david': 'דוד ישראלי',
+        'michal': 'מיכל ישראלי'
+    };
+    return memberNames[memberId] || memberId;
+}
+
+// Setup table mode event listeners
+function setupTableModeListeners() {
+    // Auto answer toggle for table mode
+    const tableAutoAnswer = document.getElementById('tableAutoAnswer');
+    if (tableAutoAnswer) {
+        tableAutoAnswer.addEventListener('change', function() {
+            if (this.checked) {
+                setAllTableAnswersToNo();
+            } else {
+                clearAllTableAnswers();
+            }
+        });
+    }
+}
+
+// Set all table answers to "no"
+function setAllTableAnswersToNo() {
+    const questions = [1, 2, 3, 4];
+    const members = ['israel', 'sara', 'david', 'michal'];
+    
+    questions.forEach(q => {
+        members.forEach(member => {
+            const radioNo = document.getElementById(`q${q}-${member}-no`);
+            if (radioNo) {
+                radioNo.checked = true;
+                handleTableAnswer(q, member, 'no');
+            }
+        });
+    });
+}
+
+// Clear all table answers
+function clearAllTableAnswers() {
+    const questions = [1, 2, 3, 4];
+    const members = ['israel', 'sara', 'david', 'michal'];
+    
+    questions.forEach(q => {
+        members.forEach(member => {
+            const radioYes = document.getElementById(`q${q}-${member}-yes`);
+            const radioNo = document.getElementById(`q${q}-${member}-no`);
+            if (radioYes) radioYes.checked = false;
+            if (radioNo) radioNo.checked = false;
+            
+            if (formState.tableAnswers[q]) {
+                delete formState.tableAnswers[q][member];
+            }
+        });
+        
+        // Hide followup sections
+        const followupSection = document.getElementById(`table-followup-q${q}`);
+        if (followupSection) {
+            followupSection.classList.remove('show');
+        }
+    });
+    
+    updateTableProgress();
+}
+
+function syncTableToNormal() {
+    // Convert table answers to normal mode format
+    // This function can be called when switching modes to maintain data consistency
+    Object.keys(formState.tableAnswers).forEach(questionId => {
+        let hasYesAnswers = false;
+        
+        Object.keys(formState.tableAnswers[questionId]).forEach(memberId => {
+            const answer = formState.tableAnswers[questionId][memberId];
+            
+            // Update normal mode state based on table answers
+            if (answer === 'yes') {
+                hasYesAnswers = true;
+                if (!formState.selectedMembers[questionId]) {
+                    formState.selectedMembers[questionId] = {};
+                }
+                formState.selectedMembers[questionId][memberId] = true;
+            }
+        });
+        
+        // Set the main question answer
+        formState.answers[questionId] = hasYesAnswers ? 'yes' : 'no';
+        
+        // Update UI buttons
+        updateQuestionButtons(questionId, formState.answers[questionId]);
+    });
+}
+
+function syncNormalToTable() {
+    // Convert normal mode answers to table format
+    // Clear existing table answers first
+    formState.tableAnswers = {};
+    
+    // Initialize all members with 'no' answers first
+    const members = ['israel', 'sara', 'david', 'michal'];
+    for (let q = 1; q <= 4; q++) {
+        formState.tableAnswers[q] = {};
+        members.forEach(member => {
+            formState.tableAnswers[q][member] = 'no';
+        });
+    }
+    
+    // Override with 'yes' answers from normal mode
+    Object.keys(formState.selectedMembers).forEach(questionId => {
+        Object.keys(formState.selectedMembers[questionId]).forEach(memberId => {
+            const isSelected = formState.selectedMembers[questionId][memberId];
+            
+            if (!formState.tableAnswers[questionId]) {
+                formState.tableAnswers[questionId] = {};
+            }
+            
+            if (isSelected) {
+                formState.tableAnswers[questionId][memberId] = 'yes';
+            }
+        });
+    });
+    
+    // Update all table radio buttons
+    for (let q = 1; q <= 4; q++) {
+        members.forEach(member => {
+            const answer = formState.tableAnswers[q][member];
+            const radioButton = document.getElementById(`q${q}-${member}-${answer}`);
+            if (radioButton) {
+                radioButton.checked = true;
+            }
+        });
+    }
+    
+    // Update table progress
+    updateTableProgress();
 }
