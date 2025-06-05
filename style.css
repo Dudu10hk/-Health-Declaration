@@ -1358,12 +1358,134 @@ input:checked + .slider:before {
 
 .disorder-category-items {
     display: flex;
-    justify-content: flex-start;
+    flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
-    flex-wrap: wrap;
+    gap: 15px;
     direction: rtl;
     padding: 0;
     max-width: 100%;
     margin-top: 10px;
-} 
+}
+
+/* Disorder Indicator Animation */
+@keyframes fadeInPulse {
+    0% {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.disorder-indicator {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Enhanced Neurological Indicator Animations */
+@keyframes slideInFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-30px) scale(0.8);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translateX(5px) scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes slideInFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(30px) scale(0.8);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translateX(-5px) scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes fadeOutToLeft {
+    0% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-20px) scale(0.8);
+    }
+}
+
+@keyframes fadeOutToRight {
+    0% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(20px) scale(0.8);
+    }
+}
+
+@keyframes gentlePulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 2px 8px rgba(89, 209, 137, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(89, 209, 137, 0.5);
+    }
+}
+
+/* Indicator Container Styling */
+.disorder-indicator-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.disorder-indicator-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.disorder-indicator-container:hover::before {
+    left: 100%;
+}
+
+/* Responsive adjustments for indicator */
+@media (max-width: 768px) {
+    .disorder-indicator-container {
+        margin-right: 10px !important;
+        padding: 4px 8px !important;
+        border-radius: 15px !important;
+    }
+    
+    .disorder-indicator-container span {
+        font-size: 11px !important;
+    }
+    
+    .disorder-indicator-container svg {
+        width: 10px !important;
+        height: 10px !important;
+    }
+}

@@ -1472,12 +1472,127 @@ function selectNeurological(member, disorder, checkbox) {
         detailsElement.style.display = checkbox.checked ? 'block' : 'none';
     } else if (checkbox.checked) {
         // Create detailed questions section for specific disorders
-        createNeurologicalDetailsSection(member, disorder);
+        createNeurologicalDetailsSection(member, disorder, checkbox);
+    }
+    
+    // Add/remove elegant indicator for disorders with follow-up questions
+    const indicatorId = `${member}-${disorder}-indicator`;
+    let indicator = document.getElementById(indicatorId);
+    
+    if (checkbox.checked && (disorder === 'epilepsy' || disorder === 'migraine' || disorder === 'facial-paralysis' || disorder === 'meningitis')) {
+        if (!indicator) {
+            // Create elegant indicator that appears on the LEFT side of the specific item
+            const checkboxItem = checkbox.closest('.disorder-checkbox-item');
+            const indicatorHTML = `
+                <div id="${indicatorId}" class="disorder-indicator-container" style="
+                    display: inline-flex;
+                    align-items: center;
+                    margin-left: 15px;
+                    cursor: pointer;
+                    padding: 6px 12px;
+                    background: linear-gradient(135deg, #59D189 0%, #45B871 100%);
+                    border-radius: 20px;
+                    box-shadow: 0 2px 8px rgba(89, 209, 137, 0.3);
+                    transition: all 0.3s ease;
+                    animation: slideInFromLeft 0.5s ease-out;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    position: absolute;
+                    left: -200px;
+                    z-index: 10;
+                " onclick="scrollToNeurologicalDetails('${member}', '${disorder}')" 
+                   onmouseover="this.style.transform='translateY(-2px) scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(89, 209, 137, 0.4)'" 
+                   onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 2px 8px rgba(89, 209, 137, 0.3)'">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;">
+                        <path d="M7 14L12 9L17 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 12 12)"/>
+                    </svg>
+                    <span style="
+                        color: white;
+                        font-size: 12px;
+                        font-weight: 600;
+                        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                        white-space: nowrap;
+                    ">שאלות נוספות למטה</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="margin-right: 6px;">
+                        <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="white" opacity="0.9"/>
+                    </svg>
+                </div>
+            `;
+            
+            // Make the parent item relative for absolute positioning
+            checkboxItem.style.position = 'relative';
+            checkboxItem.insertAdjacentHTML('beforeend', indicatorHTML);
+        }
+        
+        // Add pulse animation to draw attention
+        setTimeout(() => {
+            const indicatorElement = document.getElementById(indicatorId);
+            if (indicatorElement) {
+                indicatorElement.style.animation = 'gentlePulse 2s ease-in-out';
+            }
+        }, 600);
+        
+    } else if (indicator) {
+        // Remove indicator with fade-out animation to the left
+        indicator.style.animation = 'fadeOutToLeft 0.3s ease-in';
+        setTimeout(() => {
+            if (indicator && indicator.parentNode) {
+                indicator.remove();
+                // Reset parent position if no more indicators
+                const parent = indicator.parentNode;
+                if (parent && !parent.querySelector('.disorder-indicator-container')) {
+                    parent.style.position = '';
+                }
+            }
+        }, 300);
+    }
+}
+
+// Add smooth scroll function to navigate to neurological details
+function scrollToNeurologicalDetails(member, disorder) {
+    const detailsElement = document.getElementById(`${member}-${disorder}-details`);
+    
+    if (detailsElement) {
+        // Add a gentle highlight effect before scrolling
+        detailsElement.style.transition = 'all 0.3s ease';
+        detailsElement.style.transform = 'scale(1.02)';
+        detailsElement.style.boxShadow = '0 8px 25px rgba(89, 209, 137, 0.15)';
+        detailsElement.style.border = '2px solid rgba(89, 209, 137, 0.3)';
+        detailsElement.style.borderRadius = '8px';
+        
+        // Smooth scroll with offset for better positioning
+        const elementTop = detailsElement.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementTop - 80; // 80px offset from top
+        
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+        
+        // Remove highlight effect after scroll
+        setTimeout(() => {
+            detailsElement.style.transform = 'scale(1)';
+            detailsElement.style.boxShadow = '';
+            detailsElement.style.border = '';
+            detailsElement.style.borderRadius = '';
+        }, 1500);
+        
+        // Add a subtle "found it" feedback
+        const indicator = document.getElementById(`${member}-${disorder}-indicator`);
+        if (indicator) {
+            const originalBg = indicator.style.background;
+            indicator.style.background = 'linear-gradient(135deg, #45B871 0%, #3A9B5C 100%)';
+            indicator.innerHTML = indicator.innerHTML.replace('שאלות נוספות למטה', 'נמצא! 👆');
+            
+            setTimeout(() => {
+                indicator.style.background = originalBg;
+                indicator.innerHTML = indicator.innerHTML.replace('נמצא! 👆', 'שאלות נוספות למטה');
+            }, 2000);
+        }
     }
 }
 
 // Create detailed questions section for neurological disorders
-function createNeurologicalDetailsSection(member, disorder) {
+function createNeurologicalDetailsSection(member, disorder, checkbox) {
     let detailsHTML = '';
     
     if (disorder === 'epilepsy') {
@@ -1747,11 +1862,23 @@ function createNeurologicalDetailsSection(member, disorder) {
         `;
     }
     
-    // Add the details section to the neurological disorders section
+    // Add the details section to the neurological disorders section (back to original behavior)
     if (detailsHTML) {
         const neurologicalSection = document.getElementById(`member-${member}-neurological`);
         if (neurologicalSection) {
             neurologicalSection.insertAdjacentHTML('beforeend', detailsHTML);
+            
+            // Scroll to the details section smoothly
+            setTimeout(() => {
+                const detailsElement = document.getElementById(`${member}-${disorder}-details`);
+                if (detailsElement) {
+                    detailsElement.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start',
+                        inline: 'nearest'
+                    });
+                }
+            }, 100);
         }
     }
 }
