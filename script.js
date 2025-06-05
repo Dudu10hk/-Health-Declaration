@@ -2486,165 +2486,152 @@ function initializeEnhancedTable() {
     const tableMode = document.querySelector('.table-mode');
     tableMode.innerHTML = createEnhancedTableHTML();
     setupEnhancedTableListeners();
-    updateTableProgress();
+    updateEnhancedTableProgress();
 }
 
 function createEnhancedTableHTML() {
+    // Order members with primary insured first (right side in RTL)
     const familyMembers = [
-        { id: 'israel', name: 'ישראל', role: 'מבוטח', avatar: 'י' },
-        { id: 'sara', name: 'שרה', role: 'בת זוג', avatar: 'ש' },
-        { id: 'david', name: 'דוד', role: 'ילד', avatar: 'ד' },
-        { id: 'michal', name: 'מיכל', role: 'ילד', avatar: 'מ' },
-        { id: 'yosef', name: 'יוסף', role: 'ילד', avatar: 'י' },
-        { id: 'rachel', name: 'רחל', role: 'ילד', avatar: 'ר' },
-        { id: 'aaron', name: 'אהרון', role: 'ילד', avatar: 'א' },
-        { id: 'tamar', name: 'תמר', role: 'ילד', avatar: 'ת' }
+        { id: 'israel', name: 'ישראל', role: 'מבוטח ראשי' },
+        { id: 'sara', name: 'שרה', role: 'בת זוג' },
+        { id: 'david', name: 'דוד', role: 'מבוטח משני' },
+        { id: 'michal', name: 'מיכל', role: 'מבוטח משני' },
+        { id: 'yosef', name: 'יוסף', role: 'מבוטח משני' },
+        { id: 'rachel', name: 'רחל', role: 'מבוטח משני' },
+        { id: 'aaron', name: 'אהרון', role: 'מבוטח משני' },
+        { id: 'tamar', name: 'תמר', role: 'מבוטח משני' }
     ];
 
     let tableHTML = `
-        <!-- BMI Table Section -->
-        <div class="table-scroll-container">
-            <div class="table-progress-bar">
-                <div class="table-progress-fill" id="bmi-table-progress-fill"></div>
-            </div>
-            
-            <div class="table-wrapper">
-                <div class="table-scroll-area" id="bmi-table-scroll-area">
-                    <table class="enhanced-questions-table" id="bmi-table">
-                        <thead>
-                            <tr>
-                                <th style="position: sticky; right: 0; z-index: 10; background: #D4E6F0; min-width: 300px;">נתוני BMI</th>`;
+        <!-- Main Table Container -->
+        <div class="enhanced-master-container">
+            <!-- BMI Section -->
+            <div class="enhanced-bmi-container">
+                <div class="enhanced-bmi-header">
+                    <div class="enhanced-bmi-label">גובה משקל</div>
+                    <div class="enhanced-bmi-subtitle">נא להזין את הנתונים בשדות הבאים עבור כל המבוטחים</div>
+                </div>
+                
+                <div class="enhanced-bmi-table">
+                    <!-- Member Names Header -->
+                    <div class="enhanced-member-row">
+                        <div class="enhanced-row-label-cell"></div>`;
 
-    // Add member columns for BMI
+    // Add member name columns (RTL order)
     familyMembers.forEach(member => {
         tableHTML += `
-                                <th>
-                                    <div class="member-column-header">
-                                        <div class="member-avatar" style="background: ${getMemberColor(member.id)};">${member.avatar}</div>
-                                        <div class="member-name-small">${member.name}</div>
-                                        <div class="member-role-small">${member.role}</div>
-                                    </div>
-                                </th>`;
+                        <div class="enhanced-member-cell">
+                            <div class="enhanced-member-name">${member.name}</div>
+                            <div class="enhanced-member-role">${member.role}</div>
+                        </div>`;
     });
 
     tableHTML += `
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="position: sticky; right: 0; z-index: 5; background: white; min-width: 300px; font-weight: 500; color: #2D3968; padding-right: 20px;">גובה (ס"מ)</td>`;
+                    </div>
+                    
+                    <!-- Height Row -->
+                    <div class="enhanced-data-row">
+                        <div class="enhanced-row-label-cell">גובה (בס״מ)</div>`;
 
     familyMembers.forEach(member => {
         tableHTML += `
-                                <td>
-                                    <input type="number" 
-                                           class="bmi-table-input" 
-                                           id="height-${member.id}" 
-                                           placeholder="170"
-                                           onchange="updateBMITableData('${member.id}', 'height', this.value)">
-                                </td>`;
+                        <div class="enhanced-data-cell">
+                            <input type="number" 
+                                   class="enhanced-bmi-input" 
+                                   id="height-${member.id}" 
+                                   placeholder="175"
+                                   onchange="updateBMITableData('${member.id}', 'height', this.value)">
+                        </div>`;
     });
 
     tableHTML += `
-                            </tr>
-                            <tr>
-                                <td style="position: sticky; right: 0; z-index: 5; background: white; min-width: 300px; font-weight: 500; color: #2D3968; padding-right: 20px;">משקל (ק"ג)</td>`;
+                    </div>
+                    
+                    <!-- Weight Row -->
+                    <div class="enhanced-data-row">
+                        <div class="enhanced-row-label-cell">משקל (בק״ג)</div>`;
 
     familyMembers.forEach(member => {
         tableHTML += `
-                                <td>
-                                    <input type="number" 
-                                           class="bmi-table-input" 
-                                           id="weight-${member.id}" 
-                                           placeholder="70"
-                                           onchange="updateBMITableData('${member.id}', 'weight', this.value)">
-                                </td>`;
+                        <div class="enhanced-data-cell">
+                            <input type="number" 
+                                   class="enhanced-bmi-input" 
+                                   id="weight-${member.id}" 
+                                   placeholder="70"
+                                   onchange="updateBMITableData('${member.id}', 'weight', this.value)">
+                        </div>`;
     });
 
     tableHTML += `
-                            </tr>
-                        </tbody>
-                    </table>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Questions Table Section -->
-        <div class="table-scroll-container">
-            <div class="table-progress-bar">
-                <div class="table-progress-fill" id="table-progress-fill"></div>
-            </div>
             
-            <div class="table-wrapper">
-                <div class="table-scroll-area" id="table-scroll-area">
-                    <table class="enhanced-questions-table" id="enhanced-questions-table">
-                        <thead>
-                            <tr>
-                                <th style="position: sticky; right: 0; z-index: 10; background: #D4E6F0; min-width: 300px;">שאלה</th>`;
+            <!-- Health Questions Section -->
+            <div class="enhanced-questions-container">
+                <div class="enhanced-questions-header">
+                    <div class="enhanced-questions-label">שאלות בריאות</div>
+                    <div class="enhanced-questions-subtitle">לחץ 'כן' לפתיחת שאלות המשך | גלול לצפייה בכל המבוטחים</div>
+                </div>
+                
+                <div class="enhanced-questions-table">
+                    <!-- Member Names Header -->
+                    <div class="enhanced-member-row">
+                        <div class="enhanced-row-label-cell"></div>`;
 
-    // Add member columns for questions
+    // Add member name columns for questions (RTL order)
     familyMembers.forEach(member => {
         tableHTML += `
-                                <th>
-                                    <div class="member-column-header">
-                                        <div class="member-avatar" style="background: ${getMemberColor(member.id)};">${member.avatar}</div>
-                                        <div class="member-name-small">${member.name}</div>
-                                        <div class="member-role-small">${member.role}</div>
-                                        <div class="member-progress-dot" id="progress-${member.id}"></div>
-                                    </div>
-                                </th>`;
+                        <div class="enhanced-member-cell">
+                            <div class="enhanced-member-name">${member.name}</div>
+                            <div class="enhanced-member-role">${member.role}</div>
+                        </div>`;
     });
 
     tableHTML += `
-                            </tr>
-                        </thead>
-                        <tbody id="questions-tbody">`;
+                    </div>`;
 
     // Add question rows
     const questions = [
-        'בריאות נפש',
-        'מחלות תורשתיות במשפחה', 
-        'בעיות נוירולוגיות',
-        'אשפוזים'
+        { id: 'question-1', text: 'בריאות נפש' },
+        { id: 'question-2', text: 'מחלות תורשתיות במשפחה' }, 
+        { id: 'question-3', text: 'בעיות נוירולוגיות' },
+        { id: 'question-4', text: 'אשפוזים' }
     ];
 
     questions.forEach((question, qIndex) => {
-        const questionId = `question-${qIndex + 1}`;
         tableHTML += `
-                            <tr data-question="${questionId}">
-                                <td style="position: sticky; right: 0; z-index: 5; background: white; min-width: 300px; font-weight: 500; color: #2D3968; padding-right: 20px;">${question}</td>`;
+                    <!-- Question Row: ${question.text} -->
+                    <div class="enhanced-question-row" data-question="${question.id}">
+                        <div class="enhanced-row-label-cell">${question.text}</div>`;
 
         familyMembers.forEach(member => {
             tableHTML += `
-                                <td>
-                                    <div class="enhanced-table-radio-group">
-                                        <div class="enhanced-table-radio-option">
-                                            <input type="radio" 
-                                                   id="${questionId}-${member.id}-yes" 
-                                                   name="${questionId}-${member.id}" 
-                                                   value="yes" 
-                                                   onchange="handleEnhancedTableAnswer('${questionId}', '${member.id}', 'yes')">
-                                            <label for="${questionId}-${member.id}-yes">כן</label>
-                                        </div>
-                                        <div class="enhanced-table-radio-option">
-                                            <input type="radio" 
-                                                   id="${questionId}-${member.id}-no" 
-                                                   name="${questionId}-${member.id}" 
-                                                   value="no" 
-                                                   onchange="handleEnhancedTableAnswer('${questionId}', '${member.id}', 'no')">
-                                            <label for="${questionId}-${member.id}-no">לא</label>
-                                        </div>
-                                    </div>
-                                </td>`;
+                        <div class="enhanced-answer-cell">
+                            <div class="enhanced-radio-group">
+                                <label class="enhanced-radio-option">
+                                    <input type="radio" 
+                                           name="${question.id}-${member.id}" 
+                                           value="no" 
+                                           onchange="handleEnhancedTableAnswer('${question.id}', '${member.id}', 'no')">
+                                    <span>לא</span>
+                                </label>
+                                <label class="enhanced-radio-option">
+                                    <input type="radio" 
+                                           name="${question.id}-${member.id}" 
+                                           value="yes" 
+                                           onchange="handleEnhancedTableAnswer('${question.id}', '${member.id}', 'yes')">
+                                    <span>כן</span>
+                                </label>
+                            </div>
+                        </div>`;
         });
 
         tableHTML += `
-                            </tr>`;
+                    </div>`;
     });
 
     tableHTML += `
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>`;
@@ -2665,57 +2652,60 @@ function updateBMITableData(memberId, field, value) {
 }
 
 function setupEnhancedTableListeners() {
-    // Set up auto-scroll on horizontal scroll
-    const scrollArea = document.getElementById('table-scroll-area');
-    if (scrollArea) {
-        scrollArea.addEventListener('scroll', function() {
-            // Simple scroll tracking without navigation indicators
-            console.log('Table scrolled');
-        });
-    }
+    // The new enhanced table design doesn't need scroll indicators
+    // as it uses a responsive layout instead
+    console.log('Enhanced table listeners setup complete');
 }
 
-function updateTableProgress() {
-    // Calculate progress based on answered questions
-    const totalQuestions = 4 * 8; // 4 questions × 8 members
+function updateEnhancedTableProgress() {
+    // Update progress indicators for each member
+    const familyMembers = ['israel', 'sara', 'david', 'michal', 'yosef', 'rachel', 'aaron', 'tamar'];
+    
+    familyMembers.forEach(memberId => {
+        updateEnhancedMemberProgress(memberId);
+    });
+}
+
+function updateEnhancedMemberProgress(memberId) {
+    const progressDot = document.getElementById(`progress-${memberId}`);
+    if (!progressDot) return;
+    
+    // Count answered questions for this member
+    const totalQuestions = 4;
     let answeredQuestions = 0;
     
-    // Count answered radio buttons
-    const allRadios = document.querySelectorAll('.enhanced-questions-table input[type="radio"]:checked');
-    answeredQuestions = allRadios.length;
+    for (let i = 1; i <= totalQuestions; i++) {
+        const radioChecked = document.querySelector(`input[name="question-${i}-${memberId}"]:checked`);
+        if (radioChecked) {
+            answeredQuestions++;
+        }
+    }
     
-    const progressPercent = (answeredQuestions / totalQuestions) * 100;
-    const progressFill = document.getElementById('table-progress-fill');
-    if (progressFill) {
-        progressFill.style.width = progressPercent + '%';
+    // Update progress dot
+    progressDot.className = 'enhanced-member-progress';
+    if (answeredQuestions === totalQuestions) {
+        progressDot.classList.add('completed');
+    } else if (answeredQuestions > 0) {
+        progressDot.classList.add('partial');
     }
 }
 
-// Remove unused navigation functions
-/* 
-function updateScrollIndicators() { ... }
-function updateCurrentMemberHighlight() { ... }
-function updateNavigationButtons() { ... }
-function scrollToMember(memberIndex) { ... }
-function scrollToPreviousMember() { ... }
-function scrollToNextMember() { ... }
-*/
-
 function handleEnhancedTableAnswer(questionId, memberId, answer) {
-    console.log(`Answer: ${questionId}, ${memberId}, ${answer}`);
+    console.log(`Enhanced table answer: ${questionId}, ${memberId}, ${answer}`);
     
     // Update member progress
-    updateMemberProgress(memberId);
+    updateEnhancedMemberProgress(memberId);
     
-    // Update overall progress
-    updateTableProgress();
-    
-    // Handle follow-up questions
+    // If answer is "yes", show follow-up questions
     if (answer === 'yes') {
-        createInlineFollowupQuestion(questionId, memberId);
+        createEnhancedInlineFollowupQuestion(questionId, memberId);
     } else {
-        removeInlineFollowupQuestion(questionId, memberId);
+        // Remove follow-up if it exists
+        removeEnhancedInlineFollowupQuestion(questionId, memberId);
     }
+    
+    // Sync with normal mode
+    syncEnhancedTableToNormal(questionId, memberId, answer);
 }
 
 function updateMemberProgress(memberId) {
@@ -2792,164 +2782,125 @@ function getMemberColor(memberId) {
     return colors[memberId] || '#2E8BC0';
 }
 
-function createInlineFollowupQuestion(questionId, memberId) {
+function createEnhancedInlineFollowupQuestion(questionId, memberId) {
     // First remove any existing follow-up
-    removeInlineFollowupQuestion(questionId, memberId);
+    removeEnhancedInlineFollowupQuestion(questionId, memberId);
     
-    const questionsTable = document.getElementById('enhanced-questions-table');
-    const mainRow = questionsTable.querySelector(`tr[data-question="${questionId}"]`);
-    if (!mainRow) {
+    const questionRow = document.querySelector(`[data-question="${questionId}"]`);
+    if (!questionRow) {
         console.log(`Row not found for ${questionId}`);
         return;
     }
     
     // Create follow-up row
-    const followupRow = document.createElement('tr');
-    followupRow.className = 'followup-row';
+    const followupRow = document.createElement('div');
+    followupRow.className = 'enhanced-followup-row';
     followupRow.setAttribute('data-followup', `${questionId}-${memberId}`);
     
     let followupContent = '';
-    const familyMembers = ['israel', 'sara', 'david', 'michal', 'yosef', 'rachel', 'aaron', 'tamar'];
+    const memberDisplayName = getMemberDisplayName(memberId);
     
-    // Determine follow-up content based on question
-    if (questionId === 'question-1') { // בריאות נפש
+    // Generate follow-up content based on question type
+    if (questionId === 'question-1') {
+        // Mental health follow-up
         followupContent = `
-            <td style="position: sticky; right: 0; z-index: 5; background: #E8F4EA; padding-right: 20px; font-weight: 600; color: #2D3968; font-size: 14px;">
-                שאלות המשך - ${getMemberDisplayName(memberId)}
-            </td>`;
-        
-        familyMembers.forEach(member => {
-            if (member === memberId) {
-                followupContent += `
-                    <td style="background: #E8F4EA; padding: 8px; font-size: 12px;">
-                        <div style="text-align: right; direction: rtl; max-height: 120px; overflow-y: auto;">
-                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
-                                <input type="checkbox" id="${questionId}-${memberId}-depression" 
-                                       onchange="handleTableDisorderSelection('${memberId}', 'depression', this)">
-                                <label for="${questionId}-${memberId}-depression">דיכאון</label>
-                            </div>
-                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
-                                <input type="checkbox" id="${questionId}-${memberId}-anxiety" 
-                                       onchange="handleTableDisorderSelection('${memberId}', 'anxiety', this)">
-                                <label for="${questionId}-${memberId}-anxiety">חרדה</label>
-                            </div>
-                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
-                                <input type="checkbox" id="${questionId}-${memberId}-adhd" 
-                                       onchange="handleTableDisorderSelection('${memberId}', 'adhd', this)">
-                                <label for="${questionId}-${memberId}-adhd">ADHD</label>
-                            </div>
-                        </div>
-                    </td>`;
-            } else {
-                followupContent += '<td style="background: #F8F9FA;"></td>';
-            }
-        });
-        
-    } else if (questionId === 'question-2') { // מחלות תורשתיות
+            <div class="enhanced-followup-content">
+                <div class="enhanced-followup-label">בריאות נפש - ${memberDisplayName}</div>
+                <div class="enhanced-followup-questions">
+                    <div class="enhanced-followup-item">
+                        <span>דיכאון</span>
+                        <input type="checkbox" id="depression-${memberId}" onchange="handleEnhancedFollowupSelection('${memberId}', 'depression', this.checked)">
+                    </div>
+                    <div class="enhanced-followup-item">
+                        <span>חרדה</span>
+                        <input type="checkbox" id="anxiety-${memberId}" onchange="handleEnhancedFollowupSelection('${memberId}', 'anxiety', this.checked)">
+                    </div>
+                    <div class="enhanced-followup-item">
+                        <span>ADHD</span>
+                        <input type="checkbox" id="adhd-${memberId}" onchange="handleEnhancedFollowupSelection('${memberId}', 'adhd', this.checked)">
+                    </div>
+                </div>
+            </div>`;
+    } else if (questionId === 'question-2') {
+        // Family history follow-up
         followupContent = `
-            <td style="position: sticky; right: 0; z-index: 5; background: #E8F4EA; padding-right: 20px; font-weight: 600; color: #2D3968; font-size: 14px;">
-                מחלות תורשתיות - ${getMemberDisplayName(memberId)}
-            </td>`;
-            
-        familyMembers.forEach(member => {
-            if (member === memberId) {
-                followupContent += `
-                    <td style="background: #E8F4EA; padding: 8px; font-size: 12px;">
-                        <div style="text-align: right; direction: rtl; max-height: 120px; overflow-y: auto;">
-                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
-                                <input type="checkbox" id="${questionId}-${memberId}-diabetes" 
-                                       onchange="handleTableFamilyDiseaseSelection('${memberId}', 'diabetes', this)">
-                                <label for="${questionId}-${memberId}-diabetes">סוכרת</label>
-                            </div>
-                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
-                                <input type="checkbox" id="${questionId}-${memberId}-heart" 
-                                       onchange="handleTableFamilyDiseaseSelection('${memberId}', 'heart', this)">
-                                <label for="${questionId}-${memberId}-heart">מחלות לב</label>
-                            </div>
-                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
-                                <input type="checkbox" id="${questionId}-${memberId}-cancer" 
-                                       onchange="handleTableFamilyDiseaseSelection('${memberId}', 'cancer', this)">
-                                <label for="${questionId}-${memberId}-cancer">סרטן</label>
-                            </div>
-                        </div>
-                    </td>`;
-            } else {
-                followupContent += '<td style="background: #F8F9FA;"></td>';
-            }
-        });
-        
-    } else if (questionId === 'question-3') { // בעיות נוירולוגיות
+            <div class="enhanced-followup-content">
+                <div class="enhanced-followup-label">מחלות תורשתיות - ${memberDisplayName}</div>
+                <div class="enhanced-followup-questions">
+                    <div class="enhanced-followup-item">
+                        <span>סוכרת</span>
+                        <input type="checkbox" id="diabetes-${memberId}" onchange="handleEnhancedFollowupSelection('${memberId}', 'diabetes', this.checked)">
+                    </div>
+                    <div class="enhanced-followup-item">
+                        <span>מחלות לב</span>
+                        <input type="checkbox" id="heart-${memberId}" onchange="handleEnhancedFollowupSelection('${memberId}', 'heart', this.checked)">
+                    </div>
+                    <div class="enhanced-followup-item">
+                        <span>סרטן</span>
+                        <input type="checkbox" id="cancer-${memberId}" onchange="handleEnhancedFollowupSelection('${memberId}', 'cancer', this.checked)">
+                    </div>
+                </div>
+            </div>`;
+    } else if (questionId === 'question-3') {
+        // Neurological follow-up
         followupContent = `
-            <td style="position: sticky; right: 0; z-index: 5; background: #E8F4EA; padding-right: 20px; font-weight: 600; color: #2D3968; font-size: 14px;">
-                בעיות נוירולוגיות - ${getMemberDisplayName(memberId)}
-            </td>`;
-            
-        familyMembers.forEach(member => {
-            if (member === memberId) {
-                followupContent += `
-                    <td style="background: #E8F4EA; padding: 8px; font-size: 12px;">
-                        <div style="text-align: right; direction: rtl; max-height: 120px; overflow-y: auto;">
-                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
-                                <input type="checkbox" id="${questionId}-${memberId}-epilepsy" 
-                                       onchange="handleTableNeurologicalSelection('${memberId}', 'epilepsy', this)">
-                                <label for="${questionId}-${memberId}-epilepsy">אפילפסיה</label>
-                            </div>
-                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
-                                <input type="checkbox" id="${questionId}-${memberId}-migraine" 
-                                       onchange="handleTableNeurologicalSelection('${memberId}', 'migraine', this)">
-                                <label for="${questionId}-${memberId}-migraine">מיגרנה</label>
-                            </div>
-                            <div style="margin: 3px 0; display: flex; align-items: center; gap: 5px; font-size: 11px;">
-                                <input type="checkbox" id="${questionId}-${memberId}-stroke" 
-                                       onchange="handleTableNeurologicalSelection('${memberId}', 'stroke', this)">
-                                <label for="${questionId}-${memberId}-stroke">שבץ</label>
-                            </div>
-                        </div>
-                    </td>`;
-            } else {
-                followupContent += '<td style="background: #F8F9FA;"></td>';
-            }
-        });
-        
-    } else if (questionId === 'question-4') { // אשפוזים
+            <div class="enhanced-followup-content">
+                <div class="enhanced-followup-label">בעיות נוירולוגיות - ${memberDisplayName}</div>
+                <div class="enhanced-followup-questions">
+                    <div class="enhanced-followup-item">
+                        <span>אפילפסיה</span>
+                        <input type="checkbox" id="epilepsy-${memberId}" onchange="handleEnhancedFollowupSelection('${memberId}', 'epilepsy', this.checked)">
+                    </div>
+                    <div class="enhanced-followup-item">
+                        <span>מיגרנה</span>
+                        <input type="checkbox" id="migraine-${memberId}" onchange="handleEnhancedFollowupSelection('${memberId}', 'migraine', this.checked)">
+                    </div>
+                    <div class="enhanced-followup-item">
+                        <span>שבץ</span>
+                        <input type="checkbox" id="stroke-${memberId}" onchange="handleEnhancedFollowupSelection('${memberId}', 'stroke', this.checked)">
+                    </div>
+                </div>
+            </div>`;
+    } else if (questionId === 'question-4') {
+        // Hospitalizations follow-up
         followupContent = `
-            <td style="position: sticky; right: 0; z-index: 5; background: #E8F4EA; padding-right: 20px; font-weight: 600; color: #2D3968; font-size: 14px;">
-                פרטי אשפוזים - ${getMemberDisplayName(memberId)}
-            </td>`;
-            
-        familyMembers.forEach(member => {
-            if (member === memberId) {
-                followupContent += `
-                    <td style="background: #E8F4EA; padding: 8px;">
-                        <textarea 
-                               placeholder="פרט את האשפוזים..." 
-                               style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; text-align: right; direction: rtl; font-size: 11px; resize: vertical; min-height: 40px;"
-                               onchange="handleTableHospitalizationText('${memberId}', this.value)"></textarea>
-                    </td>`;
-            } else {
-                followupContent += '<td style="background: #F8F9FA;"></td>';
-            }
-        });
+            <div class="enhanced-followup-content">
+                <div class="enhanced-followup-label">אשפוזים - ${memberDisplayName}</div>
+                <div class="enhanced-followup-questions">
+                    <textarea placeholder="פרט את האשפוזים..." 
+                              style="width: 100%; height: 80px; padding: 8px; border: 1px solid #E5E7EB; border-radius: 6px; font-family: 'Polin', sans-serif; resize: vertical; text-align: right; direction: rtl;"
+                              onchange="handleEnhancedHospitalizationText('${memberId}', this.value)"></textarea>
+                </div>
+            </div>`;
     }
     
     followupRow.innerHTML = followupContent;
     
-    // Insert after the main row
-    const tbody = mainRow.parentNode;
-    const nextRow = mainRow.nextSibling;
-    if (nextRow) {
-        tbody.insertBefore(followupRow, nextRow);
-    } else {
-        tbody.appendChild(followupRow);
-    }
-    
-    console.log(`Follow-up created for ${questionId}, ${memberId}`);
+    // Insert the follow-up row after the question row
+    questionRow.parentNode.insertBefore(followupRow, questionRow.nextSibling);
 }
 
-function removeInlineFollowupQuestion(questionId, memberId) {
-    const existingFollowup = document.querySelector(`tr[data-followup="${questionId}-${memberId}"]`);
+function removeEnhancedInlineFollowupQuestion(questionId, memberId) {
+    const existingFollowup = document.querySelector(`[data-followup="${questionId}-${memberId}"]`);
     if (existingFollowup) {
         existingFollowup.remove();
-        console.log(`Follow-up removed for ${questionId}, ${memberId}`);
+    }
+}
+
+function handleEnhancedFollowupSelection(memberId, condition, checked) {
+    console.log(`Enhanced followup selection: ${memberId}, ${condition}, ${checked}`);
+    // Here you can add logic to save the follow-up selection
+}
+
+function handleEnhancedHospitalizationText(memberId, text) {
+    console.log(`Enhanced hospitalization text: ${memberId}, ${text}`);
+    // Here you can add logic to save the hospitalization text
+}
+
+function syncEnhancedTableToNormal(questionId, memberId, answer) {
+    // Sync the enhanced table answer back to normal mode
+    const normalRadio = document.querySelector(`.normal-mode input[name="${questionId}-${memberId}"][value="${answer}"]`);
+    if (normalRadio) {
+        normalRadio.checked = true;
     }
 }
