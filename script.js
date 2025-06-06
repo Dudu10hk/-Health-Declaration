@@ -2574,6 +2574,25 @@ function createEnhancedTableHTML() {
                     <div class="enhanced-questions-subtitle">לחץ 'כן' לפתיחת שאלות המשך | גלול לצפייה בכל המבוטחים</div>
                 </div>
                 
+                <!-- Medical Condition Search -->
+                <div class="enhanced-search-container">
+                    <div class="enhanced-search-header">
+                        <div class="enhanced-search-title">🔍 חיפוש מהיר לפי בעיה רפואית</div>
+                        <div class="enhanced-search-subtitle">חפש בעיה רפואית ספציפית - יסמן אוטומטית את כל השאר כ"לא"</div>
+                    </div>
+                    <div class="enhanced-search-content">
+                        <div class="enhanced-search-box">
+                            <input type="text" 
+                                   id="medical-condition-search" 
+                                   class="enhanced-search-input"
+                                   placeholder="הקלד כדי לחפש בעיה רפואית..."
+                                   oninput="searchMedicalConditions(this.value)">
+                            <button class="enhanced-search-clear" onclick="clearMedicalSearch()">✕</button>
+                        </div>
+                        <div id="search-results" class="enhanced-search-results hidden"></div>
+                    </div>
+                </div>
+            
                 <div class="enhanced-questions-table">
                     <!-- Member Names Header -->
                     <div class="enhanced-member-row">
@@ -2893,14 +2912,257 @@ function handleEnhancedFollowupSelection(memberId, condition, checked) {
 }
 
 function handleEnhancedHospitalizationText(memberId, text) {
-    console.log(`Enhanced hospitalization text: ${memberId}, ${text}`);
-    // Here you can add logic to save the hospitalization text
+    console.log(`Enhanced Hospitalization text for ${memberId}: ${text}`);
+    // Store the text for this member
+    // Could sync with normal mode if needed
 }
 
 function syncEnhancedTableToNormal(questionId, memberId, answer) {
-    // Sync the enhanced table answer back to normal mode
-    const normalRadio = document.querySelector(`.normal-mode input[name="${questionId}-${memberId}"][value="${answer}"]`);
+    // Sync enhanced table changes back to normal mode
+    const normalRadio = document.querySelector(`input[name="${questionId}-${memberId}"][value="${answer}"]`);
     if (normalRadio) {
         normalRadio.checked = true;
     }
+}
+
+// Medical Conditions Search Functions
+let medicalConditionsDatabase = null;
+
+function initializeMedicalConditionsDatabase() {
+    // Create comprehensive database of medical conditions from all questions
+    medicalConditionsDatabase = {
+        'בריאות נפש': [
+            'דיכאון', 'חרדה', 'ADHD', 'הפרעת דו קוטבית', 'סכיזופרניה', 
+            'הפרעות אכילה', 'הפרעת פוסט טראומטית', 'הפרעת אובססיבית כפייתית',
+            'הפרעות שינה', 'הפרעות התפתחותיות'
+        ],
+        'מחלות תורשתיות במשפחה': [
+            'סרטן השד', 'סרטן הביצים', 'סרטן המעי הגס', 'סרטן הריאות',
+            'סרטן הערמונית', 'סרטן העור', 'מחלות לב וכלי דם', 'סוכרת',
+            'יתר לחץ דם', 'מחלות כליות', 'מחלות כבד', 'אפילפסיה',
+            'מחלת האלצהיימר', 'מחלת הפרקינסון', 'מחלות אוטואימוניות',
+            'פוליפוזיס משפחתית', 'כליות פוליציסטיות'
+        ],
+        'בעיות נוירולוגיות': [
+            'אפילפסיה', 'מיגרנה', 'כאבי ראש', 'הפרעות תנועה', 'רעידות',
+            'מחלת פרקינסון', 'סקלרוזיס נפוץ', 'מחלות ניוון עצביות',
+            'שבץ מוחי', 'פגיעות ראש', 'נוירופתיה', 'מיאסטניה גרביס'
+        ],
+        'אשפוזים': [
+            'ניתוחים', 'לידה', 'שבירות', 'זיהומים', 'מחלות לב',
+            'בעיות נשימה', 'בעיות עיכול', 'תאונות', 'כוויות'
+        ]
+    };
+}
+
+function searchMedicalConditions(searchTerm) {
+    if (!medicalConditionsDatabase) {
+        initializeMedicalConditionsDatabase();
+    }
+    
+    const resultsContainer = document.getElementById('search-results');
+    
+    if (!searchTerm || searchTerm.length < 2) {
+        resultsContainer.classList.add('hidden');
+        return;
+    }
+    
+    const results = [];
+    
+    // Search through all categories and conditions
+    Object.entries(medicalConditionsDatabase).forEach(([category, conditions]) => {
+        conditions.forEach(condition => {
+            if (condition.includes(searchTerm) || searchTerm.includes(condition)) {
+                results.push({ category, condition });
+            }
+        });
+    });
+    
+    displaySearchResults(results);
+}
+
+function displaySearchResults(results) {
+    const resultsContainer = document.getElementById('search-results');
+    
+    if (results.length === 0) {
+        resultsContainer.innerHTML = '<div class="no-results">לא נמצאו תוצאות</div>';
+        resultsContainer.classList.remove('hidden');
+        return;
+    }
+    
+    let resultHTML = '<div class="search-results-header">תוצאות חיפוש:</div>';
+    
+    results.forEach((result, index) => {
+        resultHTML += `
+            <div class="search-result-item" onclick="selectMedicalCondition('${result.condition}', '${result.category}')">
+                <div class="condition-name">${result.condition}</div>
+                <div class="condition-category">${result.category}</div>
+            </div>
+        `;
+    });
+    
+    resultsContainer.innerHTML = resultHTML;
+    resultsContainer.classList.remove('hidden');
+}
+
+function selectMedicalCondition(condition, category) {
+    // Hide search results
+    document.getElementById('search-results').classList.add('hidden');
+    
+    // Clear search input
+    document.getElementById('medical-condition-search').value = '';
+    
+    // Show member selection modal
+    showMemberSelectionModal(condition, category);
+}
+
+function showMemberSelectionModal(condition, category) {
+    const familyMembers = [
+        { id: 'israel', name: 'ישראל' },
+        { id: 'sara', name: 'שרה' },
+        { id: 'david', name: 'דוד' },
+        { id: 'michal', name: 'מיכל' },
+        { id: 'yosef', name: 'יוסף' },
+        { id: 'rachel', name: 'רחל' },
+        { id: 'aaron', name: 'אהרון' },
+        { id: 'tamar', name: 'תמר' }
+    ];
+    
+    let modalHTML = `
+        <div class="medical-condition-modal-overlay" onclick="closeMemberSelectionModal()">
+            <div class="medical-condition-modal" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3>בחר מי סובל מ: ${condition}</h3>
+                    <div class="modal-category">קטגוריה: ${category}</div>
+                    <button class="modal-close" onclick="closeMemberSelectionModal()">✕</button>
+                </div>
+                <div class="modal-content">
+                    <div class="member-selection-grid">
+    `;
+    
+    familyMembers.forEach(member => {
+        modalHTML += `
+            <label class="member-selection-item">
+                <input type="checkbox" id="modal-${member.id}" value="${member.id}">
+                <div class="member-selection-card">
+                    <div class="member-avatar">${member.name.charAt(0)}</div>
+                    <div class="member-name">${member.name}</div>
+                </div>
+            </label>
+        `;
+    });
+    
+    modalHTML += `
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-cancel" onclick="closeMemberSelectionModal()">ביטול</button>
+                        <button class="modal-confirm" onclick="applyMedicalConditionSelection('${condition}', '${category}')">אישור</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Focus on modal
+    document.querySelector('.medical-condition-modal').focus();
+}
+
+function closeMemberSelectionModal() {
+    const modal = document.querySelector('.medical-condition-modal-overlay');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function applyMedicalConditionSelection(condition, category) {
+    // Get selected members
+    const selectedMembers = [];
+    const checkboxes = document.querySelectorAll('.medical-condition-modal input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        selectedMembers.push(checkbox.value);
+    });
+    
+    if (selectedMembers.length === 0) {
+        alert('אנא בחר לפחות מבוטח אחד');
+        return;
+    }
+    
+    // Apply the selection
+    applyMedicalConditionToTable(condition, category, selectedMembers);
+    
+    // Close modal
+    closeMemberSelectionModal();
+    
+    // Show confirmation
+    showConfirmationMessage(condition, selectedMembers);
+}
+
+function applyMedicalConditionToTable(condition, category, selectedMembers) {
+    const familyMembers = ['israel', 'sara', 'david', 'michal', 'yosef', 'rachel', 'aaron', 'tamar'];
+    
+    // Map category to question ID
+    const categoryToQuestion = {
+        'בריאות נפש': 'question-1',
+        'מחלות תורשתיות במשפחה': 'question-2',
+        'בעיות נוירולוגיות': 'question-3',
+        'אשפוזים': 'question-4'
+    };
+    
+    const targetQuestion = categoryToQuestion[category];
+    
+    // Set all answers to "no" first
+    familyMembers.forEach(memberId => {
+        for (let i = 1; i <= 4; i++) {
+            const noRadio = document.querySelector(`input[name="question-${i}-${memberId}"][value="no"]`);
+            if (noRadio) {
+                noRadio.checked = true;
+                handleEnhancedTableAnswer(`question-${i}`, memberId, 'no');
+            }
+        }
+    });
+    
+    // Set selected members to "yes" for the specific condition
+    selectedMembers.forEach(memberId => {
+        const yesRadio = document.querySelector(`input[name="${targetQuestion}-${memberId}"][value="yes"]`);
+        if (yesRadio) {
+            yesRadio.checked = true;
+            handleEnhancedTableAnswer(targetQuestion, memberId, 'yes');
+        }
+    });
+    
+    // Update progress
+    updateEnhancedTableProgress();
+}
+
+function showConfirmationMessage(condition, selectedMembers) {
+    const memberNames = selectedMembers.map(id => {
+        const nameMap = {
+            'israel': 'ישראל', 'sara': 'שרה', 'david': 'דוד', 'michal': 'מיכל',
+            'yosef': 'יוסף', 'rachel': 'רחל', 'aaron': 'אהרון', 'tamar': 'תמר'
+        };
+        return nameMap[id];
+    }).join(', ');
+    
+    const message = `✅ הטבלה עודכנה!\n\n${condition} סומן עבור: ${memberNames}\nכל שאר השאלות סומנו כ"לא"`;
+    
+    // Create temporary notification
+    const notification = document.createElement('div');
+    notification.className = 'success-notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Remove after 4 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 4000);
+}
+
+function clearMedicalSearch() {
+    document.getElementById('medical-condition-search').value = '';
+    document.getElementById('search-results').classList.add('hidden');
 }
