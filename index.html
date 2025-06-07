@@ -31,10 +31,9 @@
         
         <!-- Back Button -->
         <div class="back-button-container">
-            <button class="back-button" onclick="goBack()">
-                <svg class="back-icon" viewBox="0 0 12 10" fill="none">
-                    <path d="M1.72988 4.03827H9.68336C10.2268 4.03827 10.6775 4.48897 10.6775 5.03245C10.6775 5.57594 10.2268 6.02664 9.68336 6.02664H1.72988C1.18639 6.02664 0.735693 5.57594 0.735693 5.03245C0.735693 4.48897 1.18639 4.03827 1.72988 4.03827Z" fill="#374151"/>
-                    <path d="M7.03238 0.06145C7.28424 0.06145 7.5361 0.15424 7.73494 0.35308L11.7117 4.32983C12.096 4.71424 12.096 5.35052 11.7117 5.73494L7.73494 9.71169C7.35052 10.096 6.71424 10.096 6.32983 9.71169C5.94541 9.32727 5.94541 8.69099 6.32983 8.30657L9.60401 5.03238L6.32983 1.7582C5.94541 1.37378 5.94541 0.7375 6.32983 0.35308C6.52866 0.15424 6.78052 0.06145 7.03238 0.06145Z" fill="#374151"/>
+            <button class="back-button" onclick="toggleSidebar()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 4L10 8L6 12" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
         </div>
@@ -42,7 +41,7 @@
 </div>
 
 <!-- Expanded Sidebar Panel -->
-<div class="expanded-sidebar" id="expandedSidebar">
+<div class="expanded-sidebar hidden" id="expandedSidebar">
     <div class="expanded-sidebar-content">
         <!-- Header -->
         <div class="expanded-header">
@@ -139,7 +138,7 @@
 </div>
 
 <!-- Sidebar Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<div class="sidebar-overlay hidden" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
 <div class="main-container">
     <!-- Top Navigation Bar -->

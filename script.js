@@ -3180,78 +3180,65 @@ function goBack() {
 
 // Sidebar functionality
 function toggleSidebar() {
-    console.log('toggleSidebar called!');
-    
+    console.log('toggleSidebar called');
     const expandedSidebar = document.getElementById('expandedSidebar');
-    const leftSidebar = document.getElementById('leftSidebar');
-    const mainContainer = document.querySelector('.main-container');
     const overlay = document.getElementById('sidebarOverlay');
+    const mainContainer = document.querySelector('.main-container');
     
     console.log('Elements found:', {
         expandedSidebar: !!expandedSidebar,
-        leftSidebar: !!leftSidebar,
-        mainContainer: !!mainContainer,
-        overlay: !!overlay
+        overlay: !!overlay,
+        mainContainer: !!mainContainer
     });
     
-    if (!expandedSidebar) {
-        console.error('expandedSidebar element not found!');
-        return;
-    }
-    
-    const isOpen = expandedSidebar.classList.contains('open');
-    console.log('Sidebar is currently open:', isOpen);
-    
-    if (isOpen) {
-        closeSidebar();
+    if (expandedSidebar && overlay && mainContainer) {
+        const isHidden = expandedSidebar.classList.contains('hidden');
+        console.log('Current state - isHidden:', isHidden);
+        
+        if (isHidden) {
+            // Open sidebar
+            expandedSidebar.classList.remove('hidden');
+            overlay.classList.remove('hidden');
+            mainContainer.classList.add('sidebar-open');
+            console.log('Opening sidebar');
+        } else {
+            // Close sidebar
+            expandedSidebar.classList.add('hidden');
+            overlay.classList.add('hidden');
+            mainContainer.classList.remove('sidebar-open');
+            console.log('Closing sidebar');
+        }
     } else {
-        openSidebar();
+        console.error('Missing elements for sidebar toggle');
     }
 }
 
 function openSidebar() {
-    console.log('openSidebar called!');
-    
+    console.log('openSidebar called');
     const expandedSidebar = document.getElementById('expandedSidebar');
-    const leftSidebar = document.getElementById('leftSidebar');
-    const mainContainer = document.querySelector('.main-container');
     const overlay = document.getElementById('sidebarOverlay');
+    const mainContainer = document.querySelector('.main-container');
     
-    if (expandedSidebar) {
-        expandedSidebar.classList.add('open');
-        console.log('Added open class to expandedSidebar');
+    if (expandedSidebar && overlay && mainContainer) {
+        expandedSidebar.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+        mainContainer.classList.add('sidebar-open');
+        console.log('Sidebar opened');
     }
-    
-    if (leftSidebar) {
-        leftSidebar.classList.add('expanded');
-        console.log('Added expanded class to leftSidebar');
-    }
-    
-    if (mainContainer) {
-        mainContainer.classList.add('sidebar-expanded');
-        console.log('Added sidebar-expanded class to mainContainer');
-    }
-    
-    if (overlay) {
-        overlay.classList.add('show');
-        console.log('Added show class to overlay');
-    }
-    
-    console.log('Sidebar opened - all classes added');
 }
 
 function closeSidebar() {
+    console.log('closeSidebar called');
     const expandedSidebar = document.getElementById('expandedSidebar');
-    const leftSidebar = document.getElementById('leftSidebar');
-    const mainContainer = document.querySelector('.main-container');
     const overlay = document.getElementById('sidebarOverlay');
+    const mainContainer = document.querySelector('.main-container');
     
-    expandedSidebar.classList.remove('open');
-    leftSidebar.classList.remove('expanded');
-    mainContainer.classList.remove('sidebar-expanded');
-    overlay.classList.remove('show');
-    
-    console.log('Sidebar closed');
+    if (expandedSidebar && overlay && mainContainer) {
+        expandedSidebar.classList.add('hidden');
+        overlay.classList.add('hidden');
+        mainContainer.classList.remove('sidebar-open');
+        console.log('Sidebar closed');
+    }
 }
 
 function switchTab(tabType) {
