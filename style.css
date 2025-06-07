@@ -34,9 +34,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
     gap: 20px;
     width: 100%;
-    padding: 0 10px;
+    padding: 25px 10px;
+    height: 100%;
+    position: relative;
 }
 
 .file-icon-container {
@@ -44,12 +47,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background: #ffffff;
     box-shadow: 0px 4px 10px 0px rgba(0,0,0,0.1);
     border-radius: 8px;
-    margin-bottom: 20px;
+    flex-shrink: 0;
 }
 
 .file-icon-wrapper {
@@ -60,17 +63,17 @@ body {
 }
 
 .file-icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     color: #2D3968;
 }
 
 .file-badge {
     position: absolute;
-    top: -8px;
-    right: -8px;
-    width: 16px;
-    height: 16px;
+    top: -6px;
+    right: -6px;
+    width: 14px;
+    height: 14px;
     background: #fbb9b9;
     border: 2px solid #ffffff;
     border-radius: 50%;
@@ -78,43 +81,53 @@ body {
     align-items: center;
     justify-content: center;
     color: #2d3968;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: bold;
     font-family: 'Polin', sans-serif;
     box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1);
 }
 
 .back-button-container {
+    position: absolute;
+    top: 25px;
+    right: -18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    flex-shrink: 0;
+    z-index: 1001;
 }
 
 .back-button {
     width: 36px;
     height: 36px;
     background: #ffffff;
-    border: 1px solid rgba(45,57,104,0.14);
+    border: 2px solid #E5E7EB;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0px 2px 8px 0px rgba(45,57,104,0.1);
+    box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.1);
 }
 
 .back-button:hover {
     background: #f8f9fa;
+    border-color: #D1D5DB;
     transform: translateY(-1px);
-    box-shadow: 0px 8px 20px 0px rgba(45,57,104,0.1);
+    box-shadow: 0px 6px 16px 0px rgba(0,0,0,0.15);
+}
+
+.back-button:active {
+    transform: translateY(0);
+    box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.1);
 }
 
 .back-icon {
     width: 14px;
     height: 12px;
-    color: #292D32;
+    color: #374151;
 }
 
 .main-container {
