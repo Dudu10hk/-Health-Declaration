@@ -3166,3 +3166,14 @@ function clearMedicalSearch() {
     document.getElementById('medical-condition-search').value = '';
     document.getElementById('search-results').classList.add('hidden');
 }
+
+// Left Sidebar Functions
+function goBack() {
+    // You can customize this function based on your navigation needs
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        // Fallback - redirect to a specific page or show a message
+        alert('אין דף קודם לחזור אליו');
+    }
+}
