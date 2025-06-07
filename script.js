@@ -3177,3 +3177,112 @@ function goBack() {
         alert('אין דף קודם לחזור אליו');
     }
 }
+
+// Sidebar functionality
+function toggleSidebar() {
+    console.log('toggleSidebar called!');
+    
+    const expandedSidebar = document.getElementById('expandedSidebar');
+    const leftSidebar = document.getElementById('leftSidebar');
+    const mainContainer = document.querySelector('.main-container');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    console.log('Elements found:', {
+        expandedSidebar: !!expandedSidebar,
+        leftSidebar: !!leftSidebar,
+        mainContainer: !!mainContainer,
+        overlay: !!overlay
+    });
+    
+    if (!expandedSidebar) {
+        console.error('expandedSidebar element not found!');
+        return;
+    }
+    
+    const isOpen = expandedSidebar.classList.contains('open');
+    console.log('Sidebar is currently open:', isOpen);
+    
+    if (isOpen) {
+        closeSidebar();
+    } else {
+        openSidebar();
+    }
+}
+
+function openSidebar() {
+    console.log('openSidebar called!');
+    
+    const expandedSidebar = document.getElementById('expandedSidebar');
+    const leftSidebar = document.getElementById('leftSidebar');
+    const mainContainer = document.querySelector('.main-container');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (expandedSidebar) {
+        expandedSidebar.classList.add('open');
+        console.log('Added open class to expandedSidebar');
+    }
+    
+    if (leftSidebar) {
+        leftSidebar.classList.add('expanded');
+        console.log('Added expanded class to leftSidebar');
+    }
+    
+    if (mainContainer) {
+        mainContainer.classList.add('sidebar-expanded');
+        console.log('Added sidebar-expanded class to mainContainer');
+    }
+    
+    if (overlay) {
+        overlay.classList.add('show');
+        console.log('Added show class to overlay');
+    }
+    
+    console.log('Sidebar opened - all classes added');
+}
+
+function closeSidebar() {
+    const expandedSidebar = document.getElementById('expandedSidebar');
+    const leftSidebar = document.getElementById('leftSidebar');
+    const mainContainer = document.querySelector('.main-container');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    expandedSidebar.classList.remove('open');
+    leftSidebar.classList.remove('expanded');
+    mainContainer.classList.remove('sidebar-expanded');
+    overlay.classList.remove('show');
+    
+    console.log('Sidebar closed');
+}
+
+function switchTab(tabType) {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    
+    tabButtons.forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Find and activate the clicked tab
+    tabButtons.forEach(btn => {
+        if ((tabType === 'members' && btn.textContent.includes('מבוטחים')) ||
+            (tabType === 'products' && btn.textContent.includes('מוצרים'))) {
+            btn.classList.add('active');
+        }
+    });
+    
+    console.log('Switched to tab:', tabType);
+    // Here you can add logic to show/hide different content based on the tab
+}
+
+// Debug function - can be called from console
+function testSidebar() {
+    console.log('Testing sidebar...');
+    const expandedSidebar = document.getElementById('expandedSidebar');
+    if (expandedSidebar) {
+        console.log('Found expandedSidebar element');
+        expandedSidebar.style.transform = 'translateX(0)';
+        expandedSidebar.style.border = '5px solid blue';
+        console.log('Applied direct styles to sidebar');
+    } else {
+        console.error('expandedSidebar element not found!');
+    }
+}
