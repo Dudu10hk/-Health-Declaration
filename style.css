@@ -47,11 +47,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
-    background: #ffffff;
-    box-shadow: 0px 4px 10px 0px rgba(0,0,0,0.1);
-    border-radius: 8px;
+    width: 100%;
+    height: auto;
+    background: transparent;
     flex-shrink: 0;
 }
 
@@ -60,20 +58,25 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 38.4px;
+    height: 38.4px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 24px 94px 0px rgba(0,0,0,0.06);
 }
 
 .file-icon {
-    width: 20px;
-    height: 20px;
+    width: 38.4px;
+    height: 38.4px;
     color: #2D3968;
 }
 
 .file-badge {
     position: absolute;
-    top: -6px;
-    right: -6px;
-    width: 14px;
-    height: 14px;
+    top: -9px;
+    right: -9px;
+    width: 18px;
+    height: 18px;
     background: #fbb9b9;
     border: 2px solid #ffffff;
     border-radius: 50%;
@@ -81,10 +84,10 @@ body {
     align-items: center;
     justify-content: center;
     color: #2d3968;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: bold;
     font-family: 'Polin', sans-serif;
-    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1);
+    box-shadow: 0px 4px 4px 0px rgba(0,0,0,0.1);
 }
 
 .back-button-container {
