@@ -10,6 +10,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<!-- Password Protection Modal -->
+<div id="passwordModal" class="password-modal">
+    <div class="password-content">
+        <h2>גישה מוגבלת</h2>
+        <p>אנא הזן את הסיסמה כדי לגשת למערכת:</p>
+        <input type="password" id="passwordInput" placeholder="הזן סיסמה">
+        <button onclick="checkPassword()">כניסה</button>
+        <div id="passwordError" class="error-message" style="display: none;">
+            סיסמה שגויה. נסה שוב.
+        </div>
+    </div>
+</div>
+
+<!-- Main Content (hidden initially) -->
+<div id="mainContent" style="display: none;">
 <!-- Floating Switch Button -->
 <button class="floating-switch" onclick="toggleViewMode()">
     <span class="switch-icon">📊</span> מצב טבלה
@@ -1376,7 +1391,31 @@
     </div>
 </div>
 
+</div> <!-- End of mainContent -->
+
 <script src="script.js"></script>
+<script>
+// Password protection functionality
+function checkPassword() {
+    const password = document.getElementById('passwordInput').value;
+    const correctPassword = 'health2024'; // שנה את הסיסמה כאן
+    
+    if (password === correctPassword) {
+        document.getElementById('passwordModal').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+    } else {
+        document.getElementById('passwordError').style.display = 'block';
+        document.getElementById('passwordInput').value = '';
+    }
+}
+
+// Allow Enter key to submit password
+document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        checkPassword();
+    }
+});
+</script>
 
 </body>
 </html> 

@@ -4066,4 +4066,82 @@ input:checked + .slider:before {
     }
 }
 
+/* Password Protection Modal */
+.password-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.password-content {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+}
+
+.password-content h2 {
+    color: #2D3968;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-family: 'Polin', sans-serif;
+}
+
+.password-content p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 16px;
+    font-family: 'Polin', sans-serif;
+}
+
+.password-content input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-align: center;
+    direction: ltr;
+    font-family: 'Polin', sans-serif;
+}
+
+.password-content input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.password-content button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-family: 'Polin', sans-serif;
+}
+
+.password-content button:hover {
+    background: #45a049;
+}
+
+.error-message {
+    color: #f44336;
+    margin-top: 15px;
+    font-size: 14px;
+    font-family: 'Polin', sans-serif;
+}
+
 
