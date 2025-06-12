@@ -416,12 +416,15 @@ body {
     position: relative;
     background: #FCFCFC;
     min-height: 100vh;
-    transition: margin-left 0.3s ease, background-color 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Professional smooth animation */
 }
 
 .main-container.sidebar-open {
-    margin-left: 580px !important; /* 100px sidebar + 480px expanded = 580px */
+    margin-left: 50%; /* Take half the screen width when sidebar is open */
     background-color: #f0f0f0; /* Debug color to see if class is applied */
+    width: 50%; /* Resize content to half screen */
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1); /* Professional shadow effect */
+    transform: scale(0.98); /* Slight scale down for professional effect */
 }
 
 /* Top Navigation */
@@ -1568,10 +1571,23 @@ input:checked + .slider:before {
 }
 
 /* Responsive Design */
+@media (min-width: 2560px) {
+    /* Ultra-wide screens */
+    .main-container.sidebar-open {
+        margin-left: 600px !important;
+        width: calc(100% - 600px) !important;
+    }
+}
+
 @media (max-width: 1920px) {
     .main-container {
         width: calc(100% - 100px);
         margin-left: 100px; /* Keep sidebar space */
+    }
+    
+    .main-container.sidebar-open {
+        margin-left: 50% !important; /* Half screen for large displays */
+        width: 50% !important; /* Content takes half screen */
     }
 }
 
@@ -1592,6 +1608,12 @@ input:checked + .slider:before {
     .footer-section {
         padding: 0 90px 0 86px;
     }
+    
+    /* Sidebar responsiveness for medium screens */
+    .main-container.sidebar-open {
+        margin-left: 45% !important;
+        width: 55% !important;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1603,6 +1625,13 @@ input:checked + .slider:before {
     .main-container {
         margin-left: 0 !important;
         width: 100% !important;
+    }
+    
+    /* On mobile, sidebar takes full overlay */
+    .main-container.sidebar-open {
+        margin-left: 0 !important;
+        width: 100% !important;
+        opacity: 0.3; /* Dim the background content */
     }
     
     .floating-switch {
