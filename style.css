@@ -140,6 +140,16 @@ body {
     color: #374151;
 }
 
+/* Arrow animation for sidebar toggle */
+.arrow-path {
+    transition: d 0.3s ease;
+}
+
+/* When sidebar is open, flip the arrow */
+.main-container.sidebar-open .arrow-path {
+    d: path("M10 4L6 8L10 12");
+}
+
 /* Expanded Sidebar */
 .expanded-sidebar {
     position: fixed;
@@ -149,22 +159,18 @@ body {
     height: 100vh;
     background: #ffffff;
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-    z-index: 1001;
+    z-index: 999;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     overflow-y: auto;
 }
 
 .expanded-sidebar.hidden {
-    transform: translateX(-100%) !important;
-    opacity: 0;
-    pointer-events: none;
+    transform: translateX(-100%);
 }
 
 .expanded-sidebar:not(.hidden) {
     transform: translateX(0);
-    opacity: 1;
-    pointer-events: all;
 }
 
 .expanded-sidebar-content {
@@ -402,20 +408,7 @@ body {
 }
 
 .sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-}
-
-.sidebar-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
+    display: none;
 }
 
 .main-container {

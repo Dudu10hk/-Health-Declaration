@@ -80,6 +80,7 @@ const questions = {
 document.addEventListener('DOMContentLoaded', function() {
     initializeForm();
     setupEventListeners();
+    initializeSidebarArrow();
 });
 
 function initializeForm() {
@@ -3182,30 +3183,32 @@ function goBack() {
 function toggleSidebar() {
     console.log('toggleSidebar called');
     const expandedSidebar = document.getElementById('expandedSidebar');
-    const overlay = document.getElementById('sidebarOverlay');
     const mainContainer = document.querySelector('.main-container');
+    const arrowPath = document.querySelector('.arrow-path');
     
     console.log('Elements found:', {
         expandedSidebar: !!expandedSidebar,
-        overlay: !!overlay,
-        mainContainer: !!mainContainer
+        mainContainer: !!mainContainer,
+        arrowPath: !!arrowPath
     });
     
-    if (expandedSidebar && overlay && mainContainer) {
+    if (expandedSidebar && mainContainer && arrowPath) {
         const isHidden = expandedSidebar.classList.contains('hidden');
         console.log('Current state - isHidden:', isHidden);
         
         if (isHidden) {
             // Open sidebar
             expandedSidebar.classList.remove('hidden');
-            overlay.classList.remove('hidden');
             mainContainer.classList.add('sidebar-open');
+            // Change arrow to point left (close direction)
+            arrowPath.setAttribute('d', 'M10 4L6 8L10 12');
             console.log('Opening sidebar');
         } else {
             // Close sidebar
             expandedSidebar.classList.add('hidden');
-            overlay.classList.add('hidden');
             mainContainer.classList.remove('sidebar-open');
+            // Change arrow to point right (open direction)
+            arrowPath.setAttribute('d', 'M6 4L10 8L6 12');
             console.log('Closing sidebar');
         }
     } else {
@@ -3216,13 +3219,15 @@ function toggleSidebar() {
 function openSidebar() {
     console.log('openSidebar called');
     const expandedSidebar = document.getElementById('expandedSidebar');
-    const overlay = document.getElementById('sidebarOverlay');
     const mainContainer = document.querySelector('.main-container');
+    const arrowPath = document.querySelector('.arrow-path');
     
-    if (expandedSidebar && overlay && mainContainer) {
+    if (expandedSidebar && mainContainer) {
         expandedSidebar.classList.remove('hidden');
-        overlay.classList.remove('hidden');
         mainContainer.classList.add('sidebar-open');
+        if (arrowPath) {
+            arrowPath.setAttribute('d', 'M10 4L6 8L10 12');
+        }
         console.log('Sidebar opened');
     }
 }
@@ -3230,13 +3235,15 @@ function openSidebar() {
 function closeSidebar() {
     console.log('closeSidebar called');
     const expandedSidebar = document.getElementById('expandedSidebar');
-    const overlay = document.getElementById('sidebarOverlay');
     const mainContainer = document.querySelector('.main-container');
+    const arrowPath = document.querySelector('.arrow-path');
     
-    if (expandedSidebar && overlay && mainContainer) {
+    if (expandedSidebar && mainContainer) {
         expandedSidebar.classList.add('hidden');
-        overlay.classList.add('hidden');
         mainContainer.classList.remove('sidebar-open');
+        if (arrowPath) {
+            arrowPath.setAttribute('d', 'M6 4L10 8L6 12');
+        }
         console.log('Sidebar closed');
     }
 }
@@ -3258,6 +3265,25 @@ function switchTab(tabType) {
     
     console.log('Switched to tab:', tabType);
     // Here you can add logic to show/hide different content based on the tab
+}
+
+// Initialize sidebar arrow direction
+function initializeSidebarArrow() {
+    const arrowPath = document.querySelector('.arrow-path');
+    const expandedSidebar = document.getElementById('expandedSidebar');
+    
+    if (arrowPath && expandedSidebar) {
+        // Check if sidebar is initially hidden (should be)
+        const isHidden = expandedSidebar.classList.contains('hidden');
+        if (isHidden) {
+            // Sidebar is closed, arrow should point right (open direction)
+            arrowPath.setAttribute('d', 'M6 4L10 8L6 12');
+        } else {
+            // Sidebar is open, arrow should point left (close direction)
+            arrowPath.setAttribute('d', 'M10 4L6 8L10 12');
+        }
+        console.log('Sidebar arrow initialized');
+    }
 }
 
 // Debug function - can be called from console
