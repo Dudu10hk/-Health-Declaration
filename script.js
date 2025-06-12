@@ -3202,14 +3202,16 @@ function toggleSidebar() {
             mainContainer.classList.add('sidebar-open');
             // Change arrow to point left (close direction)
             arrowPath.setAttribute('d', 'M10 4L6 8L10 12');
-            console.log('Opening sidebar');
+            console.log('Opening sidebar - main container classes:', mainContainer.className);
+            console.log('Main container margin-left:', window.getComputedStyle(mainContainer).marginLeft);
         } else {
             // Close sidebar
             expandedSidebar.classList.add('hidden');
             mainContainer.classList.remove('sidebar-open');
             // Change arrow to point right (open direction)
             arrowPath.setAttribute('d', 'M6 4L10 8L6 12');
-            console.log('Closing sidebar');
+            console.log('Closing sidebar - main container classes:', mainContainer.className);
+            console.log('Main container margin-left:', window.getComputedStyle(mainContainer).marginLeft);
         }
     } else {
         console.error('Missing elements for sidebar toggle');

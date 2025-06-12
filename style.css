@@ -416,11 +416,12 @@ body {
     position: relative;
     background: #FCFCFC;
     min-height: 100vh;
-    transition: margin-left 0.3s ease;
+    transition: margin-left 0.3s ease, background-color 0.3s ease;
 }
 
 .main-container.sidebar-open {
-    margin-left: 580px; /* 100px sidebar + 480px expanded = 580px */
+    margin-left: 580px !important; /* 100px sidebar + 480px expanded = 580px */
+    background-color: #f0f0f0; /* Debug color to see if class is applied */
 }
 
 /* Top Navigation */
